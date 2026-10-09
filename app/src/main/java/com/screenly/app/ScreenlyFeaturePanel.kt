@@ -34,7 +34,9 @@ internal class ScreenlyFeaturePanel(
     private val manualPicker: () -> Unit,
     private val onClosed: () -> Unit,
     private val session: ScreenlySessionStore,
-    private val aiGateway: OfflineAiGateway
+    private val aiGateway: OfflineAiGateway,
+    private val highlightTarget: (ScreenObservation, Int) -> Unit,
+    private val clearTargetHighlight: () -> Unit
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private val tasks = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
@@ -63,6 +65,12 @@ internal class ScreenlyFeaturePanel(
         }
         if (action == AssistantAction.GUIDE_ME && guidance == null) {
             currentObservation()?.let(session::resumeFrom)
+        }
+        if (action == AssistantAction.GUIDE_ME) {
+            val verified = guidance
+            if (verified != null && verified.observed == currentObservation()) {
+                verified.targetIndex?.let { highlightTarget(verified.observed, it) }
+            }
         }
         render(animate = true)
     }
@@ -154,6 +162,7 @@ internal class ScreenlyFeaturePanel(
                 },
                 cancelGuide = {
                     guidance = null
+                    clearTargetHighlight()
                     feedback = service.getString(R.string.assistant_guide_cancelled)
                     render()
                 },
@@ -164,6 +173,7 @@ internal class ScreenlyFeaturePanel(
                 },
                 clearGuidance = {
                     session.clearGuidance()
+                    clearTargetHighlight()
                     feedback = "Saved guidance and its progress were cleared."
                     render()
                 },
@@ -395,6 +405,12 @@ internal class ScreenlyFeaturePanel(
                     else if (!prompt.isNullOrBlank())
                         AccessibleScreenAssistant.begin(prompt, snapshot)
                     else guidance
+                    clearTargetHighlight()
+                    val next = guidance
+                    if (next != null && next.observed == snapshot &&
+                        next.phase == AccessibleScreenAssistant.GuidancePhase.NEEDS_ACTION) {
+                        next.targetIndex?.let { highlightTarget(snapshot, it) }
+                    }
                 }
                 AssistantAction.PRIVACY -> Unit
             }

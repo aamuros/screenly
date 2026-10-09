@@ -272,7 +272,16 @@ internal class ScreenlyOverlay(
                 },
                 onClosed = { featureController = null },
                 session = session,
-                aiGateway = aiGateway
+                aiGateway = aiGateway,
+                highlightTarget = { captured, index ->
+                    val node = captured.elements.getOrNull(index)
+                    val display = windowManager.currentWindowMetrics.bounds
+                    if (state.snapshot == captured && node != null && node.clickable &&
+                        node.enabled && node.intersectsScreen(display.width(), display.height())) {
+                        showHighlight(node)
+                    }
+                },
+                clearTargetHighlight = { clearHighlight() }
             )
             featureController = controller
             controller.open(action)
