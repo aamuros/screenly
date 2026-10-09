@@ -93,7 +93,7 @@ class NavigationEvaluationTest {
                     }
                     val contextLabels = fixture.elements.filter { !it.clickable }
                         .mapNotNull(NavigationProtocol::labelOf).distinct()
-                    put("candidate_prompts", JSONArray((approved + fixture.candidateIndices).distinct().take(8).map { index ->
+                    put("candidate_prompts", JSONArray((approved + fixture.candidateIndices).distinct().take(CandidateProtocol.MAX_EVALUATIONS).map { index ->
                         JSONObject().apply {
                             put("original_index", index)
                             put("prompt", CandidateProtocol.prompt(fixture.goal, "com.android.settings", index,

@@ -207,7 +207,9 @@ class GuidanceUiTest {
     }
 
     private fun waitHighlight(bounds: Rect) {
-        val deadline = SystemClock.uptimeMillis() + 20_000
+        val timeout = InstrumentationRegistry.getArguments().getString("highlightTimeoutMs", "20000")!!.toLong()
+        require(timeout in 1_000L..180_000L)
+        val deadline = SystemClock.uptimeMillis() + timeout
         do {
             val screenshot = automation.takeScreenshot()
             if (screenshot != null) {

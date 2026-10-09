@@ -34,6 +34,23 @@ class CandidateNavigationTest {
         assertEquals(DecisionSource.NONE, result.decision.source)
     }
 
+    @Test fun boundingNativeCallsStillChecksUnseenDuplicatesAndPrioritizesHighTargetIndices() = runBlocking {
+        val elements = listOf(fixtureElement("Font size"), fixtureElement("Sound"), fixtureElement("Battery"),
+            fixtureElement("Storage"), fixtureElement("Font size"))
+        val engine = NavigationEngine { if (it.contains("Label: \"Font size\"")) "YES" else "NO" }
+        val ambiguous = engine.decideCandidates("Open font size", elements, elements.indices.toList(), "com.android.settings")
+        assertEquals(CandidateProtocol.MAX_EVALUATIONS, ambiguous.evaluations.size)
+        assertFalse(ambiguous.evaluations.any { it.originalIndex == 4 })
+        assertNull(ambiguous.decision.elementIndex)
+        assertEquals(NavigationRejection.AMBIGUOUS_TARGET, ambiguous.decision.rejection)
+        val unique = engine.decideCandidates("Open font size", elements.mapIndexed { index, element ->
+            if (index == 0) element.copy(text = "Wallpaper") else element
+        }, elements.indices.toList(), "com.android.settings")
+        assertEquals(4, unique.decision.elementIndex)
+        assertEquals(4, unique.evaluations.first().originalIndex)
+        assertEquals(DecisionSource.MODEL, unique.decision.source)
+    }
+
     @Test fun falseSemanticMatchesCannotSelectBatteryOrUnavailableTarget() = runBlocking {
         for (id in listOf("missing-font", "wifi-unavailable", "offscreen-target", "brightness-missing")) {
             val result = decide(id) { if (it.contains("Label: \"Battery\"")) "NO" else "YES" }

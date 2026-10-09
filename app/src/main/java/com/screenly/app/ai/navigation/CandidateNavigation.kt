@@ -11,6 +11,8 @@ internal data class CandidateEvaluation(val originalIndex: Int, val raw: String?
 internal data class CandidateDecision(val decision: NavigationDecision, val evaluations: List<CandidateEvaluation>)
 
 internal object CandidateProtocol {
+    const val MAX_EVALUATIONS = 3
+
     fun parse(raw: String): Boolean? = if (raw.length > 32) null else when (raw.trim()) {
         "YES" -> true
         "NO" -> false
@@ -81,7 +83,7 @@ internal suspend fun evaluateCandidates(
         var generationMillis: Long? = null
         if (valid) {
             // Bound native calls without losing full-set ambiguity/eligibility validation.
-            val bounded = (approved + allowed).distinct().take(8)
+            val bounded = (approved + allowed).distinct().take(CandidateProtocol.MAX_EVALUATIONS)
             val context = captured.filter { !it.clickable }.mapNotNull(NavigationProtocol::labelOf).distinct()
             val generationStarted = System.nanoTime()
             try {

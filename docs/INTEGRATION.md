@@ -30,8 +30,10 @@ commands from the integration worktree, not the conflicted checkout.
 2. Provision the exact pinned Gemma 3 1B INT4 `.litertlm` artifact using
    [the private ADB procedure](LOCAL_AI.md#reproducible-debug-provisioning-over-usb).
    The app has no model download or bundled model. The binary is not tracked in the AI branch.
-   A host download was later authorized by the user; the publisher returned HTTP 401 and
-   requires a local authenticated account with accepted access terms before it can proceed.
+   A host download was later authorized by the user. The initial unauthenticated request
+   returned HTTP 401; authenticated access then succeeded. The exact size/hash was verified
+   on Windows and in private emulator storage. The local artifact is ignored by Git at
+   `app/build/local-models/gemma3-1b-it-int4.litertlm`; it is not included in the APK.
    Without it, only deterministic verified steps can work; the UI identifies AI unavailability.
    Keep the exact documented size/hash. LiteRT-LM remains 0.10.2, CPU/four threads, 1,024 tokens.
 3. Open Screenly, open Accessibility Settings, enable Screenly, then return to Android Settings.
@@ -69,6 +71,8 @@ adb -s SERIAL shell am instrument -w -r -e class com.screenly.app.GuidanceUiTest
 
 The default UI workflow is font size. Add `-e workflow wifi` or `-e workflow dark` for the
 other demo routes. Each run checks two real outlines and the final settings page.
+For a provisioned native model, add `-e highlightTimeoutMs 90000` to allow initialization
+and generation time. This changes only the opt-in test's wait, not production validation.
 On this API 37 guest, add `-e expectUnavailableInternet true` for Wi-Fi: after reaching
 the page, the test verifies safe waiting and cleared highlights, then returns to the homepage
 to stop guidance. Internet's root remains unavailable to Screenly's service on this guest.
@@ -102,12 +106,39 @@ The accompanying [verification directory](verification/integration-guidance/) pr
 attempts and a machine-readable host/device summary. Read its results before claiming success.
 Fresh emulator rule fallback does not establish Gemma accuracy or offline LLM acceptance.
 No model replacement, retraining, new application dependencies or cloud inference occurs.
-The user-authorized host download of the same pinned model is currently blocked by HTTP 401
-from the gated publisher; no model bytes were downloaded. Physical and real Gemma acceptance
-are still unverified.
+Real offline inference also passed on API 37 after authenticated provisioning. In 48 decisions
+on the 16 frozen synthetic failures, raw canonical next-action correctness was only 12/48,
+with nine wrong unique proposals. Validated combined results were 48/48: three MODEL selections,
+15 RULE selections and 30 correct abstentions, with zero wrong final selections. This is
+evidence for the safety policy on this fixture set; it does not demonstrate improved intrinsic
+Gemma reasoning or accuracy on unfamiliar apps. Read the raw records and source provenance.
 
 Shared contract/main merge review, the actual provisioned model on the demonstration phone,
 its latency/memory budgets, API/runtime compatibility, and physical privacy/lifecycle regressions
 remain required. All broader navigation is unsupported unless the current validation policy
 can establish a unique safe next action. Independent candidate evaluation bounds inference
-to eight controls, but can take up to eight native calls; no phone latency budget is claimed.
+to three controls, prioritizing verified candidates, while validating ambiguity against the
+full candidate set. The initial eight-control native UI run took about 24 and 14 seconds for
+its two steps, prompting this smaller budget. No phone latency budget is claimed.
+
+On Windows, use binary-safe ADB staging when provisioning the already-verified host file:
+
+```powershell
+adb -s SERIAL shell am force-stop com.screenly.app
+adb -s SERIAL push app/build/local-models/gemma3-1b-it-int4.litertlm /data/local/tmp/screenly-gemma.litertlm
+adb -s SERIAL shell run-as com.screenly.app mkdir -p no_backup/models
+adb -s SERIAL shell "run-as com.screenly.app sh -c 'cat /data/local/tmp/screenly-gemma.litertlm > no_backup/models/gemma3-1b-it-int4.litertlm.partial'"
+adb -s SERIAL shell run-as com.screenly.app sha256sum no_backup/models/gemma3-1b-it-int4.litertlm.partial
+adb -s SERIAL shell run-as com.screenly.app wc -c no_backup/models/gemma3-1b-it-int4.litertlm.partial
+```
+
+Verify `584417280` bytes and
+`1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be`, then publish:
+
+```powershell
+adb -s SERIAL shell run-as com.screenly.app mv no_backup/models/gemma3-1b-it-int4.litertlm.partial no_backup/models/gemma3-1b-it-int4.litertlm
+adb -s SERIAL shell rm /data/local/tmp/screenly-gemma.litertlm
+```
+
+Direct Windows stdin transfer was truncated in this run and rejected by integrity checks;
+the ADB push/copy procedure above succeeded. Do not publish a file that fails either check.
