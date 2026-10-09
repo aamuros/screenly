@@ -13,6 +13,22 @@ Physical-phone availability does not gate M4 preparation or emulator evaluation.
 native crash remains a recorded limitation; do not investigate it while API 30 works.
 Physical acceptance in the roadmap remains distinct from emulator verification.
 
+The [2026-10-10 offline model comparison](verification/m4-model-comparison/README.md)
+tests the existing Gemma INT4 baseline, Qwen3 0.6B INT4 non-thinking and Qwen2.5
+1.5B Instruct INT8 on this same AVD and LiteRT-LM 0.10.2. All artifacts run, but
+none reliably abstains: scored decisions are 5/20, 0/20 and 5/20 respectively.
+Alternatives are instrumentation-only; Gemma's production configuration is preserved.
+The report retains raw responses, separate rules, latency/memory measurements and
+the recommendation to narrow the demo scope before further hints/fine-tuning research.
+These results do not authorize live overlay integration or advance M5.
+
+The subsequent [availability-first diagnostic](verification/m4-availability-diagnostic/README.md)
+keeps Gemma unchanged and freezes 16 fixtures before inference, with five paired
+runs per protocol. Original scenarios improve from 5/20 to 15/20, but the combined
+experiment still has 20 wrong selections and 10 missed valid targets: 50/80 correct
+versus baseline 15/80. Availability alone scores 60/80; correct existence judgments
+do not fix index selection. The global gate stays experimental, with no live integration.
+
 ## Minimal joint contract decisions
 
 Retain the proposed `SnapshotKey`, `ScreenSnapshot`, `Planner.plan(goal, snapshot)` and

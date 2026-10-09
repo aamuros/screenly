@@ -1,0 +1,17 @@
+{
+  "date_local": "2026-10-10",
+  "source_commit": "6e0af6039177bfb7292abbd32feb0edc3160a2ec",
+  "build_command": "./gradlew :app:assembleDebug :app:assembleDebugAndroidTest --console=plain --quiet",
+  "build_exit": 0,
+  "unit_command": "./gradlew :app:testDebugUnitTest --tests 'com.screenly.app.ai.navigation.*' --console=plain --quiet",
+  "unit_exit": 0,
+  "unit_tests": 21,
+  "unit_failures": 0,
+  "unit_errors": 0,
+  "unit_skips": 0,
+  "notes": [
+    "Python urllib TLS failed on host trust store; switched to system curl with certificate verification enabled.",
+    "An early device hash check ran before Qwen2.5 provisioning completed; the final recorded device hashes verify both completed copies.",
+    "No production-source or Gradle changes."
+  ]
+}

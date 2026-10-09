@@ -1,0 +1,18 @@
+{
+  "utc_frozen": "2026-10-09T16:21:45.275058+00:00",
+  "fixture_manifest_sha256": "3874d72644016d33b49d09cf8c56e8b91d0a43b937f6b3d51da8c1a90da52dd5",
+  "source_sha256": {
+    "app/src/debug/java/com/screenly/app/ai/navigation/AvailabilityDiagnostic.kt": "0bde0f542a023b0ffd0b661b7629d66fa8e250d9020114aebb4e34c52b476d7f",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/AvailabilityDiagnosticFixtures.kt": "75d9a5729555a18837a91cd9ea5bb73837bce318613eb6d45a32f189730bb757",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/AvailabilityDiagnosticInferenceTest.kt": "f3b97fd1604b0e9c4d6b83f63d652f8158a753358419f04a3cc1078b1c4aa2f3",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationProtocol.kt": "009ccca8ec462973c47e479d085d80ac158427413ad030e379cb3bb4da3bec9c"
+  },
+  "expected_records": 160,
+  "original_fixtures": 4,
+  "new_variations": 12,
+  "repetitions": 5,
+  "arms": [
+    "baseline",
+    "availability_first"
+  ]
+}

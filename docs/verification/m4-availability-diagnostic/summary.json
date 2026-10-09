@@ -1,0 +1,1132 @@
+{
+  "baseline": {
+    "all": {
+      "evaluations": 80,
+      "positive_cases": 30,
+      "negative_cases": 50,
+      "correct_decisions": 15,
+      "correct_selections": 15,
+      "correct_abstentions": 0,
+      "wrong_targets": 60,
+      "incorrect_abstentions": 0,
+      "invalid": 5,
+      "runtime_failures": 0,
+      "rule_correct": 80,
+      "generation_calls": 80,
+      "generation_sum_ms_median": 1408.0,
+      "load_and_decision_ms_median": 3100.0
+    },
+    "original": {
+      "evaluations": 20,
+      "positive_cases": 5,
+      "negative_cases": 15,
+      "correct_decisions": 5,
+      "correct_selections": 5,
+      "correct_abstentions": 0,
+      "wrong_targets": 15,
+      "incorrect_abstentions": 0,
+      "invalid": 0,
+      "runtime_failures": 0,
+      "rule_correct": 20,
+      "generation_calls": 20,
+      "generation_sum_ms_median": 1367.5,
+      "load_and_decision_ms_median": 3006.0
+    },
+    "new_variation": {
+      "evaluations": 60,
+      "positive_cases": 25,
+      "negative_cases": 35,
+      "correct_decisions": 10,
+      "correct_selections": 10,
+      "correct_abstentions": 0,
+      "wrong_targets": 45,
+      "incorrect_abstentions": 0,
+      "invalid": 5,
+      "runtime_failures": 0,
+      "rule_correct": 60,
+      "generation_calls": 60,
+      "generation_sum_ms_median": 1489.0,
+      "load_and_decision_ms_median": 3158.0
+    },
+    "fixtures": {
+      "display-font": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "missing-font": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "ambiguous": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "wifi-unavailable": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "font-row-order": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "font-moved-index": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "missing-font-new-labels": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "duplicate-save": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "wifi-unavailable-bluetooth": {
+        "correct": 0,
+        "outcomes": {
+          "INVALID": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP\n"
+          ],
+          [
+            "TAP\n"
+          ],
+          [
+            "TAP\n"
+          ],
+          [
+            "TAP\n"
+          ],
+          [
+            "TAP\n"
+          ]
+        ]
+      },
+      "brightness-present": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "brightness-missing": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "brightness-duplicate": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "nfc-enable-off": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "nfc-enable-on": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "nfc-disable-on": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "nfc-disable-off": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "raw_stages": [
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ],
+          [
+            "TAP:1\n"
+          ]
+        ]
+      }
+    }
+  },
+  "availability_first": {
+    "all": {
+      "evaluations": 80,
+      "positive_cases": 30,
+      "negative_cases": 50,
+      "correct_decisions": 50,
+      "correct_selections": 10,
+      "correct_abstentions": 40,
+      "wrong_targets": 20,
+      "incorrect_abstentions": 10,
+      "invalid": 0,
+      "runtime_failures": 0,
+      "rule_correct": 80,
+      "generation_calls": 110,
+      "generation_sum_ms_median": 1418.5,
+      "load_and_decision_ms_median": 3146.0,
+      "availability": {
+        "correct": 60,
+        "true_yes": 20,
+        "true_no": 40,
+        "false_yes": 10,
+        "false_no": 10,
+        "unparsed_or_failed": 0,
+        "raw_counts": {
+          "YES\n": 30,
+          "NO\n": 50
+        }
+      }
+    },
+    "original": {
+      "evaluations": 20,
+      "positive_cases": 5,
+      "negative_cases": 15,
+      "correct_decisions": 15,
+      "correct_selections": 5,
+      "correct_abstentions": 10,
+      "wrong_targets": 5,
+      "incorrect_abstentions": 0,
+      "invalid": 0,
+      "runtime_failures": 0,
+      "rule_correct": 20,
+      "generation_calls": 30,
+      "generation_sum_ms_median": 1887.0,
+      "load_and_decision_ms_median": 3559.5,
+      "availability": {
+        "correct": 15,
+        "true_yes": 5,
+        "true_no": 10,
+        "false_yes": 5,
+        "false_no": 0,
+        "unparsed_or_failed": 0,
+        "raw_counts": {
+          "YES\n": 10,
+          "NO\n": 10
+        }
+      }
+    },
+    "new_variation": {
+      "evaluations": 60,
+      "positive_cases": 25,
+      "negative_cases": 35,
+      "correct_decisions": 35,
+      "correct_selections": 5,
+      "correct_abstentions": 30,
+      "wrong_targets": 15,
+      "incorrect_abstentions": 10,
+      "invalid": 0,
+      "runtime_failures": 0,
+      "rule_correct": 60,
+      "generation_calls": 80,
+      "generation_sum_ms_median": 1418.5,
+      "load_and_decision_ms_median": 3146.0,
+      "availability": {
+        "correct": 45,
+        "true_yes": 15,
+        "true_no": 30,
+        "false_yes": 5,
+        "false_no": 10,
+        "unparsed_or_failed": 0,
+        "raw_counts": {
+          "YES\n": 20,
+          "NO\n": 40
+        }
+      }
+    },
+    "fixtures": {
+      "display-font": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "raw_stages": [
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "missing-font": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "ambiguous": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "raw_stages": [
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "wifi-unavailable": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "font-row-order": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "raw_stages": [
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "font-moved-index": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "raw_stages": [
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "missing-font-new-labels": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "duplicate-save": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "wifi-unavailable-bluetooth": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "brightness-present": {
+        "correct": 0,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "brightness-missing": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "brightness-duplicate": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "nfc-enable-off": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "raw_stages": [
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "nfc-enable-on": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "availability_answers": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "raw_stages": [
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ],
+          [
+            "YES\n",
+            "TAP:1\n"
+          ]
+        ]
+      },
+      "nfc-disable-on": {
+        "correct": 0,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      },
+      "nfc-disable-off": {
+        "correct": 5,
+        "outcomes": {
+          "ABSTAINED": 5
+        },
+        "availability_answers": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ],
+        "raw_stages": [
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ],
+          [
+            "NO\n"
+          ]
+        ]
+      }
+    }
+  }
+}

@@ -2,13 +2,13 @@ package com.screenly.app.ai.navigation
 
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Debug
 import android.provider.Settings
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.ai.edge.litertlm.Content
 import com.google.ai.edge.litertlm.ExperimentalApi
 import com.google.ai.edge.litertlm.ExperimentalFlags
-import com.screenly.app.ai.LocalInference
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
@@ -19,6 +19,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
 
 /** Opt-in real-model evaluation. Passing proves execution/validation, not selection accuracy. */
 @RunWith(AndroidJUnit4::class)
@@ -50,19 +51,25 @@ class NavigationLabInferenceTest {
                 "fixtureIds", "display-font,missing-font,ambiguous,wifi-unavailable,blocked-targets"
             )!!.split(',')
             val repetitions = arguments.getString("repetitions", "5")!!.toInt()
+            val modelId = arguments.getString("comparisonModel", "gemma")!!
+            val recordFailures = arguments.getString("recordFailures") == "true"
             require(repetitions in 1..10)
             fixtureIds.forEach { id ->
                 val fixture = navigationFixtures.first { it.id == id }
                 repeat(repetitions) { run ->
                     // Match the manual lab: a fresh engine/conversation and cleanup on every run.
-                    val inference = LocalInference(context)
+                    val inference = ComparisonInference(context, modelId)
                     val record = JSONObject().apply {
+                        put("model", modelId)
+                        put("runtime", "0.10.2")
+                        put("backend", "CPU/4")
                         put("fixture", fixture.id)
                         put("run", run + 1)
                         put("goal", fixture.goal)
                         put("allowed_indices", JSONArray(fixture.candidateIndices))
                         put("expected_index", fixture.expectedIndex ?: JSONObject.NULL)
                         put("model_called", false)
+                        put("memory_before", memorySample())
                     }
                     try {
                         val result = runNavigationLab(fixture, fixture.goal) { prompt ->
@@ -72,6 +79,7 @@ class NavigationLabInferenceTest {
                             val loadStarted = System.nanoTime()
                             inference.initialize()
                             record.put("initialize_ms", (System.nanoTime() - loadStarted) / 1_000_000L)
+                            record.put("memory_loaded", memorySample())
                             val generationStarted = System.nanoTime()
                             inference.generate(prompt) { message, benchmark ->
                                 record.put("role", message.role.toString())
@@ -84,6 +92,7 @@ class NavigationLabInferenceTest {
                                 record.put("engine_token_limit", 1024)
                             }.also {
                                 record.put("generation_ms", (System.nanoTime() - generationStarted) / 1_000_000L)
+                                record.put("memory_after_generation", memorySample())
                             }
                         }
                         record.put("model_outcome", result.outcome.name)
@@ -99,13 +108,13 @@ class NavigationLabInferenceTest {
                         record.put("rule_index", result.ruleIndex ?: JSONObject.NULL)
                         record.put("failure", result.failure ?: JSONObject.NULL)
                         instrumentation.sendStatus(0, Bundle().apply { putString("evaluation", record.toString()) })
-                        if (fixture.promptEligible) {
+                        if (fixture.promptEligible && !(recordFailures && result.outcome == NavigationLabOutcome.FAILED)) {
                             assertNotNull(result.response)
                             assertTrue(result.response!!.isNotBlank())
                             assertTrue(result.outcome in setOf(
                                 NavigationLabOutcome.SELECTED, NavigationLabOutcome.ABSTAINED, NavigationLabOutcome.INVALID
                             ))
-                        } else {
+                        } else if (!fixture.promptEligible) {
                             assertEquals(NavigationLabOutcome.INPUT_REJECTED, result.outcome)
                             assertNull(result.response)
                             assertNull(result.selectedIndex)
@@ -121,6 +130,23 @@ class NavigationLabInferenceTest {
             }
         } finally {
             ExperimentalFlags.enableBenchmark = previousBenchmark
+        }
+    }
+}
+
+/** Endpoint PSS/RSS and process lifetime RSS high-water mark, not a per-call peak claim. */
+private fun memorySample(): JSONObject {
+    val memory = Debug.MemoryInfo()
+    Debug.getMemoryInfo(memory)
+    return JSONObject().apply {
+        put("pss_kib", memory.totalPss)
+        put("private_dirty_kib", memory.totalPrivateDirty)
+        put("private_clean_kib", memory.totalPrivateClean)
+        File("/proc/self/status").useLines { lines ->
+            lines.filter { it.startsWith("VmRSS:") || it.startsWith("VmHWM:") }.forEach {
+                put(if (it.startsWith("VmRSS:")) "rss_kib" else "process_rss_hwm_kib",
+                    it.substringAfter(':').trim().substringBefore(' ').toLong())
+            }
         }
     }
 }

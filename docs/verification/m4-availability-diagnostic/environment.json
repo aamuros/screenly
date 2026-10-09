@@ -1,0 +1,16 @@
+{
+  "utc_started": "2026-10-09T16:21:40.190075+00:00",
+  "source_commit": "6e0af6039177bfb7292abbd32feb0edc3160a2ec",
+  "avd": "Screenly_M3_API30\nOK",
+  "api": "30",
+  "abi": "arm64-v8a",
+  "gemma_sha256": "1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be  no_backup/models/gemma3-1b-it-int4.litertlm",
+  "app_apk": {
+    "bytes": 79620410,
+    "sha256": "d69dbc9982c9c3bac7d2199762be416b094ecfba5c26ac0e701565cd8f2e4942"
+  },
+  "test_apk": {
+    "bytes": 1537115,
+    "sha256": "a5a895f87eee7023dce904d09d632459717cdbd02aed1a1105d167072b2403aa"
+  }
+}

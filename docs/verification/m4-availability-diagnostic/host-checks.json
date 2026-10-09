@@ -1,0 +1,9 @@
+{
+  "command": "./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest --tests 'com.screenly.app.ai.navigation.AvailabilityDiagnosticTest' --console=plain --quiet",
+  "exit": 0,
+  "unit_tests": 8,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "setup_correction": "Initial unit compilation lacked the required cause in a simulated LocalInferenceException. Added the simulated cause and reran successfully; no model call ran in that failure."
+}

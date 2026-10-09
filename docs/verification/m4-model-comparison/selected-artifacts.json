@@ -1,0 +1,35 @@
+{
+  "gemma": {
+    "repository": "litert-community/Gemma3-1B-IT",
+    "revision": "a6306a4e292016480083b73b8dc6f3f939ae04c3",
+    "file": "gemma3-1b-it-int4.litertlm",
+    "quantization": "INT4",
+    "license": "Gemma terms; reused previously accepted/provisioned artifact",
+    "device_path": "no_backup/models/gemma3-1b-it-int4.litertlm",
+    "size_bytes": 584417280,
+    "sha256": "1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be",
+    "url": "https://huggingface.co/litert-community/Gemma3-1B-IT/resolve/a6306a4e292016480083b73b8dc6f3f939ae04c3/gemma3-1b-it-int4.litertlm"
+  },
+  "qwen3-nothink-int4": {
+    "repository": "litert-community/Qwen3-0.6B-int4",
+    "revision": "6aa2daf8aba4aa456797fb8040b36a3948bcfda7",
+    "file": "qwen3_0.6b_nothink_q4_block32_ekv1280.litertlm",
+    "quantization": "dynamic_int4_block32, FP32 activations",
+    "license": "Apache-2.0",
+    "device_path": "no_backup/experimental-models/qwen3-nothink-int4.litertlm",
+    "size_bytes": 347251840,
+    "sha256": "2df6821ec12702dafd33915e7a1a1adc7c4b053f3672fd9555dfaf3a114c4139",
+    "url": "https://huggingface.co/litert-community/Qwen3-0.6B-int4/resolve/6aa2daf8aba4aa456797fb8040b36a3948bcfda7/qwen3_0.6b_nothink_q4_block32_ekv1280.litertlm"
+  },
+  "qwen25-instruct-int8": {
+    "repository": "litert-community/Qwen2.5-1.5B-Instruct",
+    "revision": "19edb84c69a0212f29a6ef17ba0d6f278b6a1614",
+    "file": "Qwen2.5-1.5B-Instruct_multi-prefill-seq_q8_ekv4096.litertlm",
+    "quantization": "dynamic INT8",
+    "license": "Apache-2.0",
+    "device_path": "no_backup/experimental-models/qwen25-instruct-int8.litertlm",
+    "size_bytes": 1597931520,
+    "sha256": "faa60663b333290c1496c499828b21d3e3254a788cacd8cce917ce0f761a2dc9",
+    "url": "https://huggingface.co/litert-community/Qwen2.5-1.5B-Instruct/resolve/19edb84c69a0212f29a6ef17ba0d6f278b6a1614/Qwen2.5-1.5B-Instruct_multi-prefill-seq_q8_ekv4096.litertlm"
+  }
+}

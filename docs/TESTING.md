@@ -365,3 +365,80 @@ production planner integration. M0 approval remains pending. No physical tests, 
 capture, broad fixture benchmark or Developer 1 UI regressions ran. Instrumentation success
 is not model quality acceptance. Failed prompt experiments and corrected diagnostic setup
 errors are explicitly retained in the report; no milestone is promoted from this result.
+
+## M4 offline model comparison — 2026-10-10
+
+Date / tester / commit / scope: 2026-10-10 Asia/Manila (2026-10-09 UTC), Codex for
+Developer 2, `6e0af6039177bfb7292abbd32feb0edc3160a2ec` plus instrumentation-only
+comparison changes on `test/m4-fixture-ui`. Environment: existing Screenly_M3_API30,
+API 30 ARM64, 3.84 GiB RAM/no swap, LiteRT-LM 0.10.2 CPU/four threads/1,024 tokens.
+
+Expected / actual: application and test APK builds PASS; targeted navigation host
+checks PASS (21 tests, zero failures/errors/skips). Exact host/device model hashes
+PASS. Qwen3 INT4 non-thinking and Qwen2.5 Instruct INT8 compatibility probes PASS
+on the unchanged runtime. All three five-repetition scenario harnesses PASS for
+execution/offline/strict validation, **FAIL for semantic abstention**. Gemma scored
+5/20 correct decisions, Qwen3 0/20, Qwen2.5 5/20; each had 0/15 correct abstentions.
+Wrong-target selections: 15, 20, 15 respectively; zero invalid outputs/runtime
+failures. Each model also rejected the all-blocked input 5/5 without inference.
+Rules separately matched 20/20 on the four decision fixtures; never substituted.
+
+Evidence: [comparison, measured latency/memory, exact artifacts/licenses, commands,
+APK identities, raw outputs and recommendation](verification/m4-model-comparison/README.md).
+60 scored generations, 15 rejected inputs, two unscored compatibility generations;
+all raw records retained. Generation medians: Gemma 1,361.5 ms, Qwen3 447.5 ms,
+Qwen2.5 3,027 ms. Highest observed endpoint PSS including compatibility probes:
+about 1.06 / 1.03 / 2.25 GiB respectively; sampled process memory, not model-only
+or continuously measured peak RAM. Offline settings/network guarded per repetition;
+original 0/1/1 connectivity and Screenly accessibility binding restored.
+
+Limitations / remaining failure / owner / next check: no model recommended for
+general UI guidance. Preserve Gemma as experimental baseline, narrow the demo to
+curated/manual fixtures, then separately evaluate validated task-specific hints
+or investigate fine-tuning with held-out abstention cases. No physical/UI regressions,
+full suite or broad accuracy claim. Developer 1 source, shared contracts, production
+model/runtime/Gradle unchanged; alternatives remain in androidTest/private experimental
+paths. M4 stays IN PROGRESS; no live-overlay integration, merges or M5 implementation.
+
+## M4 availability-first diagnostic — 2026-10-10
+
+Date / tester / commit / scope: 2026-10-10 Asia/Manila (2026-10-09 UTC), Codex for
+Developer 2; `6e0af6039177bfb7292abbd32feb0edc3160a2ec` plus the preserved comparison
+and new debug/test-only diagnostic on `test/m4-fixture-ui`. Same Screenly_M3_API30,
+API 30 ARM64, exact Gemma INT4 hash, LiteRT-LM 0.10.2 CPU/four threads/1,024 tokens.
+
+Expected / actual: debug/test APK builds PASS; **8 focused routing/provenance tests
+PASS**, zero failures/errors/skips. Preparation-only manifest pass and actual offline
+instrumentation both PASS for execution/eligibility/routing, `OK (1 test)`.
+Before inference, froze four original and twelve new synthetic variations plus
+exact prompts/expectations/source hashes. Five repetitions per fixture per arm:
+160 paired evaluations, **190 real generations** (80 baseline, 80 availability,
+30 conditional selection). No tuning or expected-answer edits after model outputs.
+
+Semantic result: **FAIL for reliable general selection**. Original cases improve
+5/20 → 15/20; frozen new variations 10/60 → 35/60; total baseline 15/80 versus
+availability-first 50/80. Gate alone: 60/80 correct, ten false YES and ten false NO.
+Combined protocol: 10/30 correct target selections, 40/50 correct abstentions,
+20 wrong targets, ten incorrect abstentions, zero invalid/runtime failures.
+Baseline: 15/30 correct selections, zero correct abstentions, 60 wrong targets,
+five invalid syntax responses, zero runtime failures. Separate rules match 80/80
+labels in each arm without substitution. An analytical always-abstain reference
+also scores 50/80, illustrating the limits of aggregate accuracy on this case mix.
+
+Evidence: [frozen inputs, raw stage outputs, detailed results, timings and next-step
+recommendation](verification/m4-availability-diagnostic/README.md). Whole instrumented
+run 562.61 seconds. Median summed generation / load+decision: baseline 1,408 / 3,100 ms;
+gated 1,418.5 / 3,146 ms; one/two-call mixture with cache-dependent emulator timings.
+Original connectivity and Screenly service binding restored; offline assertions
+before/after every arm. No physical/UI regressions, full suite, lint or new memory
+benchmark. One initial fake-exception test compile error was corrected before the
+passing build; no model call was involved.
+
+Limitations / remaining failure / owner / next check: Developer 2's global availability
+gate is diagnostic only. Wrong original-index choices, label-dependent ambiguity and
+switch-state mistakes persist; useful target coverage regresses. Proposed next
+experiment: per-candidate semantic matching with trusted input-index binding and
+separately scored cardinality/state checks; not implemented here. Fine-tuning remains
+an investigation option if semantic/state errors persist. Production protocol/model/
+runtime, existing fixtures, Developer 1 source and shared contracts unchanged.
+No live guidance, branches merged, training, M5 work or milestone promotion.

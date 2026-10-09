@@ -1,0 +1,118 @@
+{
+  "_id": "6933120140f459ddcd1e34e1",
+  "id": "litert-community/Qwen3-0.6B",
+  "private": false,
+  "pipeline_tag": "text-generation",
+  "library_name": "litert-lm",
+  "tags": [
+    "litert-lm",
+    "litertlm",
+    "qwen",
+    "Qwen3",
+    "text-generation",
+    "en",
+    "arxiv:2505.09388",
+    "base_model:Qwen/Qwen3-0.6B",
+    "base_model:quantized:Qwen/Qwen3-0.6B",
+    "license:apache-2.0",
+    "region:us"
+  ],
+  "downloads": 43026,
+  "likes": 20,
+  "modelId": "litert-community/Qwen3-0.6B",
+  "author": "litert-community",
+  "sha": "a3c5d805ae362dff7f580bc25f2dfb9a5a7eaa76",
+  "lastModified": "2026-09-21T05:17:54.000Z",
+  "gated": false,
+  "disabled": false,
+  "widgetData": [
+    {
+      "text": "Hi, what can you help me with?"
+    },
+    {
+      "text": "What is 84 * 3 / 2?"
+    },
+    {
+      "text": "Tell me an interesting fact about the universe!"
+    },
+    {
+      "text": "Explain quantum computing in simple terms."
+    }
+  ],
+  "model-index": null,
+  "config": {},
+  "cardData": {
+    "language": [
+      "en"
+    ],
+    "license": "apache-2.0",
+    "license_link": "https://huggingface.co/Qwen/Qwen3-0.6B/blob/main/LICENSE",
+    "pipeline_tag": "text-generation",
+    "base_model": "Qwen/Qwen3-0.6B",
+    "base_model_relation": "quantized",
+    "library_name": "litert-lm",
+    "tags": [
+      "litert-lm",
+      "litertlm",
+      "qwen",
+      "Qwen3"
+    ]
+  },
+  "siblings": [
+    {
+      "rfilename": ".gitattributes",
+      "blobId": "cf2293243694678a9911414a86bc1f6457f2a3b4",
+      "size": 1866
+    },
+    {
+      "rfilename": "Qwen3-0.6B.litertlm",
+      "blobId": "53234a4232fb64d6756228fd41fbc4185d2983dd",
+      "size": 614236160,
+      "lfs": {
+        "sha256": "555579ff2f4fd13379abe69c1c3ab5200f7338bc92471557f1d6614a6e5ab0b4",
+        "size": 614236160,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "Qwen3-0.6B.mediatek.mt6993.litertlm",
+      "blobId": "011e0f5af2019da4fde05a4239ffecdd3f5ae1a3",
+      "size": 1202913280,
+      "lfs": {
+        "sha256": "cc87c8a3df6eb680266a385c22fc3e867824495ff676583716ebe77e6ddd6c97",
+        "size": 1202913280,
+        "pointerSize": 135
+      }
+    },
+    {
+      "rfilename": "Qwen3-0.6B_dynamic_wi4b32_afp32.litertlm",
+      "blobId": "a3440f518d6c39852d79243d40f79c3acd816910",
+      "size": 344671744,
+      "lfs": {
+        "sha256": "03e7da1eb1108b50dffaa9bb52cc7bcbad2eb0c66ca990267f480c1e545d2856",
+        "size": 344671744,
+        "pointerSize": 134
+      }
+    },
+    {
+      "rfilename": "README.md",
+      "blobId": "6234730239e836b059abf0dc42a1c37a5de05179",
+      "size": 7732
+    },
+    {
+      "rfilename": "qwen3_0_6b_mixed_int4.litertlm",
+      "blobId": "7be2b18063168f4ce28847120bf222ecd29ce92f",
+      "size": 497516544,
+      "lfs": {
+        "sha256": "7900eb4e7362d88c58782c6f9999bb7a129e03544aa98b8f338ea0cc5d8c22c1",
+        "size": 497516544,
+        "pointerSize": 134
+      }
+    }
+  ],
+  "spaces": [
+    "tardellirs/model-pulse"
+  ],
+  "createdAt": "2025-12-05T17:10:25.000Z",
+  "usedStorage": 4115342944
+}

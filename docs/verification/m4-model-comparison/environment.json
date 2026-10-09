@@ -1,0 +1,19 @@
+{
+  "utc_started": "2026-10-09T16:01:28.596747+00:00",
+  "source_commit": "6e0af6039177bfb7292abbd32feb0edc3160a2ec",
+  "avd": "Screenly_M3_API30\nOK",
+  "api": "30",
+  "abi": "arm64-v8a",
+  "meminfo_before": "MemTotal:        4021996 kB\nMemFree:         1003196 kB\nMemAvailable:    2879072 kB\nBuffers:            7080 kB\nCached:          1937672 kB\nSwapCached:            0 kB\nActive:          1768796 kB\nInactive:         940432 kB\nActive(anon):     768868 kB\nInactive(anon):    10860 kB\nActive(file):     999928 kB\nInactive(file):   929572 kB\nUnevictable:        5316 kB\nMlocked:            5316 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:                 0 kB\nWriteback:             0 kB\nAnonPages:        769832 kB\nMapped:           429916 kB\nShmem:             11620 kB\nKReclaimable:      68872 kB\nSlab:             154668 kB\nSReclaimable:      68328 kB\nSUnreclaim:        86340 kB\nKernelStack:       25632 kB\nShadowCallStack:    6416 kB\nPageTables:        50204 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     2010996 kB\nCommitted_AS:   52217808 kB\nVmallocTotal:   262930368 kB\nVmallocUsed:       39452 kB\nVmallocChunk:          0 kB\nPercpu:             2992 kB\nCmaTotal:          16384 kB\nCmaFree:             348 kB",
+  "storage": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/block/dm-4  10G  3.1G  6.4G  33% /storage/emulated/0/Android/obb",
+  "gemma_device_hash": "1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be  no_backup/models/gemma3-1b-it-int4.litertlm",
+  "alternative_device_hashes": "2df6821ec12702dafd33915e7a1a1adc7c4b053f3672fd9555dfaf3a114c4139  no_backup/experimental-models/qwen3-nothink-int4.litertlm\nfaa60663b333290c1496c499828b21d3e3254a788cacd8cce917ce0f761a2dc9  no_backup/experimental-models/qwen25-instruct-int8.litertlm",
+  "app_apk": {
+    "bytes": 79620410,
+    "sha256": "9c006f4b34e7bdfa2db5281f0c966d6c080561a8e20d6bd256ba9cfbd54a3ab8"
+  },
+  "test_apk": {
+    "bytes": 1492779,
+    "sha256": "9827ff47e7dee6932ee5c1d32dad78bd74112026770a49dcf1c9a0a72760dbcc"
+  }
+}

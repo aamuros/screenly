@@ -1,0 +1,317 @@
+{
+  "gemma": {
+    "generations": 20,
+    "correct_decisions": 5,
+    "correct_selections": 5,
+    "correct_abstentions": 0,
+    "wrong_target_selections": 15,
+    "incorrect_abstentions": 0,
+    "invalid_responses": 0,
+    "runtime_failures": 0,
+    "input_rejections": 5,
+    "generation_ms": {
+      "median": 1361.5,
+      "min": 1295,
+      "max": 2344
+    },
+    "initialize_ms": {
+      "median": 1594.0,
+      "min": 1446,
+      "max": 2820
+    },
+    "load_and_generation_ms": {
+      "median": 3032.0,
+      "min": 2809,
+      "max": 5236
+    },
+    "post_generation_pss_kib": {
+      "median": 1104754.0,
+      "min": 1078772,
+      "max": 1111275
+    },
+    "post_generation_rss_kib": {
+      "median": 1209106.0,
+      "min": 1185964,
+      "max": 1218328
+    },
+    "process_lifetime_rss_high_water_kib": 1218436,
+    "rule_correct_decisions": 20,
+    "fixtures": {
+      "display-font": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n"
+        ]
+      },
+      "missing-font": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n"
+        ]
+      },
+      "ambiguous": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n"
+        ]
+      },
+      "wifi-unavailable": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n",
+          "TAP:1\n"
+        ]
+      },
+      "blocked-targets": {
+        "correct": 0,
+        "outcomes": {
+          "INPUT_REJECTED": 5
+        },
+        "raw_responses": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  },
+  "qwen3-nothink-int4": {
+    "generations": 20,
+    "correct_decisions": 0,
+    "correct_selections": 0,
+    "correct_abstentions": 0,
+    "wrong_target_selections": 20,
+    "incorrect_abstentions": 0,
+    "invalid_responses": 0,
+    "runtime_failures": 0,
+    "input_rejections": 5,
+    "generation_ms": {
+      "median": 447.5,
+      "min": 319,
+      "max": 2162
+    },
+    "initialize_ms": {
+      "median": 1447.0,
+      "min": 723,
+      "max": 4088
+    },
+    "load_and_generation_ms": {
+      "median": 2294.5,
+      "min": 1060,
+      "max": 6328
+    },
+    "post_generation_pss_kib": {
+      "median": 977830.0,
+      "min": 926632,
+      "max": 999892
+    },
+    "post_generation_rss_kib": {
+      "median": 1083588.0,
+      "min": 1031372,
+      "max": 1107400
+    },
+    "process_lifetime_rss_high_water_kib": 1107432,
+    "rule_correct_decisions": 20,
+    "fixtures": {
+      "display-font": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:2",
+          "TAP:2",
+          "TAP:2",
+          "TAP:2",
+          "TAP:2"
+        ]
+      },
+      "missing-font": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1"
+        ]
+      },
+      "ambiguous": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:0",
+          "TAP:0",
+          "TAP:0",
+          "TAP:0",
+          "TAP:0"
+        ]
+      },
+      "wifi-unavailable": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1"
+        ]
+      },
+      "blocked-targets": {
+        "correct": 0,
+        "outcomes": {
+          "INPUT_REJECTED": 5
+        },
+        "raw_responses": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  },
+  "qwen25-instruct-int8": {
+    "generations": 20,
+    "correct_decisions": 5,
+    "correct_selections": 5,
+    "correct_abstentions": 0,
+    "wrong_target_selections": 15,
+    "incorrect_abstentions": 0,
+    "invalid_responses": 0,
+    "runtime_failures": 0,
+    "input_rejections": 5,
+    "generation_ms": {
+      "median": 3027.0,
+      "min": 1951,
+      "max": 10069
+    },
+    "initialize_ms": {
+      "median": 2040.5,
+      "min": 1187,
+      "max": 6444
+    },
+    "load_and_generation_ms": {
+      "median": 5038.5,
+      "min": 3399,
+      "max": 16386
+    },
+    "post_generation_pss_kib": {
+      "median": 2087051.5,
+      "min": 2025946,
+      "max": 2103984
+    },
+    "post_generation_rss_kib": {
+      "median": 2115346.0,
+      "min": 2052256,
+      "max": 2154268
+    },
+    "process_lifetime_rss_high_water_kib": 2156384,
+    "rule_correct_decisions": 20,
+    "fixtures": {
+      "display-font": {
+        "correct": 5,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1"
+        ]
+      },
+      "missing-font": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:0",
+          "TAP:0",
+          "TAP:0",
+          "TAP:0",
+          "TAP:0"
+        ]
+      },
+      "ambiguous": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:0",
+          "TAP:0",
+          "TAP:0",
+          "TAP:0",
+          "TAP:0"
+        ]
+      },
+      "wifi-unavailable": {
+        "correct": 0,
+        "outcomes": {
+          "SELECTED": 5
+        },
+        "raw_responses": [
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1",
+          "TAP:1"
+        ]
+      },
+      "blocked-targets": {
+        "correct": 0,
+        "outcomes": {
+          "INPUT_REJECTED": 5
+        },
+        "raw_responses": [
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      }
+    }
+  }
+}
