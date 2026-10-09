@@ -8,7 +8,7 @@ performs the action, and Screenly observes the next screen. Inference must work 
 ## Current status
 
 The current app is a **manual accessibility prototype**: sanitized screen observations, a
-draggable **S** bubble, an element picker, and touch-through highlighting. An isolated local
+draggable floating assistant icon, a four-action menu, an element picker, and touch-through highlighting. An isolated local
 inference component and opt-in instrumented smoke test exist; real phone inference is unverified
 and is not connected to the UI. Goal input and multistep guidance are not implemented.
 
@@ -37,7 +37,8 @@ app/src/main/java/com/screenly/app/
   ScreenlyAccessibilityService.kt Observation, event scheduling, service lifecycle
   AccessibleUiElement.kt           Element values, bounds checks, label sanitation
   ScreenObservation.kt             Snapshot equality and selection revisions
-  ScreenlyOverlay.kt               Native bubble, picker, and highlight windows
+  ScreenlyOverlay.kt               Native bubble, menu, picker, and highlight windows
+  FloatingAssistantViews.kt        Live four-action menu and information panels
   ai/                             Isolated local model verification and inference
 app/src/main/res/xml/              Accessibility service configuration
 app/src/test/                     Observation-policy and sanitizer tests
@@ -67,7 +68,7 @@ Open Screenly → **Open Accessibility Settings** → **Screenly** under downloa
 services → enable **Use Screenly**. If sideloading is restricted, use system **App info** →
 **Allow restricted settings**, then retry. No “Display over other apps” permission is needed.
 
-Open Android Settings, tap **S**, select an enabled clickable row, then manually tap the
+Open Android Settings, tap the assistant icon, choose **Guide Me**, select an enabled clickable row, then manually tap the
 highlighted control. Selection does not activate it. Scroll/navigation should clear the
 selection; Screenly's own activity hides overlays.
 
