@@ -7,49 +7,65 @@ performs the action, and Screenly observes the next screen. Inference must work 
 
 ## Current status
 
-The integration branch connects sanitized observations, the floating assistant's **Guide Me**
-goal input, local inference, deterministic validation, and touch-through highlighting.
-Gemma evaluates controls individually with YES/NO answers; Android supplies original indices
-and bounds. Unsupported or ambiguous decisions abstain. Verified rules can provide a step when
-AI is unavailable, with separate test diagnostics. The manual picker is still available.
-See [running and verifying the integration](docs/INTEGRATION.md) for supported scope and evidence.
+This integration combines `feat/offline-multimodal-navigation` and
+`feat/on-device-ai-integration` without replacing the verified screenshot/planner
+interfaces with the older text-only floating-panel implementation.
 
-M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
-automated and API 35 Pixel Tablet emulator evidence exists, but physical-device verification
-is outstanding. M0 contract setup is **IN PROGRESS**; M3 is **IMPLEMENTED — UNVERIFIED**;
-M4 and M5 are **IN PROGRESS**; M6 is **NOT STARTED**. See the
-[roadmap](docs/ROADMAP.md) and preserved [verification report](VERIFICATION.md).
+- **Local AI:** Gemma 3 1B INT4 text inference; optional Gemma 3n E2B screenshot
+  inference on explicitly certified compatible devices. Both models are imported
+  as verified local files and run without a cloud connection. **Neither model is
+  bundled in the APK.**
+- **Ask AI / Explain:** Answers are grounded in captured accessibility information,
+  with permitted screenshot vision when available. Historical answers are held in
+  memory while processing. Images are never written to disk or uploaded.
+- **Guide Me:** A bounded goal controller, validated actionable targets, strict
+  snapshot freshness checks and touch-through highlights. Users do the tapping;
+  Screenly does not automatically operate other apps.
+- **Saved history:** Recent text questions/answers, the last guide goal and prior
+  displayed instructions remain in private no-backup storage across overlay
+  recreation. The saved goal can be rechecked from a **fresh** screen, but previous
+  coordinates, image bytes, native model state and selection tokens are not resumed.
+  **Privacy → Clear assistant session** deletes the saved text.
+- **Launcher:** Polished monochrome home screen; real Accessibility settings
+  shortcut, local text/vision model import, and status cards. The floating assistant
+  hides over Screenly's own launcher and shows in the app being navigated.
+- **Visual identity:** Launcher, bubble, and home use the original
+  `design/floating-assistant/bubble-icon.png` artwork.
+
+The app is **INTEGRATED, NOT PRODUCTION VERIFIED**. The earlier physical-device
+image compatibility check on an Infinix HOT 40 Pro and other prior model/UI
+verifications apply to their documented versions, not to this merged release.
+This branch still needs an updated physical-device acceptance pass, memory/latency
+benchmarks (especially for 4 GB RAM), OEM regression tests and live multi-step
+quality measurement. See [multimodal evidence](docs/OFFLINE_MULTIMODAL.md),
+[existing integration evidence](docs/INTEGRATION.md) and
+[the test plan](docs/TESTING.md).
 
 ## Stack and scope
 
-- Implemented: Kotlin, native Android, Compose activity, AccessibilityService,
-  AccessibilityNodeInfo, WindowManager accessibility overlays, one Gradle `app` module.
-- Isolated M3: Google LiteRT-LM **0.10.2**, coroutines, CPU text inference; INT4 Gemma 3 1B
-  candidate pending exact artifact/phone compatibility and offline benchmarking.
-- Implemented integration: a coroutine GuidanceController with session/revision/request/goal
-  checks. Shared Planner adapters and StateFlow remain unimplemented.
-- No authentication, backend, cloud inference, database, or automatic taps. No network
-  permission is requested. The APK contains no model; [ADB provisioning and M3 evidence](docs/LOCAL_AI.md)
-  are documented separately.
+- Kotlin, Compose launcher, native Android AccessibilityService and WindowManager
+  floating overlay; one Gradle application module.
+- CPU LiteRT-LM **0.10.2** text inference with optional certified native
+  vision, kotlinx.coroutines, locally verified model provisioning and a strict
+  ScreenPlanner/GuidanceController boundary.
+- Screenshots are transient and privacy-gated; no cloud inference, Internet
+  permission, automatic taps, account sign-in or remote database.
+- Minimum supported platform is Android 11/API 30. Native vision depends on
+  the device and exact model/runtime; importing alone never enables an
+  unverified vision runtime.
 
-## Structure
+## Code map
 
 ```text
 app/src/main/java/com/screenly/app/
-  MainActivity.kt                  Service status and accessibility-settings entry
-  ScreenlyAccessibilityService.kt Observation, event scheduling, service lifecycle
-  AccessibleUiElement.kt           Element values, bounds checks, label sanitation
-  ScreenObservation.kt             Snapshot equality and selection revisions
-  ScreenlyOverlay.kt               Native bubble, menu, picker, and highlight windows
-  FloatingAssistantViews.kt        Live four-action menu and information panels
-  GuidanceSnapshot.kt              Copied snapshots, original indices and derived row labels
-  GuidanceController.kt            Goal, asynchronous requests and stale-result rejection
-  ai/                             Local inference, candidate judgments and validation
-app/src/main/res/xml/              Accessibility service configuration
-app/src/test/                     Observation-policy and sanitizer tests
-app/src/androidTest/              App-context test and opt-in local inference smoke test
-docs/                             Shared plan, architecture, testing
-VERIFICATION.md                   Preserved M2 audit and emulator evidence
+  MainActivity.kt                Launcher actions and model provisioning
+  ScreenlyHome.kt                Polished status dashboard and onboarding
+  ScreenlyAccessibilityService.kt  Privacy-aware accessibility extraction
+  ScreenlyOverlay.kt             Floating bubble, captured answers and Guide Me
+  AssistantHistoryStore.kt       Bounded private local conversation/step history
+  GuidanceController.kt          Goal/revision/request validation
+  ScreenImageCapture.kt          Ephemeral screenshot crop and secure-gate policy
+  ai/                             Local Gemma inference and constrained planner
 ```
 
 ## Develop, build, and install
@@ -69,7 +85,7 @@ adb -s SERIAL install -r app/build/outputs/apk/debug/app-debug.apk
 ```
 
 Replace `SERIAL` with a connected device serial. Runtime minimum: **Android 11 / API 30**.
-Open Screenly → **Open Accessibility Settings** → **Screenly** under downloaded/installed
+Open Screenly → **Enable Screenly** → **Screenly** under downloaded/installed
 services → enable **Use Screenly**. If sideloading is restricted, use system **App info** →
 **Allow restricted settings**, then retry. No “Display over other apps” permission is needed.
 
@@ -77,6 +93,17 @@ Open Android Settings, tap the assistant icon, choose **Guide Me**, and enter a 
 Manually tap each verified highlighted control. Screen changes discard old selections and
 trigger a fresh check. Guide Me also offers the original manual picker. Screenly's own
 activity and the lock screen hide overlays; unavailable roots clear highlights and show waiting.
+
+## Integrating the two feature branches
+
+The working merge branch is `integration/multimodal-screenly-main`. Resolve
+the two independent `ScreenlyOverlay`, `MainActivity` and assistant state
+implementations by retaining the multimodal ScreenPlanner pipeline and
+bringing across the compatible monochrome home, launcher icons and text-only
+history adapter. It intentionally does **not** copy the older
+`ScreenlyFeaturePanel` or `OnDeviceAssistant` classes, which would create
+a competing assistant implementation instead of enabling vision. Prior feature
+branches remain intact.
 
 ## Shared documentation
 
