@@ -42,14 +42,14 @@
     <string name="assistant_privacy_data">Local data</string>
     <string name="assistant_privacy_permissions">Permissions</string>
     <string name="assistant_capture_on_demand">Captures happen only when requested. There is no continuous screen recording.</string>
-    <string name="assistant_data_notice">Screen images are released from memory after each request and are not saved or uploaded. Chat text is stored only in memory until cleared or the service stops.</string>
-    <string name="assistant_clear_history">Clear chat history</string>
+    <string name="assistant_data_notice">Screen images are released from memory after each request and are not saved or uploaded. Chat and guide history are stored in private on-device storage until you clear history or uninstall Screenly.</string>
+    <string name="assistant_clear_history">Clear chat and guide history</string>
     <string name="assistant_clear_screenshots">Clear temporary screenshots</string>
     <string name="assistant_open_permissions">Open accessibility permissions</string>
     <string name="assistant_ai_runtime_status">Vision model not connected. Accessibility-based assistance works offline. The text-only model is on a separate development branch.</string>
     <string name="assistant_accessibility_status">Accessibility service enabled. Screenshot access requires the accessibility capture capability to be approved.</string>
     <string name="assistant_guide_cancelled">Guidance cancelled.</string>
-    <string name="assistant_history_cleared">In-memory chat history cleared.</string>
+    <string name="assistant_history_cleared">Saved conversation and guide history cleared.</string>
     <string name="assistant_images_cleared">No screenshots stored. Pending capture cancelled.</string>
     <string name="assistant_manual_picker">Select a control manually</string>
     <string name="assistant_capture_starting">Hiding Screenly and capturing the current view...</string>
