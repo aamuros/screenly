@@ -117,12 +117,14 @@ internal object AccessibleScreenAssistant {
             q.contains("dark") -> listOf("dark theme", "dark mode")
             q.contains("wifi") || q.contains("wi-fi") -> listOf("wifi", "wi-fi")
             q.contains("font") || q.contains("text size") -> listOf("font size", "display size & text")
+            q.contains("bright") -> listOf("brightness level", "brightness")
             q.contains("notification") -> listOf("notifications")
             q.contains("privacy") -> listOf("privacy")
             else -> items.map { normalize(it.title) }.filter { q.contains(it) }
         }
         val controls = ScreenControlCatalog.controls(observation)
-        val enabling = Regex("\\b(enable|turn on|activate|switch on)\\b").containsMatchIn(q)
+        val enabling = Regex("\\b(enable|turn on|activate|switch on)\\b").containsMatchIn(q) ||
+            q.contains("make the screen dark") || q.contains("make screen dark")
         val disabling = Regex("\\b(disable|turn off|deactivate|switch off)\\b").containsMatchIn(q)
         val opening = !enabling && !disabling &&
             Regex("\\b(open|find|go to|navigate|settings)\\b").containsMatchIn(q)
@@ -140,7 +142,8 @@ internal object AccessibleScreenAssistant {
         if (direct.size == 1) return items.singleOrNull { it.index == direct.single().index }
         if (exact.isNotEmpty()) return null
         val routes = when {
-            q.contains("dark") || q.contains("font") -> listOf("display & touch", "display")
+            q.contains("dark") || q.contains("font") || q.contains("bright") ->
+                listOf("display & touch", "display")
             q.contains("wifi") || q.contains("wi-fi") -> listOf("network & internet", "network")
             else -> emptyList()
         }

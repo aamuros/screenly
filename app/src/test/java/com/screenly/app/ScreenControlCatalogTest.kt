@@ -45,6 +45,15 @@ class ScreenControlCatalogTest {
         assertTrue(AccessibleScreenAssistant.ask("Continue", s).contains("cannot safely"))
     }
 
+    @Test fun acceptsNaturalDarkModePhraseWhenSwitchIsOff() {
+        val off = ScreenObservation("com.android.settings", 1, listOf(
+            node("Dark theme", clickable = true, cls = "android.widget.Switch", checked = false)
+        ))
+        assertTrue(AccessibleScreenAssistant.ask("Make the screen dark", off).contains("found"))
+        val on = off.copy(elements = off.elements.map { it.copy(checked = true) })
+        assertTrue(AccessibleScreenAssistant.ask("Make the screen dark", on).contains("cannot safely"))
+    }
+
     @Test fun detectsOppositeSwitchState() {
         val off = ScreenObservation("com.android.settings", 1, listOf(
             node("Dark theme", clickable = true, cls = "android.widget.Switch")))

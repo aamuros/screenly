@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
     private var serviceEnabled by mutableStateOf(false)
     private var consentGranted by mutableStateOf(false)
     private var modelStatus by mutableStateOf("Local model not installed.")
+    private var importingModel by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class MainActivity : ComponentActivity() {
                 ActivityResultContracts.OpenDocument()
             ) { uri: Uri? ->
                 if (uri != null) {
+                    importingModel = true
                     modelStatus = "Importing and verifying offline model..."
                     lifecycleScope.launch {
                         modelStatus = try {
@@ -68,6 +70,8 @@ class MainActivity : ComponentActivity() {
                             "Verified Gemma model installed. Offline text AI is available on supported devices."
                         } catch (error: Exception) {
                             "Import failed. Original model preserved. Check file format and available storage."
+                        } finally {
+                            importingModel = false
                         }
                     }
                 }
@@ -136,8 +140,8 @@ class MainActivity : ComponentActivity() {
                             ".litertlm file after accepting its license. The file is verified " +
                             "and kept in Screenly's private storage. No cloud processing.")
                         Button(
-                            enabled = !serviceEnabled ||
-                                !LocalModel.fileIn(noBackupFilesDir).isFile,
+                            enabled = !importingModel && (!serviceEnabled ||
+                                !LocalModel.fileIn(noBackupFilesDir).isFile),
                             onClick = { selectModel.launch(arrayOf("*/*")) }
                         ) {
                             Text("Import verified offline model")

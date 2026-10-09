@@ -86,6 +86,10 @@ internal object UiExtractionDiagnostics {
             append("actionable row: ${row.enabled && row.clickable}\n")
             append("clickable: ${row.clickable}; enabled: ${row.enabled}\n")
             append("class: ${row.className ?: "none"}\n")
+            val isToggle = listOf("Switch", "CheckBox", "ToggleButton").any {
+                row.className?.contains(it, ignoreCase = true) == true
+            }
+            if (isToggle) append("switch state: ${if (row.checked) "ON" else "OFF"}\n")
             append("resource ID: ${row.viewId ?: "none"}\n")
             if (summary != null) append("summary: $summary\n")
             if (originElement != null && labelOrigin != rowIndex) {
