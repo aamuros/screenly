@@ -21,7 +21,12 @@ internal object AccessibleScreenAssistant {
         observation.elements.mapIndexedNotNull { index, element ->
             if (!element.enabled || !element.clickable || element.right <= element.left ||
                 element.bottom <= element.top) return@mapIndexedNotNull null
-            val label = label(element) ?: return@mapIndexedNotNull null
+            val label = label(element) ?: observation.elements.firstOrNull { child ->
+                child !== element && (child.text != null || child.contentDescription != null) &&
+                    child.left >= element.left && child.top >= element.top &&
+                    child.right <= element.right && child.bottom <= element.bottom &&
+                    child.right > child.left && child.bottom > child.top
+            }?.let(::label) ?: return@mapIndexedNotNull null
             VisibleItem(index, label, describe(label))
         }.distinctBy { normalize(it.title) }.take(12)
 

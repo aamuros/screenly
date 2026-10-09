@@ -55,6 +55,17 @@ class AccessibleScreenAssistantTest {
         assertEquals(AccessibleScreenAssistant.GuidancePhase.NEEDS_REVIEW, result.phase)
     }
 
+    @Test fun supportsParentRowsLabeledByChildText() {
+        val row = AccessibleUiElement(null, null, "android.widget.LinearLayout", null,
+            true, true, false, false, 0, 0, 300, 80)
+        val title = AccessibleUiElement("Display & touch", null, "android.widget.TextView", null,
+            false, true, false, false, 12, 14, 180, 40)
+        val view = ScreenObservation("com.android.settings", 1, listOf(row, title))
+        val result = AccessibleScreenAssistant.begin("Enable dark mode", view)
+        assertEquals(0, result.targetIndex)
+        assertTrue(result.instruction.contains("Display & touch"))
+    }
+
     @Test fun ambiguousTargetsAbstain() {
         val view = ScreenObservation("com.android.settings", 1,
             listOf(element("Dark mode"), element("Dark theme")))
