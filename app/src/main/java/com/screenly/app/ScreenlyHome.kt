@@ -120,7 +120,14 @@ internal fun ScreenlyHome(
                             if (modelInstalled) R.string.home_installed else R.string.home_optional
                         ),
                         actionText = stringResource(
-                            SetupCard(
+                            if (importingModel) R.string.home_importing
+                            else if (modelInstalled) R.string.home_replace_model
+                            else R.string.home_import_model
+                        ),
+                        enabled = !importingModel,
+                        onAction = onImportModel
+                    )
+                    SetupCard(
                         title = stringResource(R.string.home_vision_title),
                         detail = stringResource(when (visionStatus) {
                             VisionSetupStatus.READY -> R.string.home_vision_ready_detail
@@ -138,13 +145,6 @@ internal fun ScreenlyHome(
                         ),
                         enabled = !importingModel,
                         onAction = onImportVision
-                    )
-                    if (importingModel) R.string.home_importing
-                            else if (modelInstalled) R.string.home_replace_model
-                            else R.string.home_import_model
-                        ),
-                        enabled = !importingModel,
-                        onAction = onImportModel
                     )
                     if (importingModel) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
