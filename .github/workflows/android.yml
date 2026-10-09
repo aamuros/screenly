@@ -7,6 +7,10 @@ on:
       - fix/persistent-assistant-sessions
   pull_request:
 
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   android:
     runs-on: ubuntu-latest
