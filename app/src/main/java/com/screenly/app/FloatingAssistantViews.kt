@@ -220,7 +220,9 @@ internal object FloatingAssistantViews {
             textSize = 13f
             setTextColor(Color.WHITE)
         }, gap(context, 8))
-        for ((count, item) in state.items.take(8).withIndex()) {
+        val maxItems = if (BuildConfig.DEBUG &&
+            state.detail.startsWith("Android Settings accessibility metadata")) 20 else 8
+        for ((count, item) in state.items.take(maxItems).withIndex()) {
             root.addView(TextView(context).apply {
                 text = "${count + 1}. ${item.title}"
                 textSize = 14f
