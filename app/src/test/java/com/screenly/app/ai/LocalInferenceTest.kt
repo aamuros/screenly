@@ -1,5 +1,8 @@
 package com.screenly.app.ai
 
+import com.google.ai.edge.litertlm.Content
+import com.google.ai.edge.litertlm.Contents
+import com.google.ai.edge.litertlm.Message
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
@@ -15,6 +18,28 @@ class LocalInferenceTest {
     val temporaryFolder = TemporaryFolder()
 
     private val sampleSha256 = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+
+    @Test
+    fun responseContainsOnlyOrderedTextParts() {
+        val message = Message.model(
+            contents = Contents.of(Content.Text("Font "), Content.ImageFile("/unused/image"), Content.Text("size")),
+            channels = mapOf("thought" to "Excluded channel content")
+        )
+        assertEquals("Font size", modelResponseText(message))
+    }
+
+    @Test
+    fun nonTextResponseDoesNotPassAsGeneratedText() {
+        val message = Message.model(Contents.of(Content.ImageFile("/unused/image")))
+        assertThrows(IOException::class.java) { modelResponseText(message) }
+    }
+
+    @Test
+    fun emptyAndWhitespaceOnlyResponsesAreRejected() {
+        listOf(Message.model(), Message.model(Contents.of(" \n\t"))).forEach { message ->
+            assertThrows(IOException::class.java) { modelResponseText(message) }
+        }
+    }
 
     @Test
     fun validFilePassesIntegrityVerification() {

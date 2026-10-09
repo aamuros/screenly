@@ -1,0 +1,411 @@
+Screenly M3 emulator evidence — 2026-10-09
+Baseline: f25632d with the typed-text-extraction fix in the commit containing this evidence.
+No model binaries or credentials are included.
+
+=== API 35 native failure ===
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.LocalInferenceSmokeTest:
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: device=Google Pixel Tablet; API 35; ABIs arm64-v8a
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: offline_required=false
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: shortMsg=Process crashed.
+INSTRUMENTATION_CODE: 0
+
+=== API 30 first inference ===
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.LocalInferenceSmokeTest:
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: device=Google sdk_gphone_arm64; API 30; ABIs arm64-v8a
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: offline_required=false
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization_ms=1474
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization=PASS (includes model integrity verification)
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1_ms=5857
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_1=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2_ms=6124
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_2=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: cleanup=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 13.504
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
+
+=== API 30 offline restart 1 ===
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.LocalInferenceSmokeTest:
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: device=Google sdk_gphone_arm64; API 30; ABIs arm64-v8a
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: offline_required=true
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization_ms=836
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization=PASS (includes model integrity verification)
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1_ms=6273
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_1=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2_ms=5698
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_2=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: cleanup=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 12.853
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
+
+=== API 30 offline restart 2 ===
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.LocalInferenceSmokeTest:
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: device=Google sdk_gphone_arm64; API 30; ABIs arm64-v8a
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: offline_required=true
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization_ms=421
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization=PASS (includes model integrity verification)
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1_ms=5667
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_1=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2_ms=5667
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_2=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: cleanup=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 11.795
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
+
+=== API 30 loaded-process memory sample (during offline restart 1) ===
+Applications Memory Usage (in Kilobytes):
+Uptime: 193663 Realtime: 193663
+
+** MEMINFO in pid 6085 [com.screenly.app] **
+                   Pss  Private  Private     Swap      Rss     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty    Total     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------   ------
+  Native Heap   401726   401656        0        0   404412   869864   861935     3540
+  Dalvik Heap      861      736        0        0     5168     3985     1993     1992
+ Dalvik Other     1480     1408        0        0     2160
+        Stack      508      508        0        0      520
+       Ashmem        0        0        0        0        4
+    Other dev        8        0        8        0      208
+     .so mmap     1085      132      128        0    29192
+    .jar mmap      937        0        0        0    22436
+    .apk mmap    45540      740    31796        0    80976
+    .dex mmap      516        8      500        0      620
+    .oat mmap       49        0        0        0     2188
+    .art mmap     7634     7292        0        0    19968
+   Other mmap   593231       32   593192        0   594004
+      Unknown      456      448        0        0      964
+        TOTAL  1054031   412960   625624        0  1054031   873849   863928     5532
+
+ App Summary
+                       Pss(KB)                        Rss(KB)
+                        ------                         ------
+           Java Heap:     8028                          25136
+         Native Heap:   401656                         404412
+                Code:    33308                         135628
+               Stack:      508                            520
+            Graphics:        0                              0
+       Private Other:   595084
+              System:    15447
+             Unknown:                                  597124
+
+           TOTAL PSS:  1054031            TOTAL RSS:  1162820      TOTAL SWAP (KB):        0
+
+ Objects
+               Views:        0         ViewRootImpl:        0
+         AppContexts:        3           Activities:        0
+              Assets:       15        AssetManagers:        0
+       Local Binders:        5        Proxy Binders:       26
+       Parcel memory:        4         Parcel count:       15
+    Death Recipients:        0      OpenSSL Sockets:        0
+            WebViews:        0
+
+ SQL
+         MEMORY_USED:        0
+  PAGECACHE_OVERFLOW:        0          MALLOC_SIZE:        0
+
+
+=== API 35 SIGILL diagnosis ===
+10-09 22:07:17.897  4420  4437 F libc    : Fatal signal 4 (SIGILL), code 1 (ILL_ILLOPC), fault addr 0x72a4e54444 in tid 4437 (DefaultDispatch), pid 4420 (om.screenly.app)
+10-09 22:07:18.043  4445  4445 F DEBUG   : ABI: 'arm64'
+10-09 22:07:18.043  4445  4445 F DEBUG   : Cmdline: com.screenly.app
+10-09 22:07:18.043  4445  4445 F DEBUG   : signal 4 (SIGILL), code 1 (ILL_ILLOPC), fault addr 0x00000072a4e54444
+10-09 22:07:18.043  4445  4445 F DEBUG   :       #00 pc 000000000127f444  /data/app/~~fPQcNKrE6T3QH0vHJ0aujQ==/com.screenly.app-7OQSSfTDj8mQ6NkkpCaHTA==/base.apk!liblitertlm_jni.so (offset 0x1dbc000) (BuildId: 5ae57c4840a756aee25e14435094931a)
+10-09 22:07:18.043  4445  4445 F DEBUG   :       #01 pc 00000000012432c4  /data/app/~~fPQcNKrE6T3QH0vHJ0aujQ==/com.screenly.app-7OQSSfTDj8mQ6NkkpCaHTA==/base.apk!liblitertlm_jni.so (offset 0x1dbc000) (BuildId: 5ae57c4840a756aee25e14435094931a)
+10-09 22:07:18.043  4445  4445 F DEBUG   :       #02 pc 00000000011eaff0  /data/app/~~fPQcNKrE6T3QH0vHJ0aujQ==/com.screenly.app-7OQSSfTDj8mQ6NkkpCaHTA==/base.apk!liblitertlm_jni.so (offset 0x1dbc000) (BuildId: 5ae57c4840a756aee25e14435094931a)
+10-09 22:07:18.043  4445  4445 F DEBUG   :       #23 pc 0000000000703684  /data/app/~~fPQcNKrE6T3QH0vHJ0aujQ==/com.screenly.app-7OQSSfTDj8mQ6NkkpCaHTA==/base.apk!liblitertlm_jni.so (offset 0x1dbc000) (Java_com_google_ai_edge_litertlm_LiteRtLmJni_nativeCreateEngine+1668) (BuildId: 5ae57c4840a756aee25e14435094931a)
+10-09 22:07:18.043  4445  4445 F DEBUG   :       #30 pc 00000000002b9ce4  /data/app/~~fPQcNKrE6T3QH0vHJ0aujQ==/com.screenly.app-7OQSSfTDj8mQ6NkkpCaHTA==/base.apk (com.google.ai.edge.litertlm.Engine.initialize+0)
+Faulting instruction, pinned AAR arm64-v8a liblitertlm_jni.so:
+0x127f444: 04bf5820 rdsvl x0, #1
+Guest AT_HWCAP=0xefb3ffff; AT_HWCAP2=0x7f33f105383; SME2=true, SME=false.
+API 30 AT_HWCAP=0xefb3ffff; AT_HWCAP2=0x183; SME2=false.
+
+=== Offline state evidence ===
+screenly-m3-api30-offline-connectivity.txt: Active default network: none
+screenly-m3-api30-offline-connectivity-after.txt: Active default network: none
+Before/after offline tests: airplane_mode_on=1, wifi_on=0, mobile_data=0.
+After restoration: airplane_mode_on=0, wifi_on=1, mobile_data=1.

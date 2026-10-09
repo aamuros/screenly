@@ -2,9 +2,11 @@ package com.screenly.app.ai
 
 import android.content.Context
 import com.google.ai.edge.litertlm.Backend
+import com.google.ai.edge.litertlm.Content
 import com.google.ai.edge.litertlm.ConversationConfig
 import com.google.ai.edge.litertlm.Engine
 import com.google.ai.edge.litertlm.EngineConfig
+import com.google.ai.edge.litertlm.Message
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
@@ -78,9 +80,8 @@ internal class LocalInference(
             val readyEngine = checkNotNull(engine) { "Initialize the local model before generating text." }
             try {
                 readyEngine.createConversation(ConversationConfig(automaticToolCalling = false)).use { conversation ->
-                    val response = conversation.sendMessage(prompt).toString()
+                    val response = modelResponseText(conversation.sendMessage(prompt))
                     currentCoroutineContext().ensureActive()
-                    if (response.isBlank()) throw IOException("Local model returned an empty response.")
                     response
                 }
             } catch (error: CancellationException) {
@@ -112,3 +113,12 @@ internal class LocalInference(
 }
 
 internal class LocalInferenceException(message: String, cause: Throwable) : IOException(message, cause)
+
+/** Extracts only answer text through the pinned Kotlin API, excluding non-text data and channels. */
+internal fun modelResponseText(message: Message): String {
+    val text = message.contents.contents
+        .mapNotNull { (it as? Content.Text)?.text }
+        .joinToString("")
+    if (text.isBlank()) throw IOException("Local model returned no nonblank text response.")
+    return text
+}

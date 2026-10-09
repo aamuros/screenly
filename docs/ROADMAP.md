@@ -83,8 +83,8 @@ multiple displays remain untested. No new device checks were performed for this 
 
 - [x] Integrate LiteRT-LM with explicit initialization/error/close handling.
 - [x] Define local provisioning, model format, integrity, license and storage requirements.
-- [ ] Load a compatible model; evaluate quantized Gemma 3 1B as the initial candidate.
-- [ ] Verify offline inference, including restart in airplane mode.
+- [x] Load/evaluate the exact INT4 Gemma 3 1B candidate on the documented API 30 emulator; physical acceptance remains open.
+- [x] Verify emulator offline inference through two process restarts in airplane mode with Wi-Fi/mobile data off; phone verification remains open.
 - [ ] Benchmark initialization, inference, memory and APK/model size on the demo phone.
 
 **Dependencies:** Agreed hardware and compatible runtime/model; M0 for planner integration.
@@ -95,9 +95,17 @@ missing/corrupt model and runtime failures are safe. Agree latency/memory budget
 **Verification:** TESTING M3; cold/warm loads, repeated inference, offline restart and errors.
 **Evidence/gaps:** `ai/LocalInference`, integrity/lifecycle unit tests and an opt-in Android
 smoke test implement isolated CPU inference with LiteRT-LM 0.10.2. [M3 report](LOCAL_AI.md)
-pins the INT4 artifact/hash and documents private ADB provisioning. No device is connected;
-exact binary/runtime compatibility, real/offline generation, timing/memory and physical M1/M2
-regressions remain unverified. A build is not M3 acceptance; M4 remains not started.
+pins the INT4 artifact/hash and documents private ADB provisioning. The 2026-10-09 follow-up
+fixes typed response extraction; fresh builds, 24 unit tests and lint pass. The exact licensed
+artifact is downloaded and verified on host/device. API 35 ARM64 native initialization crashes
+at SME `rdsvl`; an API 30 ARM64 AVD avoids SME2 dispatch. On API 30, three real smoke tests pass
+(six responses, including four offline responses across two process restarts), with reuse and
+cleanup success. Initialization is 421–1,474 ms; generation is 5,667–6,273 ms; loaded-process
+PSS sample is 1,054,031 KiB. Full responses show contradictory/unsupported claims despite
+naming Font Size. [Raw evidence](verification/m3-emulator-2026-10-09.txt) preserves actual results.
+The API 35 incompatibility, physical M1/M2/model acceptance and agreed phone performance budgets
+remain open. Emulator inference is verified to its stated scope; full M3 is not VERIFIED and
+M4 remains not started.
 
 ## M4 — AI Navigation Planner
 

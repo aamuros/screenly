@@ -28,7 +28,7 @@ for host checks. Emulators provide preliminary checks; phone gates remain requir
 observation, overlays or guidance. Run only when instrumentation testing is requested.
 
 Meaningful current unit coverage: 8 revision/selection/bounds/scheduling tests and 6 sanitizer
-tests, plus 6 local model integrity/failure/lifecycle tests. The extra arithmetic template test
+tests, plus 9 local model integrity/response/failure/lifecycle tests. The extra arithmetic template test
 provides no Screenly feature evidence. Native inference is checked separately by the opt-in
 `ai/LocalInferenceSmokeTest`; host tests do not load the real model.
 
