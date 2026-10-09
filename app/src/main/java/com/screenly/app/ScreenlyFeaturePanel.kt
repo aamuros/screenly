@@ -11,6 +11,7 @@ import android.view.Display
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
@@ -161,12 +162,7 @@ internal class ScreenlyFeaturePanel(
             // FLAG_NOT_TOUCH_MODAL permits touches outside the panel without dismissing it.
             event.actionMasked == MotionEvent.ACTION_OUTSIDE
         }
-        panel.setOnKeyListener { _, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-                dismiss()
-                true
-            } else false
-        }
+        installBackHandler(panel)
         panel.setOnApplyWindowInsetsListener { _, insets ->
             handler.post { reposition() }
             insets
@@ -204,6 +200,18 @@ internal class ScreenlyFeaturePanel(
             panel.scaleY = dp(72).toFloat() / dp(300)
             panel.animate().alpha(1f).scaleX(1f).scaleY(1f)
                 .setInterpolator(DecelerateInterpolator()).setDuration(200L).start()
+        }
+    }
+
+    private fun installBackHandler(view: View) {
+        view.setOnKeyListener { _, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
+                dismiss()
+                true
+            } else false
+        }
+        if (view is ViewGroup) {
+            for (index in 0 until view.childCount) installBackHandler(view.getChildAt(index))
         }
     }
 

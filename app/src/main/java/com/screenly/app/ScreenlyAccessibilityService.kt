@@ -129,12 +129,17 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         // Overlay windows must never replace the app being inspected.
         val appWindows = windows
         try {
-            val active = appWindows.firstOrNull {
-                it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isActive
-            } ?: appWindows.firstOrNull {
-                it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isFocused
+            // A focusable Screenly text panel is an ACCESSIBILITY_OVERLAY, not an
+            // application window. The target app can temporarily lose active/focused
+            // status while its hierarchy remains available beneath our panel.
+            val applications = appWindows.filter {
+                it.type == AccessibilityWindowInfo.TYPE_APPLICATION
             }
-            return active?.root
+            val target = applications.firstOrNull { it.isActive }
+                ?: applications.firstOrNull { it.isFocused }
+                ?: applications.firstOrNull { it.id == lastObservation?.windowId }
+                ?: applications.maxByOrNull { it.layer }
+            return target?.root
         } finally {
             if (Build.VERSION.SDK_INT < 33) appWindows.forEach { it.recycle() }
         }
