@@ -1,0 +1,29 @@
+name: Android verification
+
+on:
+  push:
+    branches:
+      - feat/on-device-ai-integration
+  pull_request:
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - name: Install target Android SDK
+        run: sdkmanager "platforms;android-36.1" "build-tools;36.0.0" "platform-tools"
+      - name: Verify build, unit tests and Android lint
+        run: ./gradlew :app:testDebugUnitTest :app:lintDebug :app:assembleDebug --no-daemon --stacktrace
+      - name: Upload debug APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenly-offline-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
