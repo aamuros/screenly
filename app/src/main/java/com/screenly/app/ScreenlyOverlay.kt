@@ -48,7 +48,7 @@ internal class ScreenlyOverlay(
     private var picker: View? = null
     private var assistantMenu: View? = null
     private var featureController: ScreenlyFeaturePanel? = null
-    private val featureSession = AssistantSessionStore()
+    private val featureSession = AssistantSessionStore(java.io.File(service.noBackupFilesDir, "assistant-session.properties"))
     private val assistant = OnDeviceAssistant(service)
     private val bubbleBitmap by lazy {
         BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
@@ -60,6 +60,7 @@ internal class ScreenlyOverlay(
 
     fun updateObservation(next: ScreenObservation) {
         if (disposed) return
+        featureSession.onObservation(next)
         if (state.update(next)) {
             closePicker()
             closeMenu(immediate = true)
@@ -83,7 +84,8 @@ internal class ScreenlyOverlay(
         closeMenu(immediate = true)
         featureController?.dismiss(immediate = true, restoreBubble = false)
         featureController = null
-        featureSession.clear()
+        // Never erase the conversation when the target window temporarily disappears.
+        // All highlights/coordinates still become invalid immediately.
         clearHighlight()
         val previousBubble = bubble
         bubble = null
