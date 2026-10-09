@@ -1,0 +1,519 @@
+{
+  "generated_at": "2026-10-10T03:40:58.712684+08:00",
+  "source_commit": "e1e032f76422e4469dc5b1c3ad2d23832ce6a6a3",
+  "branch": "integration/reliable-guidance",
+  "main_base": "e754f7b",
+  "local_ai_parent": "dd87a44",
+  "android_guidance_parent": "3a972e6",
+  "commands": {
+    "host": ".\\gradlew.bat --no-daemon \"-Porg.gradle.java.installations.auto-detect=false\" \"-Porg.gradle.java.installations.paths=C:\\Program Files\\Microsoft\\jdk-21.0.7.6-hotspot\" :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest --tests \"com.screenly.app.ai.navigation.*\" --tests \"com.screenly.app.Guidance*Test\" --tests com.screenly.app.ScreenObservationStateTest --tests com.screenly.app.ObservationSanitizerTest --tests com.screenly.app.ai.LocalInferenceTest :app:lintDebug --console=plain --quiet",
+    "ui": "adb -s emulator-5554 shell am instrument -w -r -e class com.screenly.app.GuidanceUiTest -e guidanceUi true -e workflow {font|wifi|dark} -e highlightTimeoutMs 90000 [-e expectUnavailableInternet true for wifi] com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner",
+    "prepare": "adb -s emulator-5554 shell am instrument -w -r -e class com.screenly.app.ai.navigation.NavigationEvaluationTest -e navigationEvaluation true -e protocol candidate -e fixtureSet availability -e prepareOnly true com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner",
+    "model": "adb -s emulator-5554 shell am instrument -w -r -e class com.screenly.app.ai.navigation.NavigationEvaluationTest -e navigationEvaluation true -e protocol candidate -e fixtureSet availability -e repetitions 3 com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner; airplane=1, wifi=0, data=0, activeNetwork=null verified; original settings restored"
+  },
+  "host": {
+    "build": "PASS: debug and Android-test APKs",
+    "unit": {
+      "tests": 76,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "unit_suites": [
+      {
+        "name": "com.screenly.app.ai.LocalInferenceTest",
+        "tests": "9",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.183"
+      },
+      {
+        "name": "com.screenly.app.ai.navigation.CandidateNavigationTest",
+        "tests": "15",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.174"
+      },
+      {
+        "name": "com.screenly.app.ai.navigation.NavigationEngineTest",
+        "tests": "11",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.076"
+      },
+      {
+        "name": "com.screenly.app.ai.navigation.NavigationProtocolTest",
+        "tests": "11",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.007"
+      },
+      {
+        "name": "com.screenly.app.ai.navigation.NavigationRulesTest",
+        "tests": "10",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.006"
+      },
+      {
+        "name": "com.screenly.app.GuidanceControllerTest",
+        "tests": "4",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.265"
+      },
+      {
+        "name": "com.screenly.app.GuidanceSnapshotTest",
+        "tests": "2",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.003"
+      },
+      {
+        "name": "com.screenly.app.ObservationSanitizerTest",
+        "tests": "6",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.01"
+      },
+      {
+        "name": "com.screenly.app.ScreenObservationStateTest",
+        "tests": "8",
+        "failures": "0",
+        "errors": "0",
+        "skipped": "0",
+        "time": "0.006"
+      }
+    ],
+    "lint": {
+      "errors": 0,
+      "warnings": 15
+    },
+    "apks": {
+      "debug": {
+        "path": "app/build/outputs/apk/debug/app-debug.apk",
+        "bytes": 80761259,
+        "sha256": "0db188991651df7ad14082e2b15c2a51ac64426309876883c5106562f96a7de6"
+      },
+      "android_test": {
+        "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+        "bytes": 1573199,
+        "sha256": "097ce73fab0e94818fa4288a9bd7b13f46f5cbfa78dd44c8ffec0fcdf12371a0"
+      }
+    }
+  },
+  "device": {
+    "serial": "emulator-5554",
+    "manufacturer": "Google",
+    "model": "sdk_gphone64_x86_64",
+    "api": 37,
+    "reported_abis": [
+      "x86_64",
+      "arm64-v8a"
+    ],
+    "physical": false
+  },
+  "candidate_fixture_prepare": {
+    "result": "PASS",
+    "fixtures": 16,
+    "native_calls": 0,
+    "logs": [
+      "candidate-prepare.txt",
+      "candidate-frozen.jsonl"
+    ]
+  },
+  "real_gemma_evaluation": {
+    "result": "PASS: real offline JNI execution; model quality is poor",
+    "source_commit": "a536311a9f9b7d1b9e00deafa8d1d319cf2614b6",
+    "instrumentation_apks": {
+      "debug": {
+        "path": "app/build/outputs/apk/debug/app-debug.apk",
+        "bytes": 80879895,
+        "sha256": "adb643d56125aadde332ade583fa32dde1d1c1437f4ae75a972a82a0b95db793"
+      },
+      "android_test": {
+        "path": "app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk",
+        "bytes": 1571683,
+        "sha256": "d6313ac1d01a2fd853bf770c100a19c27a6a33f9c4e78b4d2422d288adf59888"
+      }
+    },
+    "metrics": {
+      "protocol": "per-candidate YES/NO",
+      "fixture_set": "16 frozen availability diagnostic screens",
+      "repetitions": 3,
+      "screen_decisions": 48,
+      "native_candidate_generations": 93,
+      "raw_canonical_action_correct": 12,
+      "raw_wrong_unique_selections": 9,
+      "raw_ambiguous_positive_sets": 24,
+      "raw_correct_all_no_abstentions": 9,
+      "validated_model_selected_correct": 3,
+      "validated_model_wrong_selected": 0,
+      "rule_fallback_selections": 15,
+      "combined_correct": 48,
+      "combined_wrong_selected": 0,
+      "combined_correct_abstentions": 30,
+      "runtime_failures": 0,
+      "model_outcomes": {
+        "REJECTED_TARGET": 33,
+        "ABSTAINED": 12,
+        "SELECTED": 3
+      },
+      "candidate_replies": {
+        "YES": 63,
+        "NO": 30
+      },
+      "screen_generation_ms": {
+        "median": 1856.5,
+        "min": 894,
+        "max": 4506
+      },
+      "initialize_ms": 2178,
+      "sampled_pss_kib_max": 1100885,
+      "note": "Synthetic fixtures, not unseen accuracy. Raw canonical correctness requires one correct YES or all NO; duplicate candidates may legitimately yield multiple positive relevance answers. Combined results include separately identified rule fallback.",
+      "per_fixture": [
+        {
+          "id": "display-font",
+          "expected_index": 1,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "RULE": 3
+          }
+        },
+        {
+          "id": "missing-font",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "ambiguous",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "wifi-unavailable",
+          "expected_index": null,
+          "raw_canonical_correct": 3,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "font-row-order",
+          "expected_index": 1,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "RULE": 3
+          }
+        },
+        {
+          "id": "font-moved-index",
+          "expected_index": 2,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "RULE": 3
+          }
+        },
+        {
+          "id": "missing-font-new-labels",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "duplicate-save",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "wifi-unavailable-bluetooth",
+          "expected_index": null,
+          "raw_canonical_correct": 3,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "brightness-present",
+          "expected_index": 1,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "RULE": 3
+          }
+        },
+        {
+          "id": "brightness-missing",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "brightness-duplicate",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "nfc-enable-off",
+          "expected_index": 0,
+          "raw_canonical_correct": 3,
+          "combined_correct": 3,
+          "sources": {
+            "MODEL": 3
+          }
+        },
+        {
+          "id": "nfc-enable-on",
+          "expected_index": null,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        },
+        {
+          "id": "nfc-disable-on",
+          "expected_index": 0,
+          "raw_canonical_correct": 0,
+          "combined_correct": 3,
+          "sources": {
+            "RULE": 3
+          }
+        },
+        {
+          "id": "nfc-disable-off",
+          "expected_index": null,
+          "raw_canonical_correct": 3,
+          "combined_correct": 3,
+          "sources": {
+            "NONE": 3
+          }
+        }
+      ]
+    },
+    "log_directory": "gemma-api37-candidate",
+    "budget_note": "The fixture run preceded the reduction from eight to three native calls. Every fixture has at most three candidates, so its exact recorded prompts/call sets are unchanged under the final budget."
+  },
+  "download_attempt": {
+    "initial_unauthenticated_http_status": 401,
+    "authenticated_download": "PASS",
+    "model_path": "app/build/local-models/gemma3-1b-it-int4.litertlm",
+    "bytes": 584417280,
+    "sha256": "1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be",
+    "device_private_integrity": "PASS: same size/hash before publication",
+    "git_ignored": true,
+    "credentials_stored_in_source_or_results": false,
+    "windows_transfer": "Initial stdin transfer truncated to 16415 bytes, rejected by SHA verification; binary-safe ADB push/copy verified before publication"
+  },
+  "source_sha256": {
+    "app/src/androidTest/java/com/screenly/app/ExampleInstrumentedTest.kt": "cf464dc4356dc12b207444c0e91ab3555658376803d93463486bfc6fbdd2ac10",
+    "app/src/androidTest/java/com/screenly/app/GuidanceUiTest.kt": "deac377aa37d64a3b4e89db8908d4aaf384018df8ad86297db4e7a85bc89a944",
+    "app/src/androidTest/java/com/screenly/app/ai/LocalInferenceSmokeTest.kt": "078b3100c082b899c8aa998cdd001df77d7c4e16bfae719d5f85b46f4595fe20",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/NavigationEvaluationTest.kt": "b89d80edfc730c8227cc76344f68ad1a4cdc5dbecd57e48c1e7c44bbb4f6bf3d",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/NavigationPreparationTest.kt": "0647b723d4b6965e756f2dfb90d8eee92cb293c79e532b9003072d8b16231432",
+    "app/src/main/AndroidManifest.xml": "1f9fa28fbbb1e3d78c0ff608eec946aea86e03aad6b839de7a399479f0567f58",
+    "app/src/main/java/com/screenly/app/AccessibleUiElement.kt": "ec3fa1734ff559747f48040fc39f40fe7a4ca710ab247c5b371bfb8d2007c4eb",
+    "app/src/main/java/com/screenly/app/FloatingAssistantViews.kt": "8effc7687f93d9d89f42812b87668ae15e6ac1cd429e99a8d754d315e057e3c0",
+    "app/src/main/java/com/screenly/app/GuidanceController.kt": "cdcd7bffe20ab00321854b892a52b0572af3aacf6892945c3548d23e5dfaf861",
+    "app/src/main/java/com/screenly/app/GuidanceSnapshot.kt": "411540c568f480976e375b02af2a6b3391e8a6ff9908b95ed12d7bc30c0bf0e1",
+    "app/src/main/java/com/screenly/app/MainActivity.kt": "fc1198218d3e6c30ef1684ece7ff0e8a2024f045018832c80ce012edafa59312",
+    "app/src/main/java/com/screenly/app/ScreenObservation.kt": "d4e28c5f02e04b3260a5f6f6fba13ac147acaa226b4e9343ff950e466cb7991c",
+    "app/src/main/java/com/screenly/app/ScreenlyAccessibilityService.kt": "1789c6ccf43a5228edbe2226622f84d7b80de0c7fb208c9cbbbc76466dd6256a",
+    "app/src/main/java/com/screenly/app/ScreenlyOverlay.kt": "4aebb1bfdf8db6737d015882abd56b1bd6185a6c5688e77b0be4f9c782f2fb40",
+    "app/src/main/java/com/screenly/app/ai/LocalInference.kt": "cb94acd4762b0e8186c2f3a81d5c220dfd9c19ea9103ff37c3f10a00f66072cd",
+    "app/src/main/java/com/screenly/app/ai/LocalModel.kt": "12f5d21583c58f7ae5f1f30dbd74d6a93341913ce85af3d1fe65299bf485f763",
+    "app/src/main/java/com/screenly/app/ai/navigation/CandidateNavigation.kt": "57f54e3bc0a6fa9c11fc48c2b45cfee0467c366ab77fe43e8722be92da3a6ea9",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationEngine.kt": "b6acad2392b8d011c3af5fb2578ca01367cfca29333ae4c5025e9c79f21439cc",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationProtocol.kt": "f8a8b6081a179b7d34fac33aa8518bb230038c56d3de069334f6a01127e45147",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationRules.kt": "c6ccd90101ca119222bdace4e24c198515ba9031c13cf03970f4dcbbea433f32",
+    "app/src/main/java/com/screenly/app/ai/navigation/SettingsWorkflow.kt": "5ac231e3fac50c38028884ccfd4896601ac0890ef53cb6ec63d257fc7ac4b7ac",
+    "app/src/main/res/drawable/ic_assistant_ask.xml": "69a5db90d6f4fe6a254e6d31d433bf59af9dd0b0ec8710d259696a88f910a6ad",
+    "app/src/main/res/drawable/ic_assistant_explain.xml": "9567f1c88f1e3ed82762ee452c46e4eddc3df47a1c9ef05851bee74e2fa7dab2",
+    "app/src/main/res/drawable/ic_assistant_guide.xml": "285a4b6bc469a8d737dcf0ac71afeff86bbbb2130cdfa3bbcb65219601430752",
+    "app/src/main/res/drawable/ic_assistant_privacy.xml": "99909658ad9dd8c1d35640fef506f7a5b50b16d1092ffcc1c171255494ced755",
+    "app/src/main/res/drawable/ic_launcher_background.xml": "38381d0d0a64770d992c98e5b5e492555690af40e2fc6ee59e5a1c2a7c0fdcde",
+    "app/src/main/res/drawable/ic_launcher_foreground.xml": "6e3c1bb64d9bec079cf0030d867c58b064d2fb19ca6c5a691543c43134f64a2a",
+    "app/src/main/res/mipmap-anydpi/ic_launcher.xml": "e7c073fbec1a51a73f678b266a1cb207aa6468e3ea1504d24f43591f31d2b7c5",
+    "app/src/main/res/mipmap-anydpi/ic_launcher_round.xml": "e7c073fbec1a51a73f678b266a1cb207aa6468e3ea1504d24f43591f31d2b7c5",
+    "app/src/main/res/values-night/themes.xml": "4a2a30dc8bfb9611bb3708f770252dbced4502a6ce7c8adc6e253adf06d02f87",
+    "app/src/main/res/values/colors.xml": "31e0230ab2d96fa128a11705e85e590f3462745dc3c04bc851bc724a445921c1",
+    "app/src/main/res/values/strings.xml": "ae2731ab3cb46e6431d97210725804ad552a6840e5b5a3e904aa497c48315909",
+    "app/src/main/res/values/themes.xml": "9a9d0ff3ddb2dab9f202445133bb2c4711569d33f41886c6169f9ec293a01833",
+    "app/src/main/res/xml/backup_rules.xml": "facaaef2162be6dd86544a819278042729ed481c38933a410651b81424da7ea7",
+    "app/src/main/res/xml/data_extraction_rules.xml": "940f48fb2ba4d9ec5a55671126796fefa71661c0a5d7b434dc1e9be23da41690",
+    "app/src/main/res/xml/screenly_accessibility_service.xml": "d3395a9b7dbf2451e22d4383da74681134bce261b4804f9fe7d15301fcb44db8",
+    "app/src/sharedTest/java/com/screenly/app/ai/navigation/AvailabilityDiagnosticFixtures.kt": "ba4ac14f5dd6420a00689d3dbcc4dcba5a130ac2cde809f3c8565e9021afc729",
+    "app/src/sharedTest/java/com/screenly/app/ai/navigation/NavigationFixtures.kt": "803eda7d48ce006797c0ae358abbc5988bd2a279e8ca0b10622df07a6d4b5ec7",
+    "app/src/test/java/com/screenly/app/ExampleUnitTest.kt": "c91529ba77d9e4bf598513b67e41834ed83d2ae8a454cc5ee0379905fdb49d21",
+    "app/src/test/java/com/screenly/app/GuidanceControllerTest.kt": "cf405320538712fd1d91cb90f6867955596f542d4955464a3ce514cdc3fd738b",
+    "app/src/test/java/com/screenly/app/GuidanceSnapshotTest.kt": "80b2cfb6efec642d6daf09bd1204b36c62c74902dbd681e36383e92d0a6731b3",
+    "app/src/test/java/com/screenly/app/ObservationSanitizerTest.kt": "32541b7164e2acab098c845c236b81238c4ce4119ffafff49cccf5d266334882",
+    "app/src/test/java/com/screenly/app/ScreenObservationStateTest.kt": "b663afa48ced8cc65e1814aea7c8ae8ba07512a6b6e747489740e99a664e9219",
+    "app/src/test/java/com/screenly/app/ai/LocalInferenceTest.kt": "d5c167fd4b4cb7eca69bcfe5a196a5a38012dd1bad40386a97928a9346eaf3d2",
+    "app/src/test/java/com/screenly/app/ai/navigation/CandidateNavigationTest.kt": "af847ee6df8eb6e059a1ce5dbfba52629a30a555016cfc9f1c3d41ee42d5fc18",
+    "app/src/test/java/com/screenly/app/ai/navigation/NavigationEngineTest.kt": "d63ffccf98d45b42636008bc3e1a542dfb61dee1d4dd5de93c5152b8de708ddf",
+    "app/src/test/java/com/screenly/app/ai/navigation/NavigationProtocolTest.kt": "365c0b56dfc07fb8daa2db01e17179193766058a64cb5961765f3b5beaa10eb5",
+    "app/src/test/java/com/screenly/app/ai/navigation/NavigationRulesTest.kt": "0294cad9232c2766ce0d6ba219d1106e886574b9d7633fafc6847db18987b539"
+  },
+  "limitations": [
+    "48/48 combined correctness is on 16 known synthetic fixtures repeated three times, includes rules, and does not establish general accuracy.",
+    "Gemma raw canonical next-action correctness is 12/48; validators and rules provide the safety demonstrated here.",
+    "No physical phone, real typing/keyboard, rotations or lock-screen regression run.",
+    "Unknown OEM/language/application navigation abstains unless a unique exact target or verified route is supported.",
+    "Internet destination root remains unavailable to this service on the guest; waiting and cleared highlights verified.",
+    "Native cancellation cannot preempt synchronous JNI; stale results are discarded afterward.",
+    "Phone latency/memory budgets remain unmeasured.",
+    "Original checkout conflicts are untouched; integration worktree is clean apart from evidence pending commit."
+  ],
+  "ui_without_model_archived": [
+    {
+      "workflow": "font",
+      "result": "PASS",
+      "elapsed_seconds": 7.379,
+      "highlight_steps": 2,
+      "source": "RULE",
+      "model_outcome": "FAILED: missing model file",
+      "log": "ui-font-release.txt",
+      "limits": "Test simulates manual taps; no physical phone"
+    },
+    {
+      "workflow": "wifi",
+      "result": "PASS",
+      "elapsed_seconds": 9.408,
+      "highlight_steps": 2,
+      "source": "RULE",
+      "model_outcome": "FAILED: missing model file",
+      "log": "ui-wifi-release.txt",
+      "limits": "Internet destination root unavailable to Screenly; safe waiting and no highlight checked"
+    },
+    {
+      "workflow": "dark",
+      "result": "PASS",
+      "elapsed_seconds": 7.949,
+      "highlight_steps": 2,
+      "source": "RULE",
+      "model_outcome": "FAILED: missing model file",
+      "log": "ui-dark-release.txt",
+      "limits": "Test simulates manual taps; no physical phone"
+    }
+  ],
+  "ui_native_final": [
+    {
+      "workflow": "font",
+      "result": "PASS",
+      "elapsed_seconds": 29.605,
+      "highlight_steps": 2,
+      "step_sources": [
+        "RULE",
+        "MODEL"
+      ],
+      "decision_ms": [
+        8145,
+        6544
+      ],
+      "model_provisioned": true,
+      "candidate_budget": 3,
+      "checks": [
+        "current Android bounds/outline",
+        "caption outside control",
+        "user-equivalent touch-through",
+        "next page",
+        "Stop guidance"
+      ],
+      "log": "ui-font-native-final.txt",
+      "limits": "No physical phone; test sets editor text directly"
+    },
+    {
+      "workflow": "wifi",
+      "result": "PASS",
+      "elapsed_seconds": 34.153,
+      "highlight_steps": 2,
+      "step_sources": [
+        "RULE",
+        "MODEL"
+      ],
+      "decision_ms": [
+        12393,
+        5968
+      ],
+      "model_provisioned": true,
+      "candidate_budget": 3,
+      "checks": [
+        "current Android bounds/outline",
+        "caption outside control",
+        "user-equivalent touch-through",
+        "next page",
+        "Stop guidance"
+      ],
+      "log": "ui-wifi-native-final.txt",
+      "limits": "Wi-Fi destination root unavailable; safe waiting and cleared highlight verified"
+    },
+    {
+      "workflow": "dark",
+      "result": "PASS",
+      "elapsed_seconds": 27.411,
+      "highlight_steps": 2,
+      "step_sources": [
+        "MODEL",
+        "RULE"
+      ],
+      "decision_ms": [
+        7273,
+        6053
+      ],
+      "model_provisioned": true,
+      "candidate_budget": 3,
+      "checks": [
+        "current Android bounds/outline",
+        "caption outside control",
+        "user-equivalent touch-through",
+        "next page",
+        "Stop guidance"
+      ],
+      "log": "ui-dark-native-final.txt",
+      "limits": "No physical phone; test sets editor text directly"
+    }
+  ],
+  "real_gemma_smoke": {
+    "result": "PASS",
+    "initialize_ms": 14776,
+    "elapsed_seconds": 50.922,
+    "offline_required": true,
+    "log_directory": "gemma-api37-smoke"
+  }
+}

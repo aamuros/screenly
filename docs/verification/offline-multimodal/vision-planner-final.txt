@@ -1,0 +1,12 @@
+
+com.screenly.app.ai.ScreenPlannerNativeTest:INSTRUMENTATION_STATUS: photo_upload_synthetic_raw=NAVIGATE|0|-|Click the "Upload photo" button to initiate the photo upload process.|
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: photo_upload=mode=MULTIMODAL; action=UNCERTAIN; index=null; direction=null; correct=false; elapsed_ms=51145; pss_kib=2739183
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: folder_creation_synthetic_raw=NAVIGATE|1|-|Click "New folder".
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: folder_creation=mode=MULTIMODAL; action=NAVIGATE; index=1; direction=null; correct=true; elapsed_ms=51103; pss_kib=2518757
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: longMsg=Input dispatching timed out (1fa7b1 com.screenly.app (server) is not responding. Waited 5001ms for MotionEvent)
+INSTRUMENTATION_RESULT: shortMsg=keyDispatchingTimedOut
+INSTRUMENTATION_CODE: 0

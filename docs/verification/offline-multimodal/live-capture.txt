@@ -1,0 +1,8 @@
+
+com.screenly.app.LiveScreenCaptureTest:
+com.screenly.app.LiveScreenCaptureTest:
+com.screenly.app.ScreenObservationInstrumentationTest:.....
+
+Time: 0.077
+
+OK (6 tests)

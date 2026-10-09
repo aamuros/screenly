@@ -13,11 +13,22 @@ data class AccessibleUiElement(
     val left: Int,
     val top: Int,
     val right: Int,
-    val bottom: Int
+    val bottom: Int,
+    /** Original observation index of the nearest captured ancestor; never a persistent ID. */
+    val parentIndex: Int? = null,
+    val checkable: Boolean = false,
+    val editable: Boolean = false,
+    val actions: List<Int> = emptyList(),
+    val range: ControlRange? = null
 ) {
     internal fun intersectsScreen(width: Int, height: Int): Boolean =
         right > left && bottom > top && width > 0 && height > 0 &&
             right > 0 && bottom > 0 && left < width && top < height
+}
+
+data class ControlRange(val min: Float, val max: Float, val current: Float) {
+    internal fun isValid(): Boolean = min.isFinite() && max.isFinite() && current.isFinite() &&
+        max > min && current in min..max
 }
 
 private val observationWhitespace = Regex("[\\p{Cc}\\p{Cf}\\p{Z}\\s]+")

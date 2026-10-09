@@ -1,0 +1,51 @@
+
+com.screenly.app.LiveScreenCaptureTest:
+Error in captureIsGroundedAndReleasedWithoutPersistingPixels(com.screenly.app.LiveScreenCaptureTest):
+java.lang.AssertionError: Screenly must be manually enabled before live capture testing.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.screenly.app.LiveScreenCaptureTest$captureIsGroundedAndReleasedWithoutPersistingPixels$1.invokeSuspend(LiveScreenCaptureTest.kt:30)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.LiveScreenCaptureTest.captureIsGroundedAndReleasedWithoutPersistingPixels(LiveScreenCaptureTest.kt:21)
+
+com.screenly.app.AssistantInferenceUiTest:
+Error in menuSurvivesTargetContentInvalidation(com.screenly.app.AssistantInferenceUiTest):
+java.lang.AssertionError: Expected Screenly view did not appear.
+	at com.screenly.app.AssistantInferenceUiTest.waitView(AssistantInferenceUiTest.kt:110)
+	at com.screenly.app.AssistantInferenceUiTest.waitView$default(AssistantInferenceUiTest.kt:95)
+	at com.screenly.app.AssistantInferenceUiTest.openMenu(AssistantInferenceUiTest.kt:71)
+	at com.screenly.app.AssistantInferenceUiTest.menuSurvivesTargetContentInvalidation(AssistantInferenceUiTest.kt:29)
+
+
+Time: 16.904
+There were 2 failures:
+1) captureIsGroundedAndReleasedWithoutPersistingPixels(com.screenly.app.LiveScreenCaptureTest)
+java.lang.AssertionError: Screenly must be manually enabled before live capture testing.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.screenly.app.LiveScreenCaptureTest$captureIsGroundedAndReleasedWithoutPersistingPixels$1.invokeSuspend(LiveScreenCaptureTest.kt:30)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.LiveScreenCaptureTest.captureIsGroundedAndReleasedWithoutPersistingPixels(LiveScreenCaptureTest.kt:21)
+2) menuSurvivesTargetContentInvalidation(com.screenly.app.AssistantInferenceUiTest)
+java.lang.AssertionError: Expected Screenly view did not appear.
+	at com.screenly.app.AssistantInferenceUiTest.waitView(AssistantInferenceUiTest.kt:110)
+	at com.screenly.app.AssistantInferenceUiTest.waitView$default(AssistantInferenceUiTest.kt:95)
+	at com.screenly.app.AssistantInferenceUiTest.openMenu(AssistantInferenceUiTest.kt:71)
+	at com.screenly.app.AssistantInferenceUiTest.menuSurvivesTargetContentInvalidation(AssistantInferenceUiTest.kt:29)
+
+FAILURES!!!
+Tests run: 2,  Failures: 2

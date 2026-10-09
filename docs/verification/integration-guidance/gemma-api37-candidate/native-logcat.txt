@@ -1,0 +1,90 @@
+--------- beginning of main
+10-09 19:18:38.901  9299  9316 I ScreenlyLocalAI: device=Google sdk_gphone64_x86_64; API 37; ABIs x86_64, arm64-v8a
+10-09 19:18:38.902  9299  9316 I ScreenlyLocalAI: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+10-09 19:18:38.903  9299  9316 I ScreenlyLocalAI: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+10-09 19:18:38.904  9299  9316 I ScreenlyLocalAI: offline_required=true
+10-09 19:18:53.723  9299  9316 I ScreenlyLocalAI: initialization_ms=14776
+10-09 19:18:53.753  9299  9316 I ScreenlyLocalAI: initialization=PASS (includes model integrity verification)
+10-09 19:19:11.545  9299  9316 I ScreenlyLocalAI: response_1_ms=17790
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: response_1=There isn't one single Android setting that controls font size directly across all apps. However, there are several settings you can adjust within Android's system settings (and sometimes within app settings) that influence font size:
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: **1. System-Wide Font Size:**
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Settings > Display > Font Size:** This setting controls the overall font size across all apps. You can adjust it by setting a slider or by choosing from preset sizes like "Small", "Medium", "Large", "Extra Large", etc. This setting can be adjusted by each app individually.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Settings > Display > Font Size:** This setting can be adjusted by each app individually.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Settings > Accessibility > Display:** Some apps may offer font size controls here as well.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: **2. App-Specific Font Size:**
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **App Settings:** Many apps have their own dedicated font size settings within their settings menu or within their app's settings panel.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **App-Specific Settings:** Some apps allow you customize font size by tapping an icon or selecting an option within their settings.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: **3. System-Wide Font Size Preferences:**
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Settings > Display > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Settings > Accessibility > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: **Important Considerations:**
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Font Size Limits:** Android typically limits font size by default. However, you can adjust this by setting font size limits within your system-wide settings.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **App-Specific Settings:** If an app doesn't allow font size control directly, you can try adjusting font size by setting font size limits within each app's settings.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: **Where To Find This Information:**
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Android System Settings:** This can be found by going into Settings > Display > Font Size
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **App-Specific Settings:** This can be found by going into Settings > App Settings
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Google Assistant:** Some apps may provide font size controls through Google Assistant.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **Android Help:** This can be found by searching "Android Font Size Settings" or "Font Size Control"
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: *   **App-Specific Documentation:** Most apps have their own documentation explaining their font size settings.
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: **Disclaimer:** This information may vary slightly depending on your Android version and device model.**
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:11.546  9299  9316 I ScreenlyLocalAI: Let me know if you'd like me provide more specific instructions or details about any particular app!
+10-09 19:19:11.553  9299  9316 I ScreenlyLocalAI: generation_1=PASS
+10-09 19:19:29.593  9299  9316 I ScreenlyLocalAI: response_2_ms=18040
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: response_2=There isn't one single Android setting that controls font size directly across all apps. However, there are several settings you can adjust within Android's system settings (and sometimes within app settings) that influence font size:
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: **1. System-Wide Font Size:**
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Settings > Display > Font Size:** This setting controls the overall font size across all apps. You can adjust it by setting a slider or by choosing from preset sizes like "Small", "Medium", "Large", "Extra Large", etc. This setting can be adjusted by each app individually.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Settings > Display > Font Size:** This setting can be adjusted by each app individually.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Settings > Accessibility > Display:** Some apps may offer font size controls here as well.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: **2. App-Specific Font Size:**
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **App Settings:** Many apps have their own dedicated font size settings within their settings menu or within their app's settings panel.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **App-Specific Settings:** Some apps allow you customize font size by tapping an icon or selecting an option within their settings.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: **3. System-Wide Font Size Preferences:**
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Settings > Display > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Settings > Accessibility > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: **Important Considerations:**
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Font Size Limits:** Android typically limits font size by default. However, you can adjust this by setting font size limits within your system-wide settings.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **App-Specific Settings:** If an app doesn't allow font size control directly, you can try adjusting font size by setting font size limits within each app's settings.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: **Where To Find This Information:**
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Android System Settings:** This can be found by going into Settings > Display > Font Size
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **App-Specific Settings:** This can be found by going into Settings > App Settings
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Google Assistant:** Some apps may provide font size controls through Google Assistant.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **Android Help:** This can be found by searching "Android Font Size Settings" or "Font Size Control"
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: *   **App-Specific Documentation:** Most apps have their own documentation explaining their font size settings.
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: **Disclaimer:** This information may vary slightly depending on your Android version and device model.**
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: 
+10-09 19:19:29.595  9299  9316 I ScreenlyLocalAI: Let me know if you'd like me provide more specific instructions or details about any particular app!
+10-09 19:19:29.597  9299  9316 I ScreenlyLocalAI: generation_2=PASS
+10-09 19:19:29.724  9299  9316 I ScreenlyLocalAI: cleanup=PASS
