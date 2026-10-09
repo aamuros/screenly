@@ -27,14 +27,6 @@ import kotlinx.coroutines.launch
  * Owns focusable feature overlays, on-demand screenshots and ephemeral UI state.
  * Screen pixels never enter a disk cache or the accessibility observation model.
  */
-internal class AssistantSessionStore {
-    val messages = mutableListOf<AssistantChatEntry>()
-    var guidance: AccessibleScreenAssistant.Guidance? = null
-    var explanation: String? = null
-    var captureStatus: String = ""
-    fun clear() { messages.clear(); guidance = null; explanation = null; captureStatus = "" }
-}
-
 internal class ScreenlyFeaturePanel(
     private val service: AccessibilityService,
     private val windowManager: WindowManager,
@@ -71,7 +63,7 @@ internal class ScreenlyFeaturePanel(
         feature = action
         feedback = ""
         render(animate = true)
-        if (action == AssistantAction.EXPLAIN) capture(action, null)
+        if (action == AssistantAction.EXPLAIN && session.explanation == null) capture(action, null)
     }
 
     fun dismiss(immediate: Boolean = false, restoreBubble: Boolean = true) {
@@ -118,6 +110,7 @@ internal class ScreenlyFeaturePanel(
                     currentObservation()?.let(AccessibleScreenAssistant::visibleItems).orEmpty() else emptyList(),
                 selectedItemIndex = selectedItem,
                 guidance = guidance,
+                guideSteps = session.guideSteps.toList(),
                 processing = busy,
                 captureStatus = if (action == AssistantAction.PRIVACY) {
                     session.captureStatus.ifBlank {
@@ -137,7 +130,7 @@ internal class ScreenlyFeaturePanel(
                             capture(action, prompt)
                         }
                         AssistantAction.GUIDE_ME -> {
-                            guidance = null
+                            // Keep the last guide visible until a new screen capture succeeds.
                             capture(action, prompt)
                         }
                         else -> Unit
@@ -154,12 +147,12 @@ internal class ScreenlyFeaturePanel(
                     if (!busy) capture(AssistantAction.GUIDE_ME, null)
                 },
                 cancelGuide = {
-                    guidance = null
+                    session.startNewGuide()
                     feedback = service.getString(R.string.assistant_guide_cancelled)
                     render()
                 },
                 clearHistory = {
-                    messages.clear()
+                    session.clearHistory()
                     feedback = service.getString(R.string.assistant_history_cleared)
                     render()
                 },
@@ -351,14 +344,14 @@ internal class ScreenlyFeaturePanel(
             feedback = "Generating answer offline from accessible controls..."
             render()
             inferenceJob?.cancel()
-            val guideBefore = guidance
+            val guideBefore = if (prompt == null) session.previousForCheck() else null
             inferenceJob = scope.launch {
                 try {
                     when (action) {
                         AssistantAction.ASK_AI -> {
                             val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
                             if (!question.isNullOrBlank()) {
-                                val answer = assistant.ask(question, snapshot)
+                                val answer = assistant.ask(question, snapshot, messages.dropLast(1).toList())
                                 if (requestIsCurrent(requestId, revision, snapshot)) {
                                     messages += AssistantChatEntry(false, answer)
                                     trimHistory()
@@ -379,8 +372,11 @@ internal class ScreenlyFeaturePanel(
                                     goal, snapshot, if (prompt == null) guideBefore else null
                                 )
                                 if (requestIsCurrent(requestId, revision, snapshot)) {
-                                    guidance = next
-                                    next.targetIndex?.let { highlightTarget(snapshot, it, revision) }
+                                    val resolved = if (prompt == null)
+                                        session.rebaseRestoredStep(next) else next
+                                    if (prompt != null) session.startNewGuide()
+                                    guidance = resolved
+                                    resolved.targetIndex?.let { highlightTarget(snapshot, it, revision) }
                                 }
                             }
                         }
@@ -442,12 +438,19 @@ internal class ScreenlyFeaturePanel(
                 selectedItem = null
             }
             AssistantAction.GUIDE_ME -> {
-                guidance = if (guidance != null && prompt == null)
-                    AccessibleScreenAssistant.check(guidance!!, snapshot)
-                else if (!prompt.isNullOrBlank())
-                    AccessibleScreenAssistant.begin(prompt, snapshot)
-                else guidance
-                guidance?.targetIndex?.let { highlightTarget(snapshot, it, currentRevision()) }
+                val previous = session.previousForCheck()
+                val next = when {
+                    prompt != null -> AccessibleScreenAssistant.begin(prompt, snapshot)
+                    previous != null -> AccessibleScreenAssistant.check(previous, snapshot)
+                    guidance != null -> AccessibleScreenAssistant.begin(guidance!!.goal, snapshot)
+                    else -> null
+                }
+                if (next != null) {
+                    val resolved = if (prompt == null) session.rebaseRestoredStep(next) else next
+                    if (prompt != null) session.startNewGuide()
+                    guidance = resolved
+                    resolved.targetIndex?.let { highlightTarget(snapshot, it, currentRevision()) }
+                }
             }
             AssistantAction.PRIVACY -> Unit
         }
@@ -455,6 +458,7 @@ internal class ScreenlyFeaturePanel(
 
     private fun trimHistory() {
         if (messages.size > 24) messages.subList(0, messages.size - 24).clear()
+        session.save()
     }
 
     private fun detach(view: View) {
