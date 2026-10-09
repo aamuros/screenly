@@ -42,6 +42,30 @@ docs/                             Shared plan, architecture, testing
 VERIFICATION.md                   Preserved M2 audit and emulator evidence
 ```
 
+## Accessibility Inspector (debug build)
+
+This feature is intentionally limited to on-device UI extraction, not AI or OCR.
+Open Screenly, review the disclosure and tick the consent checkbox, then use
+**Open Accessibility Settings**. Under installed/downloaded services, select Screenly,
+enable its service, and return to the app. Use **Open Android Settings to test**.
+
+On the Settings screen, tap the floating bubble and select **Explain**.
+The debug-only inspector shows returned accessibility node counts, field completeness,
+and up to 20 element records, including class, resource ID, labels, clickable/checked/
+enabled/scrollable flags, and screen-pixel bounds. Tap a listed element for details;
+use **Refresh screen** after manually changing the Settings screen. This path uses
+only AccessibilityService metadata and does not request a screenshot or invoke AI.
+Outside Android Settings, Explain retains the normal accessibility-label summary.
+
+Counts reflect only nodes that Android exposes, **not** the percentage of visually
+present controls extracted. For true coverage, manually annotate visible controls
+and match those controls against the extracted results. Debug Logcat can contain
+non-editable labels, so only test on non-sensitive screens.
+
+The in-app consent is distinct from the Android system permission. Clearing consent
+suppresses future third-party observation; revoking the Android service in Settings
+removes the platform permission. The system permission cannot be granted by Screenly.
+
 ## Develop, build, and install
 
 Use Android Studio supporting Android Gradle Plugin **9.1.1**, Android SDK Platform **36.1**

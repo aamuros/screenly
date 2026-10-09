@@ -45,8 +45,10 @@ internal class ScreenlyFeaturePanel(
         if (stopped) return
         feature = action
         feedback = ""
+        if (action == AssistantAction.EXPLAIN) {
+            if (!refreshObservation()) feedback = service.getString(R.string.assistant_screen_unavailable)
+        }
         render(animate = true)
-        if (action == AssistantAction.EXPLAIN) capture(action, null)
     }
 
     fun dismiss(immediate: Boolean = false, restoreBubble: Boolean = true) {
@@ -80,15 +82,19 @@ internal class ScreenlyFeaturePanel(
     private fun render(animate: Boolean = false) {
         val action = feature ?: return
         if (stopped) return
+        val observed = if (action == AssistantAction.EXPLAIN) currentObservation() else null
+        val diagnostics = observed
+            ?.takeIf { BuildConfig.DEBUG && it.packageName == "com.android.settings" }
+            ?.let(UiExtractionDiagnostics::inspect)
         val panel = FloatingAssistantViews.feature(
             service,
             AssistantPanelState(
                 action = action,
                 messages = messages.toList(),
-                detail = if (action == AssistantAction.EXPLAIN)
-                    currentObservation()?.let(AccessibleScreenAssistant::describeScreen).orEmpty() else "",
-                items = if (action == AssistantAction.EXPLAIN)
-                    currentObservation()?.let(AccessibleScreenAssistant::visibleItems).orEmpty() else emptyList(),
+                detail = diagnostics?.summary ?: observed
+                    ?.let(AccessibleScreenAssistant::describeScreen).orEmpty(),
+                items = diagnostics?.entries ?: observed
+                    ?.let(AccessibleScreenAssistant::visibleItems).orEmpty(),
                 selectedItemIndex = selectedItem,
                 guidance = guidance,
                 processing = busy,
@@ -112,7 +118,14 @@ internal class ScreenlyFeaturePanel(
                     }
                 },
                 refresh = {
-                    if (!busy) capture(action, messages.lastOrNull { it.fromUser }?.content)
+                    if (!busy) {
+                        if (action == AssistantAction.EXPLAIN) {
+                            selectedItem = null
+                            feedback = if (refreshObservation()) ""
+                                else service.getString(R.string.assistant_screen_unavailable)
+                            render()
+                        } else capture(action, messages.lastOrNull { it.fromUser }?.content)
+                    }
                 },
                 selectItem = { index ->
                     selectedItem = if (selectedItem == index) null else index

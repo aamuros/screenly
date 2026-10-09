@@ -41,17 +41,34 @@ class ScreenlyAccessibilityService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         overlay?.dispose()
-        overlay = ScreenlyOverlay(this) { observeScreen() }
-        registerScreenReceiver()
+        overlay = null
+        if (ensureConsent()) registerScreenReceiver()
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "Service connected. Open Android Settings to inspect its interface.")
         }
-        observeScreen()
+        if (overlay != null) observeScreen()
+    }
+
+    /**
+     * An enabled Android service alone is insufficient: require separate, informed
+     * in-app consent. Recheck at every event to honor an in-app revocation.
+     */
+    private fun ensureConsent(): Boolean {
+        if (!AccessibilityConsent.isGranted(this)) {
+            if (overlay != null) {
+                clearObservation()
+                overlay?.dispose()
+                overlay = null
+            }
+            return false
+        }
+        if (overlay == null) overlay = ScreenlyOverlay(this) { observeScreen() }
+        return true
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         // Never read event.text: text-change events may contain sensitive input.
-        if (event == null) return
+        if (event == null || !ensureConsent()) return
         if (event.packageName?.toString() == packageName &&
             event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
             event.eventType != AccessibilityEvent.TYPE_WINDOWS_CHANGED
@@ -71,7 +88,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
     }
 
     private fun scheduleObservation() {
-        if (overlay == null) return
+        if (!ensureConsent()) return
         if (!canObserve()) {
             clearObservation()
             return
@@ -89,7 +106,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
     private fun observeScreen(): Boolean {
         handler.removeCallbacks(capture)
         observationPending = false
-        if (overlay == null || !canObserve()) {
+        if (!ensureConsent() || !canObserve()) {
             clearObservation()
             return false
         }

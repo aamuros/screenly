@@ -11,6 +11,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -27,6 +29,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -34,9 +37,11 @@ import androidx.core.view.WindowCompat
 
 class MainActivity : ComponentActivity() {
     private var serviceEnabled by mutableStateOf(false)
+    private var consentGranted by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        consentGranted = AccessibilityConsent.isGranted(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             MaterialTheme(
@@ -49,7 +54,7 @@ class MainActivity : ComponentActivity() {
                             .windowInsetsPadding(WindowInsets.safeDrawing)
                             .verticalScroll(rememberScrollState())
                             .padding(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.app_name),
@@ -62,12 +67,41 @@ class MainActivity : ComponentActivity() {
                             ),
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Button(onClick = {
-                            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
-                        }) {
+                        Text(
+                            text = stringResource(R.string.accessibility_permission_heading),
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                        Text(stringResource(R.string.accessibility_disclosure))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = consentGranted,
+                                onCheckedChange = { accepted ->
+                                    AccessibilityConsent.setGranted(this@MainActivity, accepted)
+                                    consentGranted = accepted
+                                }
+                            )
+                            Text(stringResource(R.string.accessibility_consent_label))
+                        }
+                        Button(
+                            enabled = consentGranted,
+                            onClick = {
+                                startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+                            }
+                        ) {
                             Text(stringResource(R.string.open_accessibility_settings))
                         }
                         Text(stringResource(R.string.enable_instructions))
+                        if (serviceEnabled && consentGranted) {
+                            Text(
+                                text = stringResource(R.string.accessibility_ready),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Button(onClick = {
+                                startActivity(Intent(Settings.ACTION_SETTINGS))
+                            }) {
+                                Text(stringResource(R.string.open_settings_test))
+                            }
+                        }
                         Text(stringResource(R.string.testing_instructions))
                         Text(
                             text = stringResource(R.string.privacy_notice),
@@ -81,6 +115,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        consentGranted = AccessibilityConsent.isGranted(this)
         val manager = getSystemService(AccessibilityManager::class.java)
         val service = ComponentName(this, ScreenlyAccessibilityService::class.java)
         serviceEnabled = manager
