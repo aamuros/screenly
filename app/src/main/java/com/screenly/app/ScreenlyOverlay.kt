@@ -148,7 +148,7 @@ internal class ScreenlyOverlay(
             }
         }
         view.addView(ImageView(service).apply {
-            setImageResource(R.drawable.ic_launcher_foreground)
+            setImageResource(R.drawable.screenly_bubble)
             scaleType = ImageView.ScaleType.FIT_CENTER
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             background = GradientDrawable().apply {
