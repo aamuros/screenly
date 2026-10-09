@@ -26,6 +26,10 @@ import android.widget.TextView
 import android.widget.Toast
 import android.util.Log
 import androidx.core.graphics.withTranslation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -45,6 +49,7 @@ internal class ScreenlyOverlay(
     private var assistantMenu: View? = null
     private var featureController: ScreenlyFeaturePanel? = null
     private val featureSession = AssistantSessionStore()
+    private val assistant = OnDeviceAssistant(service)
     private val bubbleBitmap by lazy {
         BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
             BitmapFactory.Options().apply { inSampleSize = 4; inScaled = false })
@@ -88,8 +93,10 @@ internal class ScreenlyOverlay(
     }
 
     fun dispose() {
+        if (disposed) return
         disposed = true
         clearObservation()
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch { assistant.close() }
     }
 
 
@@ -256,9 +263,20 @@ internal class ScreenlyOverlay(
                 windowManager = windowManager,
                 bubble = bubbleView,
                 session = featureSession,
+                assistant = assistant,
                 layoutParams = { width, height -> featurePanelParams(width, height) },
                 refreshObservation = refreshObservation,
                 currentObservation = { state.snapshot },
+                currentRevision = { state.revision },
+                highlightTarget = { snapshot, index, revision ->
+                    val target = snapshot.elements.getOrNull(index)
+                    val display = windowManager.currentWindowMetrics.bounds
+                    if (!disposed && target != null &&
+                        state.canSelect(snapshot, revision, target) &&
+                        target.intersectsScreen(display.width(), display.height())) {
+                        showHighlight(target)
+                    }
+                },
                 manualPicker = {
                     if (refreshObservation()) showPicker()
                     else Toast.makeText(service, R.string.screen_changed, Toast.LENGTH_SHORT).show()
