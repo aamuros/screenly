@@ -44,6 +44,7 @@ internal class ScreenlyOverlay(
     private var picker: View? = null
     private var assistantMenu: View? = null
     private var featureController: ScreenlyFeaturePanel? = null
+    private val featureSession = AssistantSessionStore()
     private val bubbleBitmap by lazy {
         BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
             BitmapFactory.Options().apply { inSampleSize = 4; inScaled = false })
@@ -77,6 +78,7 @@ internal class ScreenlyOverlay(
         closeMenu(immediate = true)
         featureController?.dismiss(immediate = true, restoreBubble = false)
         featureController = null
+        featureSession.clear()
         clearHighlight()
         val previousBubble = bubble
         bubble = null
@@ -247,12 +249,13 @@ internal class ScreenlyOverlay(
         var expectedView: View? = null
         val view = FloatingAssistantViews.menu(service, onAction = actionClick@ { action ->
             if (disposed || assistantMenu !== expectedView) return@actionClick
-            closeMenu(immediate = true, restoreBubble = false)
+            closeMenu(immediate = false, restoreBubble = false)
             val bubbleView = bubble ?: return@actionClick
             val controller = ScreenlyFeaturePanel(
                 service = service,
                 windowManager = windowManager,
                 bubble = bubbleView,
+                session = featureSession,
                 layoutParams = { width, height -> featurePanelParams(width, height) },
                 refreshObservation = refreshObservation,
                 currentObservation = { state.snapshot },

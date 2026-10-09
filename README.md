@@ -7,9 +7,16 @@ performs the action, and Screenly observes the next screen. Inference must work 
 
 ## Current status
 
-The current app is a **manual accessibility prototype**: sanitized screen observations, a
-72dp outlined assistant icon that docks to the nearest side while keeping its chosen height, a compact animated four-action native menu, an element picker under **Guide Me**, and touch-through highlighting. Goal input, AI
-inference, and multistep guidance are not implemented.
+The current app has sanitized accessibility observations, a 72dp outlined edge-docked
+floating bubble, an animated four-action menu, compact panels for Ask AI, Explain, Guide Me,
+and Privacy, and touch-through highlighting with the manual picker available as a fallback.
+Ask AI and Explain provide explicitly labelled accessibility-based information.
+Guide Me collects a goal, suggests one control at a time using conservative offline rules,
+and verifies changes when possible. Screenshot capture is explicitly requested via the
+AccessibilityService API, then immediately discarded in memory. **No vision model is
+integrated on this branch**, so the screenshots are not interpreted by AI. The separate
+`feat/local-ai` branch contains a text-only inference prototype that is not merged here.
+Do not present this fallback as screenshot-grounded vision inference.
 
 M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
 automated and API 35 Pixel Tablet emulator evidence exists, but physical-device verification
@@ -34,7 +41,9 @@ app/src/main/java/com/screenly/app/
   AccessibleUiElement.kt           Element values, bounds checks, label sanitation
   ScreenObservation.kt             Snapshot equality and selection revisions
   ScreenlyOverlay.kt               Native bubble, menu, picker and highlight windows
-  FloatingAssistantViews.kt        Live four-action menu and information panels
+  FloatingAssistantViews.kt        Live four-action menu and feature cards
+  ScreenlyFeaturePanel.kt          On-demand screenshot lifecycle and panel controller
+  AccessibleScreenAssistant.kt     Offline accessibility-only assistance and guidance
 app/src/main/res/xml/              Accessibility service configuration
 app/src/test/                     Observation-policy and sanitizer tests
 app/src/androidTest/              Template app-context test only
@@ -63,9 +72,12 @@ Open Screenly → **Open Accessibility Settings** → **Screenly** under downloa
 services → enable **Use Screenly**. If sideloading is restricted, use system **App info** →
 **Allow restricted settings**, then retry. No “Display over other apps” permission is needed.
 
-Open Android Settings, tap the assistant icon, choose **Guide Me**, select an enabled clickable row, then manually tap the
-highlighted control. Drag and release the bubble to dock it at the closest side and keep its vertical position. Selection does not activate it. Scroll/navigation should clear the
-selection; Screenly's own activity hides overlays.
+Open Android Settings, tap the assistant bubble to open the menu, and choose Ask AI, Explain,
+Guide Me or Privacy. Guide Me accepts a goal and shows one instruction at a time, followed
+by **Check my screen**. Use **Select a control manually** for the previous picker and
+touch-through highlights. Drag and release the bubble to dock it on either side without
+changing its vertical position. Screenly never taps the target app. If screenshot capability
+is not enabled after updating, re-enable Screenly in Android Accessibility Settings.
 
 ## Shared documentation
 

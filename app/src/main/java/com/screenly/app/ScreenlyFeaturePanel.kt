@@ -19,10 +19,17 @@ import android.view.inputmethod.InputMethodManager
  * Owns focusable feature overlays, on-demand screenshots and ephemeral UI state.
  * Screen pixels never enter a disk cache or the accessibility observation model.
  */
+internal class AssistantSessionStore {
+    val messages = mutableListOf<AssistantChatEntry>()
+    var guidance: AccessibleScreenAssistant.Guidance? = null
+    fun clear() { messages.clear(); guidance = null }
+}
+
 internal class ScreenlyFeaturePanel(
     private val service: AccessibilityService,
     private val windowManager: WindowManager,
     private val bubble: View,
+    private val session: AssistantSessionStore,
     private val layoutParams: (Int, Int) -> WindowManager.LayoutParams,
     private val refreshObservation: () -> Boolean,
     private val currentObservation: () -> ScreenObservation?,
@@ -30,8 +37,10 @@ internal class ScreenlyFeaturePanel(
     private val onClosed: () -> Unit
 ) {
     private val handler = Handler(Looper.getMainLooper())
-    private val messages = mutableListOf<AssistantChatEntry>()
-    private var guidance: AccessibleScreenAssistant.Guidance? = null
+    private val messages get() = session.messages
+    private var guidance: AccessibleScreenAssistant.Guidance?
+        get() = session.guidance
+        set(value) { session.guidance = value }
     private var feature: AssistantAction? = null
     private var root: View? = null
     private var selectedItem: Int? = null
@@ -65,8 +74,6 @@ internal class ScreenlyFeaturePanel(
             else view.animate().alpha(0f).scaleX(0.5f).scaleY(0.5f)
                 .setDuration(160L).withEndAction { detach(view) }.start()
         }
-        messages.clear()
-        guidance = null
         if (restoreBubble) {
             bubble.animate().cancel()
             bubble.visibility = View.VISIBLE
@@ -150,10 +157,9 @@ internal class ScreenlyFeaturePanel(
             )
         )
         panel.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) {
-                dismiss()
-                true
-            } else false
+            // Guide Me must remain visible while the user acts on the underlying app.
+            // FLAG_NOT_TOUCH_MODAL permits touches outside the panel without dismissing it.
+            event.actionMasked == MotionEvent.ACTION_OUTSIDE
         }
         panel.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
@@ -191,10 +197,10 @@ internal class ScreenlyFeaturePanel(
             val bubbleParams = bubble.layoutParams as? WindowManager.LayoutParams
             val fromX = (bubbleParams?.x ?: params.x) + dp(36)
             val fromY = (bubbleParams?.y ?: params.y) + dp(36)
-            panel.pivotX = (fromX - params.x).toFloat().coerceIn(0f, targetWidth.toFloat())
+            panel.pivotX = (fromX - params.x).toFloat().coerceIn(0f, params.width.toFloat())
             panel.pivotY = (fromY - params.y).toFloat().coerceIn(0f, dp(300).toFloat())
             panel.alpha = 0f
-            panel.scaleX = (dp(72).toFloat() / targetWidth).coerceAtMost(1f)
+            panel.scaleX = (dp(72).toFloat() / params.width).coerceAtMost(1f)
             panel.scaleY = dp(72).toFloat() / dp(300)
             panel.animate().alpha(1f).scaleX(1f).scaleY(1f)
                 .setInterpolator(DecelerateInterpolator()).setDuration(200L).start()
@@ -263,9 +269,7 @@ internal class ScreenlyFeaturePanel(
                             completeCapture(requestId, action, prompt, snapshot, false)
                         }
                     })
-            } catch (_: SecurityException) {
-                completeCapture(requestId, action, prompt, snapshot, false)
-            } catch (_: IllegalStateException) {
+            } catch (_: RuntimeException) {
                 completeCapture(requestId, action, prompt, snapshot, false)
             }
         }, 360L)

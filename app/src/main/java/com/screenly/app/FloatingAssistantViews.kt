@@ -151,7 +151,7 @@ internal object FloatingAssistantViews {
             override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
                 val limit = dp(context, 300)
                 super.onMeasure(widthMeasureSpec,
-                    MeasureSpec.makeMeasureSpec(limit, MeasureSpec.AT_MOST))
+                    View.MeasureSpec.makeMeasureSpec(limit, View.MeasureSpec.AT_MOST))
             }
         }.apply {
             isVerticalScrollBarEnabled = false
