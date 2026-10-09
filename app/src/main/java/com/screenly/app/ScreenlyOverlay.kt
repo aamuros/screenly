@@ -3,7 +3,6 @@ package com.screenly.app
 import android.accessibilityservice.AccessibilityService
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -51,10 +50,6 @@ internal class ScreenlyOverlay(
     private var featureController: ScreenlyFeaturePanel? = null
     private val featureSession = AssistantSessionStore(java.io.File(service.noBackupFilesDir, "assistant-session.properties"))
     private val assistant = OnDeviceAssistant(service)
-    private val bubbleBitmap by lazy {
-        BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
-            BitmapFactory.Options().apply { inSampleSize = 4; inScaled = false })
-    }
     private var highlight: HighlightView? = null
     private var outsideDismissalDownTime: Long? = null
     private var bubbleClickClosesPicker = false
@@ -153,8 +148,8 @@ internal class ScreenlyOverlay(
             }
         }
         view.addView(ImageView(service).apply {
-            setImageBitmap(bubbleBitmap)
-            scaleType = ImageView.ScaleType.CENTER_CROP
+            setImageResource(R.drawable.ic_launcher_foreground)
+            scaleType = ImageView.ScaleType.FIT_CENTER
             importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
             background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
