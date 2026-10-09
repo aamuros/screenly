@@ -8,7 +8,7 @@ performs the action, and Screenly observes the next screen. Inference must work 
 ## Current status
 
 The current app is a **manual accessibility prototype**: sanitized screen observations, a
-72dp outlined assistant icon that snaps to screen corners, a compact animated four-action native menu, an element picker under **Guide Me**, and touch-through highlighting. Goal input, AI
+72dp outlined assistant icon that docks to the nearest side while keeping its chosen height, a compact animated four-action native menu, an element picker under **Guide Me**, and touch-through highlighting. Goal input, AI
 inference, and multistep guidance are not implemented.
 
 M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
@@ -64,7 +64,7 @@ services → enable **Use Screenly**. If sideloading is restricted, use system *
 **Allow restricted settings**, then retry. No “Display over other apps” permission is needed.
 
 Open Android Settings, tap the assistant icon, choose **Guide Me**, select an enabled clickable row, then manually tap the
-highlighted control. Drag the bubble to dock it at the nearest screen corner. Selection does not activate it. Scroll/navigation should clear the
+highlighted control. Drag and release the bubble to dock it at the closest side and keep its vertical position. Selection does not activate it. Scroll/navigation should clear the
 selection; Screenly's own activity hides overlays.
 
 ## Shared documentation

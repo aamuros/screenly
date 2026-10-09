@@ -4,26 +4,47 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class BubbleDockingTest {
-    @Test fun allFourCorners() {
-        val leftTop = BubbleDocking.nearestCorner(45, 80, 20, 50, 420, 850)
-        val rightTop = BubbleDocking.nearestCorner(400, 80, 20, 50, 420, 850)
-        val leftBottom = BubbleDocking.nearestCorner(45, 800, 20, 50, 420, 850)
-        val rightBottom = BubbleDocking.nearestCorner(400, 800, 20, 50, 420, 850)
-        assertEquals(BubbleCorner(false, false), leftTop)
-        assertEquals(BubbleCorner(true, false), rightTop)
-        assertEquals(BubbleCorner(false, true), leftBottom)
-        assertEquals(BubbleCorner(true, true), rightBottom)
-        assertEquals(Pair(32, 62), BubbleDocking.position(20, 50, 420, 850, 72, 12, leftTop))
-        assertEquals(Pair(336, 766), BubbleDocking.position(20, 50, 420, 850, 72, 12, rightBottom))
+    @Test fun snapsOnlyHorizontally() {
+        assertEquals(false, BubbleDocking.nearestSide(90, 0, 400))
+        assertEquals(true, BubbleDocking.nearestSide(380, 0, 400))
+        assertEquals(true, BubbleDocking.nearestSide(200, 0, 400))
+        assertEquals(
+            Pair(32, 397),
+            BubbleDocking.position(20, 50, 420, 850, 72, 72, 12, false, 397)
+        )
+        assertEquals(
+            Pair(336, 397),
+            BubbleDocking.position(20, 50, 420, 850, 72, 72, 12, true, 397)
+        )
     }
 
-    @Test fun crampedScreenDoesNotCrash() {
-        assertEquals(Pair(12, 12),
-            BubbleDocking.position(0, 0, 40, 40, 72, 12, BubbleCorner(true, true)))
+    @Test fun clampsVerticalBoundsWithoutForcingCorners() {
+        assertEquals(
+            Pair(336, 62),
+            BubbleDocking.position(20, 50, 420, 850, 72, 72, 12, true, -30)
+        )
+        assertEquals(
+            Pair(32, 766),
+            BubbleDocking.position(20, 50, 420, 850, 72, 72, 12, false, 900)
+        )
+        assertEquals(
+            Pair(0, 0),
+            BubbleDocking.position(0, 0, 40, 40, 40, 40, 12, true, 20)
+        )
     }
 
-    @Test fun exactCenterChoosesRightBottom() {
-        assertEquals(BubbleCorner(true, true),
-            BubbleDocking.nearestCorner(200, 400, 0, 0, 400, 800))
+    @Test fun menuTracksBubbleHeightWithoutLeavingScreen() {
+        assertEquals(
+            Pair(188, 334),
+            BubbleDocking.panelPosition(20, 50, 420, 850, 220, 198, 12, true, 397, 72)
+        )
+        assertEquals(
+            Pair(32, 62),
+            BubbleDocking.panelPosition(20, 50, 420, 850, 220, 198, 12, false, 62, 72)
+        )
+        assertEquals(
+            Pair(188, 640),
+            BubbleDocking.panelPosition(20, 50, 420, 850, 220, 198, 12, true, 766, 72)
+        )
     }
 }

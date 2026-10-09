@@ -36,7 +36,8 @@ internal class ScreenlyOverlay(
 ) {
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val state = ScreenObservationState()
-    private var dockCorner = BubbleCorner(right = true, bottom = true)
+    private var dockRight = true
+    private var dockY: Int? = null
     private var snapAnimator: ValueAnimator? = null
     private var disposed = false
     private var bubble: View? = null
@@ -96,10 +97,13 @@ internal class ScreenlyOverlay(
         val size = dp(BUBBLE_SIZE_DP)
         val area = usableScreenBounds()
         if (area.width() <= 0 || area.height() <= 0) return
-        val (cornerX, cornerY) = BubbleDocking.position(
-            area.left, area.top, area.right, area.bottom, size, dp(CORNER_MARGIN_DP), dockCorner
+        val (edgeX, retainedY) = BubbleDocking.position(
+            area.left, area.top, area.right, area.bottom,
+            size, size, dp(CORNER_MARGIN_DP), dockRight,
+            dockY ?: (area.bottom - size - dp(CORNER_MARGIN_DP))
         )
-        val params = overlayParams(size, size).apply { x = cornerX; y = cornerY }
+        dockY = retainedY
+        val params = overlayParams(size, size).apply { x = edgeX; y = retainedY }
         val view = FrameLayout(service).apply {
             contentDescription = service.getString(R.string.assistant_bubble_description)
             elevation = dp(8).toFloat()
@@ -179,11 +183,11 @@ internal class ScreenlyOverlay(
                     }
                 }
                 MotionEvent.ACTION_UP -> {
-                    if (dragging) snapToNearestCorner(touchedView, params)
+                    if (dragging) snapToNearestSide(touchedView, params)
                     else touchedView.performClick()
                 }
                 MotionEvent.ACTION_CANCEL -> {
-                    if (dragging) snapToNearestCorner(touchedView, params)
+                    if (dragging) snapToNearestSide(touchedView, params)
                     bubbleClickClosesPicker = false
                 }
             }
@@ -191,17 +195,17 @@ internal class ScreenlyOverlay(
         }
     }
 
-    private fun snapToNearestCorner(view: View, params: WindowManager.LayoutParams) {
+    private fun snapToNearestSide(view: View, params: WindowManager.LayoutParams) {
         if (disposed || bubble !== view) return
         val area = usableScreenBounds()
-        dockCorner = BubbleDocking.nearestCorner(
-            params.x + params.width / 2, params.y + params.height / 2,
-            area.left, area.top, area.right, area.bottom
+        dockRight = BubbleDocking.nearestSide(
+            params.x + params.width / 2, area.left, area.right
         )
         val target = BubbleDocking.position(
             area.left, area.top, area.right, area.bottom,
-            params.width, dp(CORNER_MARGIN_DP), dockCorner
+            params.width, params.height, dp(CORNER_MARGIN_DP), dockRight, params.y
         )
+        dockY = target.second
         val initialX = params.x
         val initialY = params.y
         snapAnimator?.cancel()
@@ -271,12 +275,17 @@ internal class ScreenlyOverlay(
             } else false
         }
         val size = dp(BUBBLE_SIZE_DP).toFloat()
-        view.pivotX = if (dockCorner.right) width - size / 2 else size / 2
-        view.pivotY = if (dockCorner.bottom) height - size / 2 else size / 2
+        val panelParams = sidePanelParams(width, height)
+        val bubbleParams = bubble?.layoutParams as? WindowManager.LayoutParams
+        val bubbleX = bubbleParams?.x ?: panelParams.x
+        val bubbleY = bubbleParams?.y ?: (dockY ?: panelParams.y)
+        // Animate from the actual bubble position, including the user's chosen height.
+        view.pivotX = (bubbleX + size / 2 - panelParams.x).coerceIn(0f, width.toFloat())
+        view.pivotY = (bubbleY + size / 2 - panelParams.y).coerceIn(0f, height.toFloat())
         view.alpha = 0f
         view.scaleX = size / width
         view.scaleY = size / height
-        if (attach(view, cornerPanelParams(width, height))) {
+        if (attach(view, panelParams)) {
             assistantMenu = view
             bubble?.let { bubbleView ->
                 bubbleView.animate().cancel()
@@ -306,20 +315,23 @@ internal class ScreenlyOverlay(
                 true
             } else false
         }
-        if (attach(view, cornerPanelParams(
+        if (attach(view, sidePanelParams(
             min(dp(288), area.width()), min(dp(228), area.height())
         ))) infoPanel = view
     }
 
-    private fun cornerPanelParams(width: Int, height: Int): WindowManager.LayoutParams {
+    private fun sidePanelParams(width: Int, height: Int): WindowManager.LayoutParams {
         val area = usableScreenBounds()
-        val (cornerX, cornerY) = BubbleDocking.position(
+        val bubbleY = (bubble?.layoutParams as? WindowManager.LayoutParams)?.y
+            ?: dockY ?: area.bottom - dp(BUBBLE_SIZE_DP)
+        val (edgeX, alignedY) = BubbleDocking.panelPosition(
             area.left, area.top, area.right, area.bottom,
-            width, dp(CORNER_MARGIN_DP), dockCorner
+            width, height, dp(CORNER_MARGIN_DP), dockRight,
+            bubbleY, dp(BUBBLE_SIZE_DP)
         )
         return overlayParams(width, height).apply {
-            x = cornerX
-            y = cornerY
+            x = edgeX
+            y = alignedY
             flags = flags or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
         }
     }
