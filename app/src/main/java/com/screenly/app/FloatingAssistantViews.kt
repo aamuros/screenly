@@ -228,16 +228,6 @@ internal object FloatingAssistantViews {
                 textSize = 12f
                 setTextColor(Color.rgb(176, 176, 176))
             }, gap(context, 6))
-            // The active instruction stays visible while previous steps remain reviewable.
-            for (prior in state.guideSteps.dropLast(1).takeLast(5)) {
-                root.addView(TextView(context).apply {
-                    text = "Step " + prior.step + ": " + prior.instruction
-                    textSize = 12f
-                    setTextColor(Color.rgb(176, 176, 176))
-                    setPadding(dp(context, 9), dp(context, 7), dp(context, 9), dp(context, 7))
-                    background = rounded(context, 49, 9)
-                }, gap(context, 4))
-            }
             root.addView(TextView(context).apply {
                 text = context.getString(R.string.assistant_guide_step, guide.step)
                 textSize = 13f
@@ -262,6 +252,25 @@ internal object FloatingAssistantViews {
                 R.string.assistant_manual_picker, state.processing, actions.manualPicker), gap(context, 6))
             root.addView(actionText(context,
                 R.string.assistant_cancel, state.processing, actions.cancelGuide), gap(context, 6))
+            // Current step is always first; old steps are available below it on scroll.
+            val earlier = state.guideSteps.dropLast(1).takeLast(5)
+            if (earlier.isNotEmpty()) {
+                root.addView(TextView(context).apply {
+                    text = "Previous steps"
+                    textSize = 12f
+                    typeface = Typeface.DEFAULT_BOLD
+                    setTextColor(Color.rgb(176, 176, 176))
+                }, gap(context, 12))
+            }
+            for (prior in earlier) {
+                root.addView(TextView(context).apply {
+                    text = "Step " + prior.step + ": " + prior.instruction
+                    textSize = 12f
+                    setTextColor(Color.rgb(176, 176, 176))
+                    setPadding(dp(context, 9), dp(context, 7), dp(context, 9), dp(context, 7))
+                    background = rounded(context, 49, 9)
+                }, gap(context, 4))
+            }
         }
         status(context, root, state)
     }
