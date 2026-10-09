@@ -170,3 +170,10 @@ close on owner teardown. Test actual runtime cancellation/close behavior. Record
 device, load/inference timing and memory before setting budgets. Missing/corrupt-model handling
 and fallback stay local. Developer downloads are separate from offline acceptance: the
 installed, provisioned app must restart and infer without a connection.
+
+## Local AI backend merged from feat/local-ai
+
+The isolated `ai/LocalInference` native inference component and `ai/navigation` experiment/evaluation helpers
+are now present alongside the existing guidance UI. Consult [LOCAL_AI.md](LOCAL_AI.md),
+[NAVIGATION_BACKEND.md](NAVIGATION_BACKEND.md), and [M4_PLAN.md](M4_PLAN.md).
+The classes are not automatically wired into the existing `AccessibleScreenAssistant` workflow by this source merge.

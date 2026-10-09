@@ -86,3 +86,11 @@ is not enabled after updating, re-enable Screenly in Android Accessibility Setti
 - [Actual architecture and proposed contracts](docs/ARCHITECTURE.md)
 - [Verification procedures and result recording](docs/TESTING.md)
 - [Existing M2 verification report](VERIFICATION.md)
+
+## Integrated local AI backend
+
+The `feat/local-ai` backend has been merged into this branch alongside Android guidance UI.
+See [LOCAL_AI.md](docs/LOCAL_AI.md) for the pinned offline model, provisioning and inference testing;
+[NAVIGATION_BACKEND.md](docs/NAVIGATION_BACKEND.md) for the independent model navigation/evaluation harness;
+and [M4_PLAN.md](docs/M4_PLAN.md) for its intended integration boundaries.
+These components coexist in this branch; this merge does not by itself connect the backend to every Android guidance UI action or establish physical-device verification.

@@ -1,6 +1,7 @@
 # Screenly roadmap
 
-Baseline inspected: `51f5fb7` on `main`, 2026-10-09. This change adds documentation only.
+Original documentation baseline: `51f5fb7` on `main`, 2026-10-09. M3 implementation starts
+from `e754f7b` on `feat/local-ai`; see [M3 evidence and remaining gates](LOCAL_AI.md).
 Checked boxes mean the stated task has evidence, not that an entire milestone is verified.
 Procedures: [TESTING.md](TESTING.md). Contracts: [ARCHITECTURE.md](ARCHITECTURE.md).
 Preserve [VERIFICATION.md](../VERIFICATION.md) as the historical audit; its “CONDITIONALLY
@@ -10,6 +11,12 @@ Statuses: **NOT STARTED** = no milestone implementation; **IN PROGRESS** = parti
 **IMPLEMENTED — UNVERIFIED** = implementation present with outstanding acceptance checks;
 **BLOCKED** = a recorded prerequisite prevents progress; **VERIFIED** = all acceptance
 criteria have evidence. Do not promote status from a task title, branch name or build alone.
+
+**Current development scope (2026-10-10):** The user authorizes a standalone local navigation
+backend and offline evaluation on `Screenly_M3_API30` without waiting for M0. Physical acceptance
+remains separate and unverified. M0 joint approval still gates shared contracts and planner
+adapters, not independent backend work. [Current implementation/evidence](NAVIGATION_BACKEND.md)
+and [shared integration plan](M4_PLAN.md). No full milestone is promoted from emulator results.
 
 ## M0 — Shared Contracts & Parallel Development Setup
 
@@ -78,12 +85,12 @@ multiple displays remain untested. No new device checks were performed for this 
 ## M3 — Local AI Integration
 
 **Objective:** Load a compatible local model and infer without network access.
-**Owner:** Developer 2. **Status: NOT STARTED.**
+**Owner:** Developer 2. **Status: IMPLEMENTED — UNVERIFIED.**
 
-- [ ] Integrate LiteRT-LM with explicit initialization/error/close handling.
-- [ ] Define local provisioning, model format, integrity, license and storage requirements.
-- [ ] Load a compatible model; evaluate quantized Gemma 3 1B as the initial candidate.
-- [ ] Verify offline inference, including restart in airplane mode.
+- [x] Integrate LiteRT-LM with explicit initialization/error/close handling.
+- [x] Define local provisioning, model format, integrity, license and storage requirements.
+- [x] Load/evaluate the exact INT4 Gemma 3 1B candidate on the documented API 30 emulator; physical acceptance remains open.
+- [x] Verify emulator offline inference through two process restarts in airplane mode with Wi-Fi/mobile data off; phone verification remains open.
 - [ ] Benchmark initialization, inference, memory and APK/model size on the demo phone.
 
 **Dependencies:** Agreed hardware and compatible runtime/model; M0 for planner integration.
@@ -92,28 +99,54 @@ Compatibility/provisioning investigation can proceed independently.
 **Acceptance:** Exact model loads/responds offline on the chosen phone without blocking UI;
 missing/corrupt model and runtime failures are safe. Agree latency/memory budgets from evidence.
 **Verification:** TESTING M3; cold/warm loads, repeated inference, offline restart and errors.
-**Evidence/gaps:** No runtime dependency, loader, artifact or benchmark exists. Format/backend,
-device suitability and provisioning method remain open.
+**Evidence/gaps:** `ai/LocalInference`, integrity/lifecycle unit tests and an opt-in Android
+smoke test implement isolated CPU inference with LiteRT-LM 0.10.2. [M3 report](LOCAL_AI.md)
+pins the INT4 artifact/hash and documents private ADB provisioning. The 2026-10-09 follow-up
+fixes typed response extraction; fresh builds, 24 unit tests and lint pass. The exact licensed
+artifact is downloaded and verified on host/device. API 35 ARM64 native initialization crashes
+at SME `rdsvl`; an API 30 ARM64 AVD avoids SME2 dispatch. On API 30, three real smoke tests pass
+(six responses, including four offline responses across two process restarts), with reuse and
+cleanup success. Initialization is 421–1,474 ms; generation is 5,667–6,273 ms; loaded-process
+PSS sample is 1,054,031 KiB. Full responses show contradictory/unsupported claims despite
+naming Font Size. [Raw evidence](verification/m3-emulator-2026-10-09.txt) preserves actual results.
+The API 35 incompatibility, physical M1/M2/model acceptance and agreed phone performance budgets
+remain open. Emulator inference is verified to its stated scope; full M3 is not VERIFIED.
+M4 preparation now proceeds under the emulator-only scope described above.
+
+The [later physical verification attempt](LOCAL_AI.md#physical-verification-attempt-and-host-checks--2026-10-09)
+on `cfb893c` found no connected ADB device. Host model size/hash, runtime packaging, both APK
+builds and 9 targeted local-AI tests passed; no physical inference or benchmarks ran.
+Physical acceptance remains open; the runtime/model were not replaced.
 
 ## M4 — AI Navigation Planner
 
 **Objective:** Choose one allowed current element from a goal and sanitized snapshot.
 **Owner:** Developer 2; Developer 1 reviews Android validation compatibility.
-**Status: NOT STARTED.**
+**Status: IN PROGRESS.**
 
+- [x] Prepare isolated bounded prompt, TAP/NONE parser, original-index validation and conservative rule helpers without shared API changes.
+- [x] Add shared synthetic navigation fixtures and deterministic unit checks; evaluate standalone backend on API 30.
+- [x] Implement standalone decision pipeline with strict parsing, validation and explicit rule fallback; no shared Planner API.
 - [ ] Implement LlmPlanner and structured screen/goal prompts.
 - [ ] Constrain selection to enumerated candidates and agreed result schema.
 - [ ] Parse/validate malformed, out-of-range, unsupported and stale responses safely.
 - [ ] Implement RulePlanner fallback with explicit safe failure when no rule applies.
 - [ ] Add recorded sanitized snapshot tests and evaluate model selection quality.
 
-**Dependencies:** M0 API; M3 for real LLM evaluation. Parser/rule tests can precede M3.
+**Dependencies:** M0 API for shared adapters/integration; M3 for real LLM evaluation.
+Independent pipeline/parser/rule tests do not require M0 or a provisioned model.
 **Deliverable:** Validated selection/completion/unable results and snapshot fixtures.
 **Acceptance:** No invented targets/coordinates or automatic actions. Deterministic tests
 cover bad outputs/fallback; real-model evaluation reports correct/incorrect/unsupported cases.
 Jointly agree the demo quality threshold.
 **Verification:** TESTING M4; parser/rule tests plus separate offline-model fixture evaluation.
-**Evidence/gaps:** No Planner/LlmPlanner/RulePlanner or AI fixtures/tests exist.
+**Evidence/gaps:** `ai/navigation/` now contains a standalone engine, bounded prompts, strict
+TAP/NONE parsing, original-index/ambiguity/state/limited-route validation and explicit fallback.
+[Current report](NAVIGATION_BACKEND.md) records shared synthetic fixtures, focused host checks,
+real offline API 30 model/rule/fallback comparisons, measurements and retained semantic failures.
+No shared Planner/LlmPlanner/RulePlanner implementation or session/request validation exists.
+Recorded live snapshots, agreed quality budgets, broader language coverage and physical testing
+remain outstanding. C0 gates integration; M5 is unchanged.
 
 ## M5 — End-to-End Guidance
 
@@ -160,7 +193,7 @@ highlight, blocked underlying touch, critical crash or false completion in rehea
 
 | Stage | Developer 1 — `feat/android-guidance` | Developer 2 — `feat/local-ai` | Integration gate |
 | --- | --- | --- | --- |
-| Now / M0 | Physical M1/M2 checklist; review snapshot/revision semantics | Runtime/model/device compatibility investigation; review schema | C0: agree/merge contracts before dependent code |
+| Now / M0 | Review snapshot/revision/eligibility semantics; physical M1/M2 remains a later acceptance check | Emulator-only prompt/parser/rule preparation and synthetic fixtures; review schema | C0: agree/merge contracts before planner adapters |
 | After C0 | Goal UI, controller and overlays with MockPlanner | Model provisioning/load/benchmarks; parser, RulePlanner, fixtures | C1: shared fixtures/results pass both consumers |
 | After C1 + M3/M4 | Integrate real results and manual-action loop | Tune prompts; runtime/fallback handling | C2: real offline physical M5 task passes |
 | After C2 | Lifecycle/touch reliability and demo setup | Offline restart, selection quality, performance | C3: exact APK/model passes M6 rehearsal |

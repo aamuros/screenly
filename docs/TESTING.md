@@ -174,3 +174,10 @@ Limitations / remaining failure / owner / next check:
 Keep FAIL/NOT RUN cases visible. Update ROADMAP from linked evidence; check off physical
 tests only after physical results. Open decisions: model compatibility/provisioning, demo
 hardware/app/task, runtime memory/latency budgets and AI quality thresholds.
+
+## Integrated branch: local AI verification
+
+The `feat/local-ai` unit and instrumentation test suites are included in this integration branch.
+See [LOCAL_AI.md](LOCAL_AI.md) and [NAVIGATION_BACKEND.md](NAVIGATION_BACKEND.md) for
+model integrity verification, ADB provisioning, smoke-test commands and standalone navigation evaluation.
+A successful source merge is not a substitute for an APK build or real-device inference run.
