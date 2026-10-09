@@ -62,6 +62,9 @@ internal class ScreenlyOverlay(
         showBubble()
     }
 
+    /** Used to identify focus changes caused by Screenly's own feature overlay. */
+    fun hasOpenFeaturePanel(): Boolean = featureController != null
+
     fun clearSelection() {
         state.invalidateSelection()
         closePicker()
