@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/on-device-ai-integration
+      - fix/use-bubble-icon
       - feat/polished-home-screen
       - fix/text-assistant-replies
       - fix/persistent-assistant-sessions
