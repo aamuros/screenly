@@ -15,7 +15,9 @@ def summarize(records):
     calls = [r for r in rows if r["generation_ms"] is not None]
     durations = [r["generation_ms"] for r in calls]
     return {
-        "fixtures": len(fixtures), "decisions": len(rows), "native_calls": len(calls),
+        "fixtures": len(fixtures), "decisions": len(rows), "model_decisions": len(calls),
+        "native_calls": sum(sum(candidate["raw"] is not None for candidate in row["candidate_evaluations"])
+                            if "candidate_evaluations" in row else 1 for row in calls),
         "rules_correct": sum(r["rule_correct"] for r in rows),
         "model_correct": sum(r["model_correct"] for r in calls),
         "raw_model_correct": sum(r["raw_model_correct"] for r in calls) if all("raw_model_correct" in r for r in calls) else None,
@@ -40,6 +42,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--serial", default="emulator-5554")
     parser.add_argument("--repetitions", type=int, choices=range(1, 11), default=3)
+    parser.add_argument("--protocol", choices=("legacy", "candidate"), default="legacy")
+    parser.add_argument("--fixture-set", choices=("navigation", "availability"), default="navigation")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
@@ -104,6 +108,7 @@ def main():
         instrumentation = shell("am", "instrument", "-w", "-r", "-e", "class",
                                 "com.screenly.app.ai.navigation.NavigationEvaluationTest",
                                 "-e", "navigationEvaluation", "true", "-e", "repetitions", str(args.repetitions),
+                                "-e", "protocol", args.protocol, "-e", "fixtureSet", args.fixture_set,
                                 "com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner", filename="instrumentation.txt")
         raw = shell("run-as", "com.screenly.app", "cat", "cache/navigation-evaluation.jsonl")
         (output / "raw.jsonl").write_text(raw + "\n")

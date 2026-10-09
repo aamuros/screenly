@@ -1,0 +1,29 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.GuidanceUiTest:
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: guidance_pid=14888
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Display; source=RULE; wait_ms=674; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Dark theme; source=RULE; wait_ms=299; Android bounds=Rect(0, 437 - 1080, 683); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 3.744
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1

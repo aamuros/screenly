@@ -1,0 +1,40 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.GuidanceUiTest:
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: guidance_ui=label=Network & internet; source=RULE; wait_ms=2392; Android bounds=Rect(0, 303 - 1080, 503); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: No highlight at the current Android bounds Rect(0, 237 - 1080, 437)
+	at com.screenly.app.GuidanceUiTest.waitHighlight(GuidanceUiTest.kt:288)
+	at com.screenly.app.GuidanceUiTest.guidanceUsesRealBoundsAndContinuesAfterUserTap(GuidanceUiTest.kt:105)
+
+INSTRUMENTATION_STATUS: stream=
+Error in guidanceUsesRealBoundsAndContinuesAfterUserTap(com.screenly.app.GuidanceUiTest):
+java.lang.AssertionError: No highlight at the current Android bounds Rect(0, 237 - 1080, 437)
+	at com.screenly.app.GuidanceUiTest.waitHighlight(GuidanceUiTest.kt:288)
+	at com.screenly.app.GuidanceUiTest.guidanceUsesRealBoundsAndContinuesAfterUserTap(GuidanceUiTest.kt:105)
+
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 94.837
+There was 1 failure:
+1) guidanceUsesRealBoundsAndContinuesAfterUserTap(com.screenly.app.GuidanceUiTest)
+java.lang.AssertionError: No highlight at the current Android bounds Rect(0, 237 - 1080, 437)
+	at com.screenly.app.GuidanceUiTest.waitHighlight(GuidanceUiTest.kt:288)
+	at com.screenly.app.GuidanceUiTest.guidanceUsesRealBoundsAndContinuesAfterUserTap(GuidanceUiTest.kt:105)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

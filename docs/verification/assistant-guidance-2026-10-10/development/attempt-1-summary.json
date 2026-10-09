@@ -1,0 +1,13 @@
+[
+  {
+    "workflow": "font",
+    "passed": false,
+    "steps": [
+      "label=Display; source=MODEL; wait_ms=9611; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791580507.373  9424  9424 D ScreenlyGuidance: decision session=1 revision=5 index=41 source=MODEL outcome=SELECTED ms=9170",
+      "         1791580515.258  9424  9424 D ScreenlyGuidance: decision session=1 revision=8 index=null source=NONE outcome=ABSTAINED ms=6742"
+    ]
+  }
+]

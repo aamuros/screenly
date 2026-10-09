@@ -1,0 +1,133 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.LocalInferenceSmokeTest:
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: device=Google sdk_gphone_arm64; API 30; ABIs arm64-v8a
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: offline_required=true
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization_ms=398
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization=PASS (includes model integrity verification)
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1_ms=5975
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_1=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2_ms=5714
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2=There isn't one single Android setting that controls font size directly. However, there are several ways you can adjust font size within Android:
+
+**1. System-Wide Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size across most Android apps. You can adjust it by dragging down from the font size slider.
+
+**2. App-Specific Font Size:**
+*   **Settings > Display > Font Size:** This setting controls font size within individual apps.  This can be more precise than system-wide settings.
+*   **App-Specific Settings:** Many apps have their own font size controls within their settings menu.  This can be found by tapping an app's name or icon within the settings menu.
+
+**3. Theme:**
+*   **Settings > Theme > Font Size:** This setting can be used by Android OS itself. This can be used by various themes which can affect font size.
+*   **Using Theme:** Some Android themes can be configured by setting font size. This requires more advanced knowledge.
+
+**4. Third-Party Apps:**
+*   There are third-party apps (like Font Size) which allow you more granular control over font size. However these can be unreliable or have privacy concerns.
+
+**Important Considerations:**
+*   **Font Size Limits:** Android typically limits font size by default.
+*   **System-Wide Limits:** The system-wide font size setting can be adjusted by your phone manufacturer (like Samsung).
+*   **App-Specific Limits:** Apps often have their own font size limits.
+*   **Theme Effects:** The theme can affect font size by influencing how fonts appear.
+
+**How To Find This Setting:**
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+*   **Settings > Display > Font Size:** This provides an overview
+
+Let me know if you'd like me provide more details about any specific setting!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_2=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: cleanup=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.navigation.NavigationPreparationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.navigation.NavigationPreparationTest:
+INSTRUMENTATION_STATUS: test=promptParserValidationAndRulesRunOnAndroid
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.navigation.NavigationPreparationTest
+INSTRUMENTATION_STATUS: current=2
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=promptParserValidationAndRulesRunOnAndroid
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ExampleInstrumentedTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ExampleInstrumentedTest:
+INSTRUMENTATION_STATUS: test=useAppContext
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: class=com.screenly.app.ExampleInstrumentedTest
+INSTRUMENTATION_STATUS: current=3
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=3
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=useAppContext
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 12.139
+
+OK (3 tests)
+
+
+INSTRUMENTATION_CODE: -1

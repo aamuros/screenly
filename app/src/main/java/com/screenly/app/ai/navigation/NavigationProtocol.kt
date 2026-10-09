@@ -85,7 +85,8 @@ internal object NavigationProtocol {
         listOfNotNull(element.text, element.contentDescription).map { it.trim() }
             .filter { it.isNotEmpty() }.distinctBy { normalize(it) }
 
-    internal fun normalize(value: String): String = value.trim().replace(whitespace, " ").lowercase(Locale.ROOT)
+    internal fun normalize(value: String): String = value.trim().replace(whitespace, " ")
+        .replace('\u2010', '-').replace('\u2011', '-').lowercase(Locale.ROOT)
     private val whitespace = Regex("[\\p{Z}\\s]+")
 
     internal fun labelOf(element: AccessibleUiElement): String? =

@@ -1,0 +1,15 @@
+[
+  {
+    "workflow": "font",
+    "passed": false,
+    "steps": [
+      "label=Display; source=MODEL; wait_ms=9776; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap",
+      "label=Advanced; source=MODEL; wait_ms=10602; Android bounds=Rect(0, 1124 - 1080, 1318); matching outline observed; test performs next tap",
+      "label=Font size; source=MODEL; wait_ms=176; Android bounds=Rect(0, 1124 - 1080, 1324); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791580710.321  9990  9990 D ScreenlyGuidance: decision session=1 revision=3 index=41 source=MODEL outcome=SELECTED ms=9330",
+      "         1791580720.990  9990  9990 D ScreenlyGuidance: decision session=1 revision=6 index=42 source=MODEL outcome=SELECTED ms=9448"
+    ]
+  }
+]

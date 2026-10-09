@@ -1,0 +1,29 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.GuidanceUiTest:
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: guidance_ui=label=Display; source=MODEL; wait_ms=2314; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Advanced; source=MODEL; wait_ms=2435; Android bounds=Rect(0, 1124 - 1080, 1318); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Font size; source=MODEL; wait_ms=2643; Android bounds=Rect(0, 1124 - 1080, 1324); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 9.917
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1

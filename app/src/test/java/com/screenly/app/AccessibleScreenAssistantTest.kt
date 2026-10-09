@@ -16,7 +16,7 @@ class AccessibleScreenAssistantTest {
     }
 
     @Test fun doesNotMarkUnchangedScreenComplete() {
-        val view = ScreenObservation("com.android.settings", 1, listOf(element("Dark theme")))
+        val view = ScreenObservation("com.android.settings", 1, listOf(element("Dark theme", type = "android.widget.Switch")))
         val start = AccessibleScreenAssistant.begin("Enable dark mode", view)
         val checked = AccessibleScreenAssistant.check(start, view)
         assertEquals(AccessibleScreenAssistant.GuidancePhase.NEEDS_ACTION, checked.phase)
@@ -37,7 +37,7 @@ class AccessibleScreenAssistantTest {
         val settings = ScreenObservation("com.android.settings", 1,
             listOf(element("Display & touch")))
         val display = ScreenObservation("com.android.settings", 2,
-            listOf(element("Dark theme")))
+            listOf(element("Dark theme", type = "android.widget.Switch")))
         val first = AccessibleScreenAssistant.begin("Enable dark mode", settings)
         val second = AccessibleScreenAssistant.check(first, display)
         assertEquals(2, second.step)
@@ -70,5 +70,39 @@ class AccessibleScreenAssistantTest {
         val view = ScreenObservation("com.android.settings", 1,
             listOf(element("Dark mode"), element("Dark theme")))
         assertEquals(null, AccessibleScreenAssistant.begin("Enable dark mode", view).targetIndex)
+    }
+
+    @Test fun identicalLabelsRemainAmbiguousIncludingBeyondTwelveControls() {
+        val view = ScreenObservation("com.android.settings", 1,
+            listOf(element("Dark theme")) + (1..12).map { element("Other $it") } + element("Dark theme"))
+        assertEquals(null, AccessibleScreenAssistant.begin("Open dark theme", view).targetIndex)
+    }
+
+    @Test fun satisfiedUnknownAndOpenTogglesCannotBeSuggested() {
+        for ((goal, item) in listOf(
+            "Enable dark mode" to element("Dark theme", true, "android.widget.Switch"),
+            "Disable Wi-Fi" to element("Wi-Fi", false, "android.widget.Switch"),
+            "Enable Wi-Fi" to element("Wi-Fi"),
+            "Open dark theme" to element("Dark theme", false, "android.widget.Switch")
+        )) assertEquals(goal, null, AccessibleScreenAssistant.begin(goal,
+            ScreenObservation("com.android.settings", 1, listOf(item))).targetIndex)
+    }
+
+    @Test fun completionRequiresSameAppWindowAndUniqueToggleEvidence() {
+        val off = ScreenObservation("com.android.settings", 1, listOf(element("Dark theme", false, "android.widget.Switch")))
+        val start = AccessibleScreenAssistant.begin("Enable dark mode", off)
+        val on = element("Dark theme", true, "android.widget.Switch")
+        for (next in listOf(off.copy(packageName = "other.app", elements = listOf(on)),
+            off.copy(windowId = 2, elements = listOf(on)), off.copy(elements = listOf(on, on)),
+            off.copy(elements = listOf(on.copy(className = "android.widget.TextView"))))) {
+            assertTrue(AccessibleScreenAssistant.check(start, next).phase != AccessibleScreenAssistant.GuidancePhase.COMPLETED)
+        }
+    }
+
+    @Test fun deactivateIsNotActivate() {
+        val on = ScreenObservation("com.android.settings", 1, listOf(element("Wi-Fi", true, "android.widget.Switch")))
+        val state = AccessibleScreenAssistant.check(AccessibleScreenAssistant.begin("Deactivate Wi-Fi", on),
+            on.copy(elements = listOf(element("Wi-Fi", false, "android.widget.Switch"))))
+        assertEquals(AccessibleScreenAssistant.GuidancePhase.COMPLETED, state.phase)
     }
 }

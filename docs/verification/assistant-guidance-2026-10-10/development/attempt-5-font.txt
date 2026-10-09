@@ -1,0 +1,44 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.GuidanceUiTest:
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: guidance_ui=label=Display; source=MODEL; wait_ms=2582; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Advanced; source=MODEL; wait_ms=2431; Android bounds=Rect(0, 1124 - 1080, 1318); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Font size; source=MODEL; wait_ms=2617; Android bounds=Rect(0, 1124 - 1080, 1324); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stack=java.lang.AssertionError: Expected UI node did not appear; visible roots=[com.screenly.app, com.android.systemui, com.android.systemui, com.android.settings]
+	at com.screenly.app.GuidanceUiTest.waitNode(GuidanceUiTest.kt:179)
+	at com.screenly.app.GuidanceUiTest.guidanceUsesRealBoundsAndContinuesAfterUserTap(GuidanceUiTest.kt:118)
+
+INSTRUMENTATION_STATUS: stream=
+Error in guidanceUsesRealBoundsAndContinuesAfterUserTap(com.screenly.app.GuidanceUiTest):
+java.lang.AssertionError: Expected UI node did not appear; visible roots=[com.screenly.app, com.android.systemui, com.android.systemui, com.android.settings]
+	at com.screenly.app.GuidanceUiTest.waitNode(GuidanceUiTest.kt:179)
+	at com.screenly.app.GuidanceUiTest.guidanceUsesRealBoundsAndContinuesAfterUserTap(GuidanceUiTest.kt:118)
+
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: -2
+INSTRUMENTATION_RESULT: stream=
+
+Time: 24.815
+There was 1 failure:
+1) guidanceUsesRealBoundsAndContinuesAfterUserTap(com.screenly.app.GuidanceUiTest)
+java.lang.AssertionError: Expected UI node did not appear; visible roots=[com.screenly.app, com.android.systemui, com.android.systemui, com.android.settings]
+	at com.screenly.app.GuidanceUiTest.waitNode(GuidanceUiTest.kt:179)
+	at com.screenly.app.GuidanceUiTest.guidanceUsesRealBoundsAndContinuesAfterUserTap(GuidanceUiTest.kt:118)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1
+
+
+INSTRUMENTATION_CODE: -1

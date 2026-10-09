@@ -6,7 +6,7 @@
     <string name="enable_instructions">In Accessibility Settings, open Downloaded apps or Installed services, select Screenly, and turn on Use Screenly. Return here to check the status.</string>
     <string name="testing_instructions">After enabling the service, open Android Settings. Tap the floating Screenly bubble, then Guide Me, to select an enabled, clickable element for highlighting. Drag and release the bubble to dock it to the nearest side at your chosen height. The highlight allows taps through and clears when the target screen changes. Debug builds still print elements and screen coordinates to Logcat with the tag ScreenlyAccessibility.</string>
     <string name="privacy_notice">Screen observations stay in memory and debug Logcat. Password and sensitive nodes are skipped; editable values are omitted. Screenly does not save screen contents, use the network, or tap for you.</string>
-    <string name="accessibility_service_description">Reads accessible interface elements and captures screenshots only after you request an explanation or send a question or guidance check. Screenshots remain on your device and are discarded from memory after capture. Debug accessibility observations appear in Logcat. Password and sensitive nodes are skipped, and editable values are omitted. Screenly never taps for you.</string>
+    <string name="accessibility_service_description">Reads accessible interface elements for offline guidance. Captures screenshots only after you request an explanation or send a question. Screenshots are discarded from memory after capture. Debug accessibility observations appear in Logcat. Password and sensitive nodes are skipped, and editable values are omitted. Screenly never taps for you.</string>
     <string name="assistant_bubble_description">Screenly assistant. Tap to open actions; drag to move.</string>
     <string name="assistant_action_ask">Ask AI</string>
     <string name="assistant_action_explain">Explain</string>
@@ -46,7 +46,7 @@
     <string name="assistant_clear_history">Clear chat history</string>
     <string name="assistant_clear_screenshots">Clear temporary screenshots</string>
     <string name="assistant_open_permissions">Open accessibility permissions</string>
-    <string name="assistant_ai_runtime_status">Vision model not connected. Accessibility-based assistance works offline. The text-only model is on a separate development branch.</string>
+    <string name="assistant_ai_runtime_status">Guide Me uses a locally provisioned Gemma text model and validated accessibility controls, with deterministic fallback when needed. Ask and Explain use accessibility labels. No vision model is connected. Processing stays offline.</string>
     <string name="assistant_accessibility_status">Accessibility service enabled. Screenshot access requires the accessibility capture capability to be approved.</string>
     <string name="assistant_guide_cancelled">Guidance cancelled.</string>
     <string name="assistant_history_cleared">In-memory chat history cleared.</string>
@@ -60,4 +60,16 @@
     <string name="assistant_capture_idle">No active capture session. Screenshots are never saved.</string>
     <string name="assistant_capture_running">One requested screenshot is being captured.</string>
     <string name="assistant_capture_stale">The screen changed while capturing. Please try again.</string>
+    <string name="guidance_waiting">Waiting for an accessible screen. Navigate manually; your goal is retained.</string>
+    <string name="guidance_planning">Choosing the next safe control on this device…</string>
+    <string name="guidance_manual_notice">Screenly never taps for you. A screen change does not prove completion.</string>
+    <string name="guidance_uncertain">No unique safe control was found. Navigate manually or check the screen again.</string>
+    <string name="guidance_uncertain_model_unavailable">Local AI is unavailable and no safe fallback was found. Navigate manually or retry.</string>
+    <string name="guidance_step">Find and tap “%1$s”.</string>
+    <string name="guidance_model_source">Suggested by local AI and validated against the current screen. Tap it yourself.</string>
+    <string name="guidance_rule_source">Suggested by a deterministic rule and validated against the current screen. Tap it yourself.</string>
+    <string name="guidance_rule_unavailable">Local AI is unavailable. A validated deterministic fallback selected this control.</string>
+    <string name="guidance_confirm">I completed my goal</string>
+    <string name="guidance_user_confirmed">Guidance ended at your request.</string>
+    <string name="guidance_confirmation_notice">You marked the goal complete. Screenly has not independently verified it.</string>
 </resources>

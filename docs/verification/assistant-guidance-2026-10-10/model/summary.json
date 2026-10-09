@@ -1,0 +1,40 @@
+[
+  {
+    "workflow": "font",
+    "passed": true,
+    "steps": [
+      "label=Display; source=MODEL; wait_ms=2563; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap",
+      "label=Advanced; source=MODEL; wait_ms=2424; Android bounds=Rect(0, 1124 - 1080, 1318); matching outline observed; test performs next tap",
+      "label=Font size; source=MODEL; wait_ms=2636; Android bounds=Rect(0, 1124 - 1080, 1324); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791581547.403 13835 13835 D ScreenlyGuidance: decision session=1 revision=4 index=41 source=MODEL outcome=SELECTED ms=1966",
+      "         1791581549.904 13835 13835 D ScreenlyGuidance: decision session=1 revision=7 index=42 source=MODEL outcome=SELECTED ms=1698",
+      "         1791581552.554 13835 13835 D ScreenlyGuidance: decision session=1 revision=9 index=42 source=MODEL outcome=SELECTED ms=2053"
+    ]
+  },
+  {
+    "workflow": "wifi",
+    "passed": true,
+    "steps": [
+      "label=Network & internet; source=RULE; wait_ms=2398; Android bounds=Rect(0, 303 - 1080, 503); matching outline observed; test performs next tap",
+      "label=Wi\u2011Fi; source=MODEL; wait_ms=2731; Android bounds=Rect(0, 237 - 1080, 437); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791581557.678 13985 13985 D ScreenlyGuidance: decision session=1 revision=4 index=17 source=RULE outcome=REJECTED_TARGET ms=1706",
+      "         1791581560.611 13985 13985 D ScreenlyGuidance: decision session=1 revision=7 index=15 source=MODEL outcome=SELECTED ms=2029"
+    ]
+  },
+  {
+    "workflow": "dark",
+    "passed": true,
+    "steps": [
+      "label=Display; source=RULE; wait_ms=2337; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap",
+      "label=Dark theme; source=MODEL; wait_ms=2410; Android bounds=Rect(0, 437 - 1080, 683); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791581565.819 14133 14133 D ScreenlyGuidance: decision session=1 revision=4 index=41 source=RULE outcome=REJECTED_TARGET ms=1740",
+      "         1791581568.351 14133 14133 D ScreenlyGuidance: decision session=1 revision=7 index=20 source=MODEL outcome=SELECTED ms=1724"
+    ]
+  }
+]

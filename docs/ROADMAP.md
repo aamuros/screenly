@@ -144,19 +144,19 @@ Jointly agree the demo quality threshold.
 TAP/NONE parsing, original-index/ambiguity/state/limited-route validation and explicit fallback.
 [Current report](NAVIGATION_BACKEND.md) records shared synthetic fixtures, focused host checks,
 real offline API 30 model/rule/fallback comparisons, measurements and retained semantic failures.
-No shared Planner/LlmPlanner/RulePlanner implementation or session/request validation exists.
+No generic shared Planner/LlmPlanner/RulePlanner API exists. The authorized prototype now has live session/request validation; see [guidance integration](GUIDANCE_INTEGRATION.md).
 Recorded live snapshots, agreed quality budgets, broader language coverage and physical testing
-remain outstanding. C0 gates integration; M5 is unchanged.
+remain outstanding. Formal shared-contract/main review remains open; the user-authorized prototype integration proceeds on the fix branch.
 
 ## M5 — End-to-End Guidance
 
 **Objective:** Guide a goal across manual actions with deterministic state handling.
-**Owner:** Developer 1; both integrate/test the real planner. **Status: NOT STARTED.**
+**Owner:** Developer 1; both integrate/test the real planner. **Status: IN PROGRESS.**
 
-- [ ] Add goal input and deterministic GuidanceController with observable state.
+- [x] Add goal input and deterministic GuidanceController with observable state.
 - [ ] Integrate MockPlanner first, independently of M3/M4.
-- [ ] Connect real planner results to validated overlay targets.
-- [ ] Detect changes, cancel old work and reject stale snapshot/goal/session results.
+- [x] Connect the existing local backend to validated overlay targets on the authorized prototype branch.
+- [x] Detect changes, cancel old work and reject stale snapshot/goal/session results; source and host regressions are linked below.
 - [ ] Guide multistep navigation with stop/error/recovery behavior.
 - [ ] Verify completion using observed target state or explicit user confirmation.
 
@@ -167,8 +167,7 @@ navigation, goal replacement, lock and reconnect cannot revive old results. Comp
 corroborated, not inferred solely from model prose.
 **Verification:** TESTING M5; delayed MockPlanner/state tests, physical real-model tasks and
 deliberate navigation during inference.
-**Evidence/gaps:** Existing change/revision handling protects the manual picker only, not AI
-requests; there is no guidance controller or goal UI.
+**Evidence/gaps:** [GUIDANCE_INTEGRATION.md](GUIDANCE_INTEGRATION.md) records controller/snapshot integration, host regressions and emulator evidence. Physical acceptance, agreed budgets and formal shared-contract review remain open. This is not a VERIFIED milestone.
 
 ## M6 — Hackathon Testing & Demo
 

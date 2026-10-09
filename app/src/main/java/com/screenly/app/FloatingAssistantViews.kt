@@ -18,13 +18,20 @@ internal enum class AssistantAction { ASK_AI, EXPLAIN, GUIDE_ME, PRIVACY }
 
 // Compact-panel presentation state never holds screenshot pixels.
 internal data class AssistantChatEntry(val fromUser: Boolean, val content: String)
+internal data class GuidancePanelState(
+    val instruction: String,
+    val status: String,
+    val step: Int = 1,
+    val planning: Boolean = false,
+    val completed: Boolean = false
+)
 internal data class AssistantPanelState(
     val action: AssistantAction,
     val messages: List<AssistantChatEntry> = emptyList(),
     val detail: String = "",
     val items: List<AccessibleScreenAssistant.VisibleItem> = emptyList(),
     val selectedItemIndex: Int? = null,
-    val guidance: AccessibleScreenAssistant.Guidance? = null,
+    val guidance: GuidancePanelState? = null,
     val processing: Boolean = false,
     val captureStatus: String = "",
     val processingStatus: String = "",
@@ -37,6 +44,7 @@ internal class AssistantPanelActions(
     val selectItem: (Int) -> Unit,
     val checkScreen: () -> Unit,
     val cancelGuide: () -> Unit,
+    val confirmGuide: () -> Unit,
     val clearHistory: () -> Unit,
     val clearScreenshots: () -> Unit,
     val openPermissions: () -> Unit,
@@ -213,7 +221,7 @@ internal object FloatingAssistantViews {
         actions: AssistantPanelActions
     ) {
         val guide = state.guidance
-        if (guide == null || guide.phase == AccessibleScreenAssistant.GuidancePhase.CANCELLED) {
+        if (guide == null) {
             root.addView(secondary(context, R.string.assistant_guide_intro), gap(context, 8))
             prompt(context, root, R.string.assistant_guide_hint,
                 state.processing, actions.submit)
@@ -238,14 +246,16 @@ internal object FloatingAssistantViews {
                 textSize = 12f
                 setTextColor(Color.rgb(176, 176, 176))
             }, gap(context, 8))
-            if (guide.phase != AccessibleScreenAssistant.GuidancePhase.COMPLETED) {
+            if (!guide.completed) {
                 root.addView(primaryButton(context, R.string.assistant_check_screen,
-                    state.processing, actions.checkScreen), gap(context, 12))
+                    guide.planning, actions.checkScreen), gap(context, 12))
+                root.addView(actionText(context, R.string.guidance_confirm,
+                    false, actions.confirmGuide), gap(context, 6))
             }
             root.addView(actionText(context,
-                R.string.assistant_manual_picker, state.processing, actions.manualPicker), gap(context, 6))
+                R.string.assistant_manual_picker, false, actions.manualPicker), gap(context, 6))
             root.addView(actionText(context,
-                R.string.assistant_cancel, state.processing, actions.cancelGuide), gap(context, 6))
+                R.string.assistant_cancel, false, actions.cancelGuide), gap(context, 6))
         }
         status(context, root, state)
     }
@@ -309,6 +319,7 @@ internal object FloatingAssistantViews {
             inputType = android.text.InputType.TYPE_CLASS_TEXT or
                 android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE or
                 android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            filters = arrayOf(android.text.InputFilter.LengthFilter(160))
             setBackgroundColor(Color.TRANSPARENT)
             isEnabled = !disabled
         }

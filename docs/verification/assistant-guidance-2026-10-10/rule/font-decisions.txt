@@ -1,0 +1,5 @@
+         1791581620.387 14600 14600 D ScreenlyGuidance: decision session=1 revision=3 index=41 source=RULE outcome=FAILED ms=12
+         1791581620.484 14600 14600 D ScreenlyGuidance: decision session=1 revision=4 index=41 source=RULE outcome=FAILED ms=8
+         1791581621.315 14600 14600 D ScreenlyGuidance: decision session=1 revision=7 index=42 source=RULE outcome=FAILED ms=4
+         1791581621.700 14600 14600 D ScreenlyGuidance: decision session=1 revision=8 index=42 source=RULE outcome=FAILED ms=2
+         1791581621.976 14600 14600 D ScreenlyGuidance: decision session=1 revision=9 index=42 source=RULE outcome=FAILED ms=1

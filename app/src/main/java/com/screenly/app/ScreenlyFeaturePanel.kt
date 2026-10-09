@@ -22,7 +22,7 @@ import android.view.inputmethod.InputMethodManager
  */
 internal class AssistantSessionStore {
     val messages = mutableListOf<AssistantChatEntry>()
-    var guidance: AccessibleScreenAssistant.Guidance? = null
+    var guidance: GuidancePanelState? = null
     var captureStatus: String = ""
     fun clear() { messages.clear(); guidance = null; captureStatus = "" }
 }
@@ -35,12 +35,16 @@ internal class ScreenlyFeaturePanel(
     private val layoutParams: (Int, Int) -> WindowManager.LayoutParams,
     private val refreshObservation: () -> Boolean,
     private val currentObservation: () -> ScreenObservation?,
+    private val startGuidance: (String) -> Unit,
+    private val retryGuidance: () -> Unit,
+    private val stopGuidance: () -> Unit,
+    private val confirmGuidance: () -> Unit,
     private val manualPicker: () -> Unit,
     private val onClosed: () -> Unit
 ) {
     private val handler = Handler(Looper.getMainLooper())
     private val messages get() = session.messages
-    private var guidance: AccessibleScreenAssistant.Guidance?
+    private var guidance: GuidancePanelState?
         get() = session.guidance
         set(value) { session.guidance = value }
     private var feature: AssistantAction? = null
@@ -51,6 +55,10 @@ internal class ScreenlyFeaturePanel(
     private var captureRequest = 0L
     private var stopped = false
     private var lastCaptureStatus = ""
+
+    fun updateGuidance() {
+        if (feature == AssistantAction.GUIDE_ME && !stopped) render()
+    }
 
     fun open(action: AssistantAction) {
         if (stopped) return
@@ -119,8 +127,11 @@ internal class ScreenlyFeaturePanel(
                             capture(action, prompt)
                         }
                         AssistantAction.GUIDE_ME -> {
-                            guidance = null
-                            capture(action, prompt)
+                            root?.let { view ->
+                                service.getSystemService(InputMethodManager::class.java)
+                                    .hideSoftInputFromWindow(view.windowToken, 0)
+                            }
+                            startGuidance(prompt)
                         }
                         else -> Unit
                     }
@@ -133,13 +144,14 @@ internal class ScreenlyFeaturePanel(
                     render()
                 },
                 checkScreen = {
-                    if (!busy) capture(AssistantAction.GUIDE_ME, null)
+                    retryGuidance()
                 },
                 cancelGuide = {
-                    guidance = null
+                    stopGuidance()
                     feedback = service.getString(R.string.assistant_guide_cancelled)
                     render()
                 },
+                confirmGuide = confirmGuidance,
                 clearHistory = {
                     messages.clear()
                     feedback = service.getString(R.string.assistant_history_cleared)
@@ -159,6 +171,7 @@ internal class ScreenlyFeaturePanel(
                     })
                 },
                 manualPicker = {
+                    stopGuidance()
                     dismiss()
                     manualPicker()
                 }
@@ -183,7 +196,9 @@ internal class ScreenlyFeaturePanel(
         val targetWidth = dp(280)
         val params = layoutParams(targetWidth, dp(300))
         params.height = WindowManager.LayoutParams.WRAP_CONTENT
-        params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+        if (action != AssistantAction.GUIDE_ME || guidance == null) {
+            params.flags = params.flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+        }
         params.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         try {
             windowManager.addView(panel, params)
@@ -336,13 +351,7 @@ internal class ScreenlyFeaturePanel(
                     }
                 }
                 AssistantAction.EXPLAIN -> selectedItem = null
-                AssistantAction.GUIDE_ME -> {
-                    guidance = if (guidance != null && prompt == null)
-                        AccessibleScreenAssistant.check(guidance!!, snapshot)
-                    else if (!prompt.isNullOrBlank())
-                        AccessibleScreenAssistant.begin(prompt, snapshot)
-                    else guidance
-                }
+                AssistantAction.GUIDE_ME -> Unit // Text guidance never requests screenshots.
                 AssistantAction.PRIVACY -> Unit
             }
         }

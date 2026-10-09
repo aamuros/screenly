@@ -16,7 +16,7 @@ Accessibility events → ScreenlyAccessibilityService → ScreenObservation
                                    pass-through       explicit screenshot
                                      highlight        and accessible labels
                                          ↓                 ↓
-                                   user interacts    local offline fallback
+                                   user interacts    offline validated guidance
 ```
 
 The service observes the active, otherwise focused, **application** window, with a fallback to the previously observed app if the floating input panel takes focus; overlay windows
@@ -48,25 +48,31 @@ height. They accept keyboard input and allow touches outside their bounds to pas
 The existing touch-through manual picker remains reachable under Guide Me.
 
 The accessibility service declares `canTakeScreenshot`. Screenly requests a screenshot
-only after Send, Explain, Refresh, or Check my screen. It first hides the panel and keyboard,
-then validates and immediately releases the in-memory hardware buffer. It never saves or
+only after Ask Send, Explain, or Refresh. Capture first hides the panel and keyboard,
+then validates and immediately releases the in-memory hardware buffer. Guide Me uses no screenshots. It never saves or
 uploads screen images. Service disconnect invalidates outstanding capture requests.
 Protected screens can refuse capture, and users may need to re-enable Screenly when the
 new accessibility capability is added.
 
-`AccessibleScreenAssistant` is an offline **accessibility-label fallback**. It does not
-interpret screenshot pixels and explicitly labels its answers accordingly. Its guidance
-state stores a goal, current step, most recent sanitized observation and verification
-phase. A changed screen is not automatically proof of completing a goal. Only a directly
-observed, requested switch-state transition can be marked completed. Chats and guidance
-remain in a bounded in-memory session until cleared or service teardown.
-The text-only LiteRT-LM prototype on `feat/local-ai` remains separate and is not a VLM.
+`AccessibleScreenAssistant` remains the accessibility-label helper for Ask/Explain.
+Guide Me uses `GuidanceController` → `NavigationEngine.decideCandidates` → `LocalInference`.
+The overlay owns one runtime and coroutine scope per service session. Initialization, inference
+and cleanup run off the main thread; native calls are serialized and cannot be preempted.
+Model and deterministic rule decisions use the same safety policy and retain distinct provenance.
+
+`GuidanceSnapshot` copies observations and candidate lists, enriches unlabeled clickable rows
+using copied ancestry, and retains original indices and bounds. Session/revision/request/goal
+checks reject late work; a fresh capture and eligibility/intent validation precede drawing.
+Unchanged screens wait for manual action. Unavailable roots clear targets and retain the goal;
+lock, own activity, interruption, rotation and teardown stop guidance and remove overlays.
+Guide Me needs no screenshot. Its completion button records user confirmation and explicitly
+does not claim independently verified success. See [current evidence](GUIDANCE_INTEGRATION.md).
 
 ## Actual data and revision contracts
 
 | Existing type | Actual fields / behavior |
 | --- | --- |
-| `AccessibleUiElement` | Nullable `text`, `contentDescription`, `className`, `viewId`; Boolean `clickable`, `enabled`, `checked`, `scrollable`; Int `left`, `top`, `right`, `bottom` in screen pixels |
+| `AccessibleUiElement` | Nullable `text`, `contentDescription`, `className`, `viewId`; Boolean `clickable`, `enabled`, `checked`, `scrollable`; Int `left`, `top`, `right`, `bottom` in screen pixels; nullable copied `parentIndex` |
 | `ScreenObservation` (internal) | `packageName: String`, `windowId: Int`, `elements: List<AccessibleUiElement>`; structural equality; no timestamp/version or element ID |
 | `ScreenObservationState` (internal) | Nullable `snapshot`, `revision: Long` starting at zero; private setters; `update`, `invalidateSelection`, `clear`, `canSelect` |
 
@@ -77,34 +83,26 @@ state and positive bounds. Overlay checks also require display intersection and 
 identity, with a refresh before highlighting. A→B→A cannot restore an old picker selection
 within that state instance.
 
-Screen-off, unavailable root, own activity, interruption, rotation and teardown clear
-observations/overlays. Observation requires an interactive display and unlocked keyguard.
-Revision counters are per-state-instance; reconnect does **not** supply a global generation.
-Disposal/instance guards currently protect manual callbacks only. See
-[VERIFICATION.md](../VERIFICATION.md) for emulator evidence and untested phone behavior.
+Manual selection uses the existing revision counter. AI snapshots add a process-local,
+monotonically allocated session ID for each overlay owner. The controller additionally tracks
+goal versions and request IDs. A reconnect cannot revive work owned by an earlier overlay.
+Observation still requires an interactive display and unlocked keyguard.
 
-## Planned responsibilities (not implemented)
+## Shared API work still proposed
 
-| Component role | Owner | Minimal responsibility |
-| --- | --- | --- |
-| ScreenObserver | Developer 1 | Role inside current service: publish copied sanitized observations/invalidations; no new framework needed |
-| OverlayManager | Developer 1 | Role fulfilled by current `ScreenlyOverlay`; draw only validated current targets; clear on invalidation |
-| GuidanceController | Developer 1 | Own goal, version, request identity and deterministic state; coordinate observer, Planner and overlay |
-| Planner / MockPlanner | Shared contract / Developer 1 mock | Platform-independent next-step API; deterministic mock enables work without a model |
-| LocalAI / LlmPlanner | Developer 2 | Local runtime lifecycle/inference, bounded prompts, constrained response parsing |
-| RulePlanner | Developer 2 | Deterministic fallback using the same API; return unable when no safe rule applies |
-
-These are responsibility names, not claims of existing classes. Keep the single module;
-Coroutines/StateFlow are intended for asynchronous planning/state publication, while current
-service scheduling uses Handler. No extra architecture library is needed. AI selects candidates;
-Android owns freshness, coordinates, lifecycle and drawing.
+The single-module prototype now has a controller and local candidate adapter under the user's
+explicit integration authorization. It has not implemented the generic shared Planner,
+MockPlanner, LlmPlanner or RulePlanner API proposed below, nor merged those contracts into main.
+The service still schedules observations with Handler; coroutine jobs manage local planning.
+AI proposes candidates; Android owns identity, freshness, coordinates, lifecycle and drawing.
 
 ## M0 contract proposal — requires joint agreement and implementation
 
 Reuse existing fields instead of introducing incompatible duplicates. **ScreenElement** is
 the shared conceptual name for `AccessibleUiElement`; agree whether to retain its name or add
 an alias (none exists). **ScreenSnapshot** would wrap a copied observation with a version key.
-This is a documentation proposal, not an implemented or agreed Kotlin API:
+This generic Planner API remains a documentation proposal. The current prototype uses
+`GuidanceSnapshot` and the implemented `SnapshotKey(sessionId, revision)` instead:
 
 ```kotlin
 internal data class SnapshotKey(val sessionId: Long, val revision: Long)
@@ -136,9 +134,10 @@ internal sealed interface PlannerResult {
 - Complete is a suggestion, requiring observed task-specific evidence or explicit user
   confirmation before success. Missing evidence must not silently complete a goal.
 
-Pending agreement: names/visibility and wrapper vs adaptation, wire schema/prompt limits,
-session/request lifecycle, completion evidence and fallback rules. Merge contracts during M0
-before dependent work. This task introduces no Kotlin APIs.
+Formal shared-contract agreement remains open. The authorized prototype implements its
+session/request lifecycle and candidate adapter on this branch; it does not merge these
+contracts into main. Review the implemented names, schema, limits, completion policy and
+fallback rules before shared-contract adoption.
 
 ## Proposed guidance transitions
 
@@ -176,4 +175,7 @@ installed, provisioned app must restart and infer without a connection.
 The isolated `ai/LocalInference` native inference component and `ai/navigation` experiment/evaluation helpers
 are now present alongside the existing guidance UI. Consult [LOCAL_AI.md](LOCAL_AI.md),
 [NAVIGATION_BACKEND.md](NAVIGATION_BACKEND.md), and [M4_PLAN.md](M4_PLAN.md).
-The classes are not automatically wired into the existing `AccessibleScreenAssistant` workflow by this source merge.
+Guide Me now binds the runtime lazily to candidate generation. Candidate YES/NO judgments are
+attached to trusted original indices; the legacy TAP/NONE evaluator remains available for
+comparison. English Settings routes are conservative and documented in
+[GUIDANCE_INTEGRATION.md](GUIDANCE_INTEGRATION.md).

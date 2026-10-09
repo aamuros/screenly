@@ -1,0 +1,29 @@
+{
+  "base_commit": "6d423d7e37fc25e027c405d897820b02447aa25a",
+  "avd": "Screenly_M3_API30\nOK",
+  "serial": "emulator-5554",
+  "source_sha256": {
+    "app/src/main/java/com/screenly/app/ai/LocalInference.kt": "880531f7fda342562af1148bc4c760892e6765bdecd6d7418ee5131422183767",
+    "app/src/main/java/com/screenly/app/ai/LocalModel.kt": "df2ab5b96fad4530a7257b249dcc556a29d1ea4117b79e04e9de2161748006da",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationEngine.kt": "cdf8f2af5989d54f472b2318eb2678846fe33657f4aff86945323a99a2a86812",
+    "app/src/main/java/com/screenly/app/ai/navigation/SettingsWorkflow.kt": "390b405ffa5c2142b4f0f716b9ec61736fab6759994b3accc369ced95edac125",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationRules.kt": "046ecd3005dbe688c8b6a28e9754c7111e3d85c8a7516d2d58f839cadec7a3bb",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationProtocol.kt": "39f5687af676e927eb23fe398d0dca44f2ffceeb70cfc58640b52f2c013a3eca",
+    "app/src/main/java/com/screenly/app/ai/navigation/CandidateNavigation.kt": "57f54e3bc0a6fa9c11fc48c2b45cfee0467c366ab77fe43e8722be92da3a6ea9",
+    "app/src/sharedTest/java/com/screenly/app/ai/navigation/AvailabilityDiagnosticFixtures.kt": "ba4ac14f5dd6420a00689d3dbcc4dcba5a130ac2cde809f3c8565e9021afc729",
+    "app/src/sharedTest/java/com/screenly/app/ai/navigation/NavigationFixtures.kt": "464ee7577f331fe44814a1eae439d3bb6bd6811365b9ea7d17971e108d90f9b2",
+    "app/src/androidTest/java/com/screenly/app/ai/LocalInferenceSmokeTest.kt": "514d1f810d55db216bf22dfb6e608207e7dff8be259889cb82f92bb56e6f023d",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/NavigationEvaluationTest.kt": "ca9285984f6262c8888a5ce55892f9b34f0ba3056ca61f2d7aaef8adbefd3efe",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/NavigationPreparationTest.kt": "200f86e4aa2d26f041214c16d4aa7d16640b69dc766d277e74a9b52940503595"
+  },
+  "apks": {
+    "app-debug.apk": {
+      "bytes": 80649551,
+      "sha256": "d3f5b4c63467c69ae1d2ae9e9524a197752f582188c378b51602a3e6e5ff3e98"
+    },
+    "app-debug-androidTest.apk": {
+      "bytes": 1615239,
+      "sha256": "270055710fcdebe55c23acfe9b4209e79618b204fe47d7cf09647e558b919bc5"
+    }
+  }
+}

@@ -33,9 +33,16 @@ class NavigationEvaluationTest {
             arguments.getString("navigationEvaluation") == "true")
         val context = instrumentation.targetContext
         val repetitions = arguments.getString("repetitions", "3")!!.toInt()
+        val candidateProtocol = arguments.getString("protocol") == "candidate"
         require(repetitions in 1..10)
+        val fixtureSet = arguments.getString("fixtureSet", "navigation")
+        val availableFixtures = when (fixtureSet) {
+            "navigation" -> navigationFixtures
+            "availability" -> availabilityDiagnosticFixtures
+            else -> error("Unknown fixtureSet: $fixtureSet")
+        }
         val requested = arguments.getString("fixtureIds")?.split(',')
-        val fixtures = if (requested == null) navigationFixtures else requested.map { id -> navigationFixtures.single { it.id == id } }
+        val fixtures = if (requested == null) availableFixtures else requested.map { id -> availableFixtures.single { it.id == id } }
         val output = File(context.cacheDir, "navigation-evaluation.jsonl")
         output.writeText("")
         fun record(value: JSONObject) {
@@ -64,6 +71,8 @@ class NavigationEvaluationTest {
             put("model_sha256", LocalModel.SHA256)
             put("model_bytes", LocalModel.fileIn(context.noBackupFilesDir).length())
             put("repetitions", repetitions)
+            put("protocol", if (candidateProtocol) "per-candidate YES/NO" else "legacy TAP/NONE")
+            put("fixture_set", fixtureSet)
             put("token_counts", "NOT MEASURED; UTF-16 lengths are not tokens")
         })
         // Freeze all expectations and exact prompts in the output before any native call.
@@ -75,6 +84,23 @@ class NavigationEvaluationTest {
                 put("allowed_indices", JSONArray(fixture.candidateIndices))
                 put("expected_index", fixture.expectedIndex ?: JSONObject.NULL)
                 put("prompt", NavigationProtocol.buildPrompt(fixture.goal, fixture.elements, fixture.candidateIndices) ?: JSONObject.NULL)
+                if (candidateProtocol) {
+                    val routes = SettingsWorkflow.verifiedRoutes(fixture.goal, "com.android.settings", true,
+                        fixture.elements, fixture.candidateIndices)
+                    val approved = fixture.candidateIndices.filter { index ->
+                        NavigationRules.rejection(SettingsWorkflow.canonicalGoal(fixture.goal), index,
+                            fixture.elements, fixture.candidateIndices, routes) == null
+                    }
+                    val contextLabels = fixture.elements.filter { !it.clickable }
+                        .mapNotNull(NavigationProtocol::labelOf).distinct()
+                    put("candidate_prompts", JSONArray((approved + fixture.candidateIndices).distinct().take(CandidateProtocol.MAX_EVALUATIONS).map { index ->
+                        JSONObject().apply {
+                            put("original_index", index)
+                            put("prompt", CandidateProtocol.prompt(fixture.goal, "com.android.settings", index,
+                                fixture.elements[index], contextLabels, emptyList(), index in routes) ?: JSONObject.NULL)
+                        }
+                    }))
+                }
                 put("elements", JSONArray(fixture.elements.map { element -> JSONObject().apply {
                     put("text", element.text ?: JSONObject.NULL)
                     put("description", element.contentDescription ?: JSONObject.NULL)
@@ -108,7 +134,11 @@ class NavigationEvaluationTest {
                     val ruleStarted = System.nanoTime()
                     val ruleIndex = NavigationRules.select(fixture.goal, fixture.elements, fixture.candidateIndices)
                     val ruleMicros = (System.nanoTime() - ruleStarted) / 1_000
-                    val result = engine.decide(fixture.goal, fixture.elements, fixture.candidateIndices)
+                    val candidateResult = if (candidateProtocol) engine.decideCandidates(
+                        fixture.goal, fixture.elements, fixture.candidateIndices, "com.android.settings",
+                        SettingsWorkflow.verifiedRoutes(fixture.goal, "com.android.settings", true, fixture.elements, fixture.candidateIndices)
+                    ) else null
+                    val result = candidateResult?.decision ?: engine.decide(fixture.goal, fixture.elements, fixture.candidateIndices)
                     if (result.modelOutcome == ModelOutcome.FAILED) runtimeFailures++
                     record(JSONObject().apply {
                         put("kind", "evaluation")
@@ -121,7 +151,18 @@ class NavigationEvaluationTest {
                         put("rejection", result.rejection?.name ?: JSONObject.NULL)
                         put("model_correct", result.modelOutcome in setOf(ModelOutcome.SELECTED, ModelOutcome.ABSTAINED) && result.modelIndex == fixture.expectedIndex)
                         val parsed = result.rawResponse?.let(NavigationProtocol::parseResponse)
-                        put("raw_model_correct", parsed != null && parsed.elementIndex == fixture.expectedIndex)
+                        val matches = candidateResult?.evaluations?.filter { it.relevant == true }
+                        put("raw_model_correct", if (candidateResult == null) parsed != null && parsed.elementIndex == fixture.expectedIndex
+                            else candidateResult.evaluations.isNotEmpty() && candidateResult.evaluations.all { it.relevant != null } &&
+                                (if (fixture.expectedIndex == null) matches!!.isEmpty()
+                                 else matches!!.size == 1 && matches.single().originalIndex == fixture.expectedIndex))
+                        candidateResult?.let { candidates ->
+                            put("candidate_evaluations", JSONArray(candidates.evaluations.map { candidate -> JSONObject().apply {
+                                put("original_index", candidate.originalIndex)
+                                put("raw", candidate.raw ?: JSONObject.NULL)
+                                put("relevant", candidate.relevant ?: JSONObject.NULL)
+                            } }))
+                        }
                         put("rule_index", ruleIndex ?: JSONObject.NULL)
                         put("rule_correct", ruleIndex == fixture.expectedIndex)
                         put("rule_us", ruleMicros)
@@ -135,9 +176,14 @@ class NavigationEvaluationTest {
                         put("pss_kib", memoryPss())
                     })
                     result.elementIndex?.let { index ->
-                        assertNull(NavigationRules.rejection(fixture.goal, index, fixture.elements, fixture.candidateIndices))
+                        assertNull(NavigationRules.rejection(
+                            if (candidateProtocol) SettingsWorkflow.canonicalGoal(fixture.goal) else fixture.goal,
+                            index, fixture.elements, fixture.candidateIndices,
+                            if (candidateProtocol) SettingsWorkflow.verifiedRoutes(fixture.goal, "com.android.settings", true,
+                                fixture.elements, fixture.candidateIndices) else null
+                        ))
                     }
-                    assertEquals(fixture.promptEligible, result.generationMillis != null)
+                    if (!candidateProtocol) assertEquals(fixture.promptEligible, result.generationMillis != null)
                 }
             }
             // Exercise real concurrent calls, cancelled work, reuse, and cleanup without any UI actions.

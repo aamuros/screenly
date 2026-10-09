@@ -1,0 +1,2 @@
+         1791581557.678 13985 13985 D ScreenlyGuidance: decision session=1 revision=4 index=17 source=RULE outcome=REJECTED_TARGET ms=1706
+         1791581560.611 13985 13985 D ScreenlyGuidance: decision session=1 revision=7 index=15 source=MODEL outcome=SELECTED ms=2029

@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-10",
+  "base_commit": "6d423d7",
+  "scope": "working tree",
+  "unit_totals": {
+    "tests": 94,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "unit_classes": {
+    "com.screenly.app.ExampleUnitTest": 1,
+    "com.screenly.app.ObservationSanitizerTest": 6,
+    "com.screenly.app.GuidanceControllerTest": 5,
+    "com.screenly.app.ai.navigation.CandidateNavigationTest": 16,
+    "com.screenly.app.ai.navigation.NavigationProtocolTest": 11,
+    "com.screenly.app.ai.navigation.NavigationRulesTest": 10,
+    "com.screenly.app.ScreenObservationStateTest": 8,
+    "com.screenly.app.GuidanceSnapshotTest": 3,
+    "com.screenly.app.ai.LocalInferenceTest": 9,
+    "com.screenly.app.ai.navigation.NavigationEngineTest": 11,
+    "com.screenly.app.BubbleDockingTest": 3,
+    "com.screenly.app.AccessibleScreenAssistantTest": 11
+  },
+  "lint_severities": {
+    "Warning": 24
+  }
+}

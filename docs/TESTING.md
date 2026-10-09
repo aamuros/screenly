@@ -2,7 +2,7 @@
 
 [ROADMAP.md](ROADMAP.md) defines acceptance gates. Source inspection establishes implementation;
 host tests establish only the tested policies. Emulator results do not establish physical-phone
-behavior. Future procedures below are plans; AI/end-to-end tests do not exist yet.
+behavior. Future physical procedures remain plans. Current AI/controller and opt-in guidance tests are described in [GUIDANCE_INTEGRATION.md](GUIDANCE_INTEGRATION.md).
 
 ## Host checks and Android Studio
 
@@ -16,18 +16,21 @@ From the repository root with README's SDK/JDK requirements configured:
 
 The helper's targeted host checks are `./gradlew :app:testDebugUnitTest --tests com.screenly.app.AccessibleScreenAssistantTest --tests com.screenly.app.BubbleDockingTest`.
 Use targeted tests for observation-policy/sanitizer changes; use
-`./gradlew :app:testDebugUnitTest` when broader coverage is justified. Select future planner/
-controller tests by their actual class names after implementation.
+`./gradlew :app:testDebugUnitTest` when broader coverage is justified. Current integration regressions are `GuidanceControllerTest`, `GuidanceSnapshotTest`, and `ai.navigation.CandidateNavigationTest`.
 
 Android Studio: sync Gradle, select the `app` debug configuration and target device, Run to
 install/launch, and inspect Build/Test output and Logcat. Run unit classes from `app/src/test`
 for host checks. Emulators provide preliminary checks; phone gates remain required.
 `ExampleInstrumentedTest` checks the application ID only;
-`./gradlew :app:connectedDebugAndroidTest` requires a device/emulator and does not verify
-observation, overlays or guidance. Run only when instrumentation testing is requested.
+`./gradlew :app:connectedDebugAndroidTest` requires a device/emulator but opt-in tests are skipped unless explicitly enabled. For real guidance, install both APKs
+with `adb install -r` and run `scripts/verify-guidance.py` as documented in the integration report.
+Gradle connected-test cleanup can uninstall the application and delete its private model;
+use direct instrumentation for provisioned-model tests. Run only when requested.
 
-Meaningful current unit coverage: 8 revision/selection/bounds/scheduling tests and 6 sanitizer
-tests. The extra arithmetic template test provides no Screenly feature evidence.
+Current host coverage includes observation revisions and sanitization, controller request
+freshness, snapshot/original-bounds validation, candidate ambiguity and toggle intent,
+fallback provenance, local model integrity, and preserved helper behavior. The integration
+report lists all 94 tests by class. The arithmetic template test provides no feature evidence.
 
 ### Four-panel manual regression checks (not yet device-verified)
 

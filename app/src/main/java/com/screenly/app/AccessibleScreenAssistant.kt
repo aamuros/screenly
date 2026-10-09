@@ -28,7 +28,7 @@ internal object AccessibleScreenAssistant {
                     child.right > child.left && child.bottom > child.top
             }?.let(::label) ?: return@mapIndexedNotNull null
             VisibleItem(index, label, describe(label))
-        }.distinctBy { normalize(it.title) }.take(12)
+        }
 
     fun describeScreen(observation: ScreenObservation): String =
         "Accessible controls in ${friendlyApp(observation.packageName)}. " +
@@ -76,21 +76,19 @@ internal object AccessibleScreenAssistant {
         )
         val oldElement = previous.targetIndex?.let { previous.observed.elements.getOrNull(it) }
         val newMatching = previous.targetLabel?.let { wanted ->
-            observation.elements.firstOrNull { it.enabled && normalize(label(it) ?: "") == normalize(wanted) }
+            observation.elements.filter { it.enabled && normalize(label(it) ?: "") == normalize(wanted) }.singleOrNull()
         }
-        val normalizedGoal = normalize(previous.goal)
-        val desiredChecked = when {
-            listOf("enable", "turn on", "activate").any { normalizedGoal.contains(it) } -> true
-            listOf("disable", "turn off", "deactivate").any { normalizedGoal.contains(it) } -> false
-            else -> null
-        }
-        val toggle = oldElement?.className?.contains("Switch", ignoreCase = true) == true
-        if (desiredChecked != null && toggle && newMatching?.checked == desiredChecked &&
-            oldElement.checked != desiredChecked) {
+        val desiredChecked = desiredChecked(previous.goal)
+        val toggle = isToggle(oldElement)
+        if (desiredChecked != null && toggle && isToggle(newMatching) &&
+            previous.observed.packageName == observation.packageName &&
+            previous.observed.windowId == observation.windowId &&
+            oldElement?.viewId == newMatching?.viewId && newMatching?.checked == desiredChecked &&
+            oldElement?.checked != desiredChecked) {
             return previous.copy(
                 instruction = "The accessible switch state matches your requested action.",
                 status = "Verified through the switch's accessibility state.",
-                observed = observation, phase = GuidancePhase.COMPLETED
+                targetIndex = null, targetLabel = null, observed = observation, phase = GuidancePhase.COMPLETED
             )
         }
         val next = choose(previous.goal, observation)
@@ -127,7 +125,14 @@ internal object AccessibleScreenAssistant {
             else -> items.map { normalize(it.title) }.filter { q.contains(it) }
         }
         val direct = items.filter { normalize(it.title) in targets }.distinctBy { it.index }
-        if (direct.size == 1) return direct.single()
+        if (direct.size == 1) {
+            val item = direct.single()
+            val element = observation.elements[item.index]
+            val desired = desiredChecked(query)
+            if (desired != null && (!isToggle(element) || element.checked == desired)) return null
+            if (normalize(query).startsWith("open ") && isToggle(element)) return null
+            return item
+        }
         if (direct.isNotEmpty()) return null
         val routes = when {
             q.contains("dark") || q.contains("font") -> listOf("display & touch", "display")
@@ -139,6 +144,17 @@ internal object AccessibleScreenAssistant {
 
     private fun label(element: AccessibleUiElement): String? =
         (element.text ?: element.contentDescription)?.trim()?.takeIf { it.isNotEmpty() }
+
+    private fun isToggle(element: AccessibleUiElement?): Boolean =
+        element?.className?.substringAfterLast('.') in setOf("Switch", "SwitchCompat", "CheckBox", "CompoundButton")
+
+    private fun desiredChecked(goal: String): Boolean? = when (
+        Regex("^(enable|activate|turn on|disable|deactivate|turn off)\\b").find(normalize(goal))?.value
+    ) {
+        "enable", "activate", "turn on" -> true
+        "disable", "deactivate", "turn off" -> false
+        else -> null
+    }
 
     private fun describe(label: String): String = when (normalize(label)) {
         "display", "display & touch" -> "Screen appearance, brightness and text settings"

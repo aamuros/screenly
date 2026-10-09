@@ -14,7 +14,7 @@ internal object NavigationRules {
         return index.takeIf { rejection(goal, it, elements, candidateIndices) == null }
     }
 
-    private fun targetLabels(goal: String): Set<String> {
+    internal fun targetLabels(goal: String): Set<String> {
         val normalizedGoal = NavigationProtocol.normalize(goal)
         val target = goalAction.matchEntire(normalizedGoal)?.groupValues?.get(2) ?: normalizedGoal
         return when (target) {
@@ -33,12 +33,29 @@ internal object NavigationRules {
     }
 
     /** Applies the same deterministic safeguards to rules and model selections. Not semantic proof. */
-    fun rejection(goal: String, index: Int, elements: List<AccessibleUiElement>, candidates: List<Int>): NavigationRejection? {
+    fun rejection(
+        goal: String, index: Int, elements: List<AccessibleUiElement>, candidates: List<Int>,
+        verifiedRouteIndices: Set<Int>? = null
+    ): NavigationRejection? {
         if (!NavigationProtocol.validInput(goal, elements, candidates)) return NavigationRejection.INVALID_INPUT
         if (!NavigationProtocol.validTarget(index, elements, candidates)) return NavigationRejection.TARGET_NOT_ALLOWED
         val labels = NavigationProtocol.labelsOf(elements[index]).map(NavigationProtocol::normalize).toSet()
         if (labels.isEmpty()) return NavigationRejection.UNLABELLED_TARGET
-        val matches = matchingIndices(goal, elements, candidates)
+        val verb = goalAction.matchEntire(NavigationProtocol.normalize(goal))?.groupValues?.get(1)
+        val directMatches = matchingIndices(goal, elements, candidates)
+        val toggleMatches = directMatches.filter { elements[it].className?.substringAfterLast('.') in toggleClasses }
+        // A settings entry and its adjacent switch can share a label but perform different
+        // actions. The explicit goal and known class distinguish them; identical rows/toggles
+        // are still ambiguous. This distinction is only enabled in the live validated path.
+        val matches = when {
+            verifiedRouteIndices == null -> directMatches
+            verb in setOf("open", "change") -> directMatches.filter { it !in toggleMatches }
+            verb in setOf("enable", "disable", "turn on", "turn off") && toggleMatches.isNotEmpty() -> toggleMatches
+            else -> directMatches
+        }
+        if (verifiedRouteIndices != null && verb in setOf("open", "change") && index in toggleMatches) {
+            return NavigationRejection.UNSAFE_TOGGLE
+        }
         if (matches.size > 1) return NavigationRejection.AMBIGUOUS_TARGET
         // Shared labels are ambiguous unless the goal exactly identifies this candidate by another label.
         if (matches.singleOrNull() != index && candidates.any { other ->
@@ -60,13 +77,13 @@ internal object NavigationRules {
                 "mobile hotspot" in target -> setOf("network", "network & internet", "hotspot & tethering")
                 else -> emptySet()
             }
-            val routes = candidates.filter { candidate ->
-                NavigationProtocol.labelsOf(elements[candidate]).any { NavigationProtocol.normalize(it) in routeLabels }
-            }
+            val routes = if (verifiedRouteIndices != null) candidates.filter { it in verifiedRouteIndices }
+                else candidates.filter { candidate ->
+                    NavigationProtocol.labelsOf(elements[candidate]).any { NavigationProtocol.normalize(it) in routeLabels }
+                }
             if (routes.size > 1) return NavigationRejection.AMBIGUOUS_TARGET
             if (routes.singleOrNull() != index) return NavigationRejection.UNSUPPORTED_TARGET
         }
-        val verb = goalAction.matchEntire(NavigationProtocol.normalize(goal))?.groupValues?.get(1)
         if (verb in setOf("enable", "disable", "turn on", "turn off")) {
             val element = elements[index]
             val isToggle = element.className?.substringAfterLast('.') in toggleClasses

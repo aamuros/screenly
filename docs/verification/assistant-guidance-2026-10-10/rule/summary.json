@@ -1,0 +1,44 @@
+[
+  {
+    "workflow": "font",
+    "passed": true,
+    "steps": [
+      "label=Display; source=RULE; wait_ms=686; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap",
+      "label=Advanced; source=RULE; wait_ms=739; Android bounds=Rect(0, 1124 - 1080, 1318); matching outline observed; test performs next tap",
+      "label=Font size; source=RULE; wait_ms=737; Android bounds=Rect(0, 1124 - 1080, 1324); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791581620.387 14600 14600 D ScreenlyGuidance: decision session=1 revision=3 index=41 source=RULE outcome=FAILED ms=12",
+      "         1791581620.484 14600 14600 D ScreenlyGuidance: decision session=1 revision=4 index=41 source=RULE outcome=FAILED ms=8",
+      "         1791581621.315 14600 14600 D ScreenlyGuidance: decision session=1 revision=7 index=42 source=RULE outcome=FAILED ms=4",
+      "         1791581621.700 14600 14600 D ScreenlyGuidance: decision session=1 revision=8 index=42 source=RULE outcome=FAILED ms=2",
+      "         1791581621.976 14600 14600 D ScreenlyGuidance: decision session=1 revision=9 index=42 source=RULE outcome=FAILED ms=1"
+    ]
+  },
+  {
+    "workflow": "wifi",
+    "passed": true,
+    "steps": [
+      "label=Network & internet; source=RULE; wait_ms=686; Android bounds=Rect(0, 303 - 1080, 503); matching outline observed; test performs next tap",
+      "label=Wi\u2011Fi; source=RULE; wait_ms=813; Android bounds=Rect(0, 237 - 1080, 437); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791581625.432 14746 14746 D ScreenlyGuidance: decision session=1 revision=3 index=17 source=RULE outcome=FAILED ms=14",
+      "         1791581625.538 14746 14746 D ScreenlyGuidance: decision session=1 revision=4 index=17 source=RULE outcome=FAILED ms=7",
+      "         1791581626.368 14746 14746 D ScreenlyGuidance: decision session=1 revision=7 index=15 source=RULE outcome=FAILED ms=1"
+    ]
+  },
+  {
+    "workflow": "dark",
+    "passed": true,
+    "steps": [
+      "label=Display; source=RULE; wait_ms=674; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap",
+      "label=Dark theme; source=RULE; wait_ms=299; Android bounds=Rect(0, 437 - 1080, 683); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791581629.966 14888 14888 D ScreenlyGuidance: decision session=1 revision=3 index=41 source=RULE outcome=FAILED ms=18",
+      "         1791581630.356 14888 14888 D ScreenlyGuidance: decision session=1 revision=5 index=20 source=RULE outcome=FAILED ms=3",
+      "         1791581630.884 14888 14888 D ScreenlyGuidance: decision session=1 revision=8 index=null source=NONE outcome=FAILED ms=0"
+    ]
+  }
+]

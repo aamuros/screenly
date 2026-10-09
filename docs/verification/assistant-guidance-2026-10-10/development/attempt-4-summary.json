@@ -1,0 +1,22 @@
+[
+  {
+    "workflow": "font",
+    "passed": true,
+    "steps": [
+      "label=Display; source=MODEL; wait_ms=5578; Android bounds=Rect(0, 1103 - 1080, 1303); matching outline observed; test performs next tap",
+      "label=Advanced; source=MODEL; wait_ms=4221; Android bounds=Rect(0, 1124 - 1080, 1318); matching outline observed; test performs next tap",
+      "label=Font size; source=MODEL; wait_ms=11140; Android bounds=Rect(0, 1124 - 1080, 1324); matching outline observed; test performs next tap"
+    ],
+    "decisions": [
+      "         1791580969.863 10912 10912 D ScreenlyGuidance: decision session=1 revision=3 index=41 source=MODEL outcome=SELECTED ms=5323",
+      "         1791580973.764 10912 10912 D ScreenlyGuidance: decision session=1 revision=6 index=42 source=MODEL outcome=SELECTED ms=3039",
+      "         1791580984.914 10912 10912 D ScreenlyGuidance: decision session=1 revision=8 index=42 source=MODEL outcome=SELECTED ms=10031"
+    ]
+  },
+  {
+    "workflow": "wifi",
+    "passed": false,
+    "steps": [],
+    "decisions": []
+  }
+]

@@ -11,17 +11,18 @@ The current app has sanitized accessibility observations, a 72dp outlined edge-d
 floating bubble, an animated four-action menu, compact panels for Ask AI, Explain, Guide Me,
 and Privacy, and touch-through highlighting with the manual picker available as a fallback.
 Ask AI and Explain provide explicitly labelled accessibility-based information.
-Guide Me collects a goal, suggests one control at a time using conservative offline rules,
-and verifies changes when possible. Screenshot capture is explicitly requested via the
-AccessibilityService API, then immediately discarded in memory. **No vision model is
-integrated on this branch**, so the screenshots are not interpreted by AI. The separate
-`feat/local-ai` branch contains a text-only inference prototype that is not merged here.
-Do not present this fallback as screenshot-grounded vision inference.
+Guide Me uses the existing Gemma 3 1B INT4/LiteRT-LM backend to evaluate sanitized
+accessibility candidates. Android validates each decision, highlights the original control,
+and replans after manual navigation. Deterministic fallback is identified separately. No
+screenshot is required for guidance; Ask and Explain retain optional on-demand capture.
+No vision model, cloud inference, network permission or automatic tapping is added.
+Provision the pinned model using [LOCAL_AI.md](docs/LOCAL_AI.md). Missing models yield a safe
+rule fallback or an unavailable message. Completion is explicitly user-confirmed, never
+inferred from model output. The compact floating panels and manual picker are preserved.
 
-M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
-automated and API 35 Pixel Tablet emulator evidence exists, but physical-device verification
-is outstanding. M0 contract setup is **IN PROGRESS**; M3–M6 are **NOT STARTED**. See the
-[roadmap](docs/ROADMAP.md) and preserved [verification report](VERIFICATION.md).
+This is an emulator-tested prototype, not a physically verified release. Shared main-branch
+contracts and phone acceptance remain open. See [guidance integration](docs/GUIDANCE_INTEGRATION.md),
+the [roadmap](docs/ROADMAP.md), and the historical [verification report](VERIFICATION.md).
 
 ## Stack and scope
 
@@ -93,4 +94,7 @@ The `feat/local-ai` backend has been merged into this branch alongside Android g
 See [LOCAL_AI.md](docs/LOCAL_AI.md) for the pinned offline model, provisioning and inference testing;
 [NAVIGATION_BACKEND.md](docs/NAVIGATION_BACKEND.md) for the independent model navigation/evaluation harness;
 and [M4_PLAN.md](docs/M4_PLAN.md) for its intended integration boundaries.
-These components coexist in this branch; this merge does not by itself connect the backend to every Android guidance UI action or establish physical-device verification.
+Guide Me now connects these components through validated Android snapshots and a lifecycle-managed
+controller. Ask and Explain retain their accessibility-label behavior. See
+[GUIDANCE_INTEGRATION.md](docs/GUIDANCE_INTEGRATION.md) for the implementation and emulator evidence;
+physical-device verification remains outstanding.

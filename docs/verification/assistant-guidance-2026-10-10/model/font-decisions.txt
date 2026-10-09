@@ -1,0 +1,3 @@
+         1791581547.403 13835 13835 D ScreenlyGuidance: decision session=1 revision=4 index=41 source=MODEL outcome=SELECTED ms=1966
+         1791581549.904 13835 13835 D ScreenlyGuidance: decision session=1 revision=7 index=42 source=MODEL outcome=SELECTED ms=1698
+         1791581552.554 13835 13835 D ScreenlyGuidance: decision session=1 revision=9 index=42 source=MODEL outcome=SELECTED ms=2053

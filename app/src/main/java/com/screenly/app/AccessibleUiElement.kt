@@ -13,7 +13,9 @@ data class AccessibleUiElement(
     val left: Int,
     val top: Int,
     val right: Int,
-    val bottom: Int
+    val bottom: Int,
+    /** Original index of the nearest copied ancestor; never a persistent control ID. */
+    val parentIndex: Int? = null
 ) {
     internal fun intersectsScreen(width: Int, height: Int): Boolean =
         right > left && bottom > top && width > 0 && height > 0 &&

@@ -1,0 +1,678 @@
+{
+  "fixtures": 16,
+  "decisions": 16,
+  "model_decisions": 16,
+  "native_calls": 31,
+  "rules_correct": 16,
+  "model_correct": 6,
+  "raw_model_correct": 6,
+  "model_selected_correct": 1,
+  "model_canonical_abstentions_correct": 5,
+  "model_wrong_selected": 0,
+  "malformed_responses": 0,
+  "rejected_targets": 9,
+  "runtime_failures": 0,
+  "fallback_attempts": 15,
+  "fallback_selections": 5,
+  "combined_correct": 16,
+  "combined_wrong_selected": 0,
+  "generation_ms": {
+    "median": 1061.0,
+    "min": 534,
+    "max": 1579
+  },
+  "sampled_pss_kib_max": 1084289,
+  "per_fixture": [
+    {
+      "id": "display-font",
+      "expected_index": 1,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "display-font",
+          "run": 1,
+          "raw_response": "1: YES\n\n2: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 2,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": 1,
+          "rule_correct": true,
+          "rule_us": 261,
+          "combined_index": 1,
+          "combined_correct": true,
+          "source": "RULE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1142,
+          "total_ms": 1143,
+          "pss_kib": 1082475
+        }
+      ]
+    },
+    {
+      "id": "missing-font",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "missing-font",
+          "run": 1,
+          "raw_response": "0: NO\n\n1: NO\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "ABSTAINED",
+          "rejection": null,
+          "model_correct": true,
+          "raw_model_correct": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 80,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1059,
+          "total_ms": 1059,
+          "pss_kib": 1082235
+        }
+      ]
+    },
+    {
+      "id": "ambiguous",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "ambiguous",
+          "run": 1,
+          "raw_response": "0: YES\n\n1: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 113,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1061,
+          "total_ms": 1062,
+          "pss_kib": 1082371
+        }
+      ]
+    },
+    {
+      "id": "wifi-unavailable",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "wifi-unavailable",
+          "run": 1,
+          "raw_response": "1: NO\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "ABSTAINED",
+          "rejection": null,
+          "model_correct": true,
+          "raw_model_correct": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 95,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 562,
+          "total_ms": 562,
+          "pss_kib": 1082547
+        }
+      ]
+    },
+    {
+      "id": "font-row-order",
+      "expected_index": 1,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "font-row-order",
+          "run": 1,
+          "raw_response": "1: YES\n\n2: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 2,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": 1,
+          "rule_correct": true,
+          "rule_us": 276,
+          "combined_index": 1,
+          "combined_correct": true,
+          "source": "RULE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1061,
+          "total_ms": 1061,
+          "pss_kib": 1082187
+        }
+      ]
+    },
+    {
+      "id": "font-moved-index",
+      "expected_index": 2,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "font-moved-index",
+          "run": 1,
+          "raw_response": "2: YES\n\n1: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 2,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": 2,
+          "rule_correct": true,
+          "rule_us": 163,
+          "combined_index": 2,
+          "combined_correct": true,
+          "source": "RULE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1053,
+          "total_ms": 1054,
+          "pss_kib": 1082230
+        }
+      ]
+    },
+    {
+      "id": "missing-font-new-labels",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "missing-font-new-labels",
+          "run": 1,
+          "raw_response": "0: NO\n\n1: NO\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "ABSTAINED",
+          "rejection": null,
+          "model_correct": true,
+          "raw_model_correct": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 58,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1050,
+          "total_ms": 1050,
+          "pss_kib": 1082470
+        }
+      ]
+    },
+    {
+      "id": "duplicate-save",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "duplicate-save",
+          "run": 1,
+          "raw_response": "0: YES\n\n1: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 78,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1051,
+          "total_ms": 1051,
+          "pss_kib": 1082634
+        }
+      ]
+    },
+    {
+      "id": "wifi-unavailable-bluetooth",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "wifi-unavailable-bluetooth",
+          "run": 1,
+          "raw_response": "1: NO\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "ABSTAINED",
+          "rejection": null,
+          "model_correct": true,
+          "raw_model_correct": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 80,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 534,
+          "total_ms": 534,
+          "pss_kib": 1082750
+        }
+      ]
+    },
+    {
+      "id": "brightness-present",
+      "expected_index": 1,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "brightness-present",
+          "run": 1,
+          "raw_response": "1: YES\n\n0: YES\n\n2: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 0,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 2,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": 1,
+          "rule_correct": true,
+          "rule_us": 195,
+          "combined_index": 1,
+          "combined_correct": true,
+          "source": "RULE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1579,
+          "total_ms": 1579,
+          "pss_kib": 1083166
+        }
+      ]
+    },
+    {
+      "id": "brightness-missing",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "brightness-missing",
+          "run": 1,
+          "raw_response": "0: NO\n\n1: YES\n",
+          "parsed_index": 1,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "UNSUPPORTED_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 78,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1078,
+          "total_ms": 1078,
+          "pss_kib": 1083310
+        }
+      ]
+    },
+    {
+      "id": "brightness-duplicate",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "brightness-duplicate",
+          "run": 1,
+          "raw_response": "0: YES\n\n1: YES\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "AMBIGUOUS_TARGET",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 1,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 112,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1050,
+          "total_ms": 1051,
+          "pss_kib": 1083430
+        }
+      ]
+    },
+    {
+      "id": "nfc-enable-off",
+      "expected_index": 0,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "nfc-enable-off",
+          "run": 1,
+          "raw_response": "0: YES\n\n1: NO\n",
+          "parsed_index": 0,
+          "model_index": 0,
+          "model_outcome": "SELECTED",
+          "rejection": null,
+          "model_correct": true,
+          "raw_model_correct": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": 0,
+          "rule_correct": true,
+          "rule_us": 148,
+          "combined_index": 0,
+          "combined_correct": true,
+          "source": "MODEL",
+          "fallback_attempted": false,
+          "failure": null,
+          "generation_ms": 1100,
+          "total_ms": 1101,
+          "pss_kib": 1083814
+        }
+      ]
+    },
+    {
+      "id": "nfc-enable-on",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "nfc-enable-on",
+          "run": 1,
+          "raw_response": "0: YES\n\n1: NO\n",
+          "parsed_index": 0,
+          "model_index": null,
+          "model_outcome": "REJECTED_TARGET",
+          "rejection": "UNSAFE_TOGGLE",
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 130,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1236,
+          "total_ms": 1236,
+          "pss_kib": 1084002
+        }
+      ]
+    },
+    {
+      "id": "nfc-disable-on",
+      "expected_index": 0,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "nfc-disable-on",
+          "run": 1,
+          "raw_response": "0: NO\n\n1: NO\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "ABSTAINED",
+          "rejection": null,
+          "model_correct": false,
+          "raw_model_correct": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": 0,
+          "rule_correct": true,
+          "rule_us": 144,
+          "combined_index": 0,
+          "combined_correct": true,
+          "source": "RULE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1130,
+          "total_ms": 1130,
+          "pss_kib": 1084149
+        }
+      ]
+    },
+    {
+      "id": "nfc-disable-off",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "nfc-disable-off",
+          "run": 1,
+          "raw_response": "0: NO\n\n1: NO\n",
+          "parsed_index": null,
+          "model_index": null,
+          "model_outcome": "ABSTAINED",
+          "rejection": null,
+          "model_correct": true,
+          "raw_model_correct": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 0,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 1,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ],
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_us": 106,
+          "combined_index": null,
+          "combined_correct": true,
+          "source": "NONE",
+          "fallback_attempted": true,
+          "failure": null,
+          "generation_ms": 1119,
+          "total_ms": 1119,
+          "pss_kib": 1084289
+        }
+      ]
+    }
+  ]
+}
