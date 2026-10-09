@@ -96,16 +96,11 @@ internal class NavigationEngine(private val generate: suspend (String) -> String
                 }
             }
             currentCoroutineContext().ensureActive()
-            val fallbackAttempted = validInput && modelIndex == null
-            val ruleIndex = if (fallbackAttempted) NavigationRules.select(goal, capturedElements, capturedCandidates) else null
+            val fallbackAttempted = false
             currentCoroutineContext().ensureActive()
             NavigationDecision(
-                elementIndex = modelIndex ?: ruleIndex,
-                source = when {
-                    modelIndex != null -> DecisionSource.MODEL
-                    ruleIndex != null -> DecisionSource.RULE
-                    else -> DecisionSource.NONE
-                },
+                elementIndex = modelIndex,
+                source = if (modelIndex != null) DecisionSource.MODEL else DecisionSource.NONE,
                 modelOutcome = outcome,
                 rawResponse = raw,
                 parsedIndex = parsedIndex,

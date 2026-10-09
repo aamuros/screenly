@@ -53,7 +53,7 @@ internal class LocalInference(
                     EngineConfig(
                         modelPath = model.absolutePath,
                         backend = Backend.CPU(numOfThreads = 4),
-                        maxNumTokens = 1024,
+                        maxNumTokens = 4096,
                         cacheDir = cacheDirectory.absolutePath
                     )
                 )
@@ -76,7 +76,7 @@ internal class LocalInference(
         mutex.withLock {
             check(!closed) { "Local inference is closed." }
             require(prompt.isNotBlank()) { "Prompt must not be blank." }
-            require(prompt.length <= 1000) { "Smoke-test prompts must be at most 1000 characters." }
+            require(prompt.length <= 8000) { "Prompts must be at most 8000 characters." }
             val readyEngine = checkNotNull(engine) { "Initialize the local model before generating text." }
             try {
                 readyEngine.createConversation(ConversationConfig(automaticToolCalling = false)).use { conversation ->

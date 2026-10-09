@@ -24,38 +24,25 @@ class NavigationEngineTest {
     }
 
     @Test
-    fun invalidOutputAndAbstentionUseRulesWithoutBecomingModelSuccess() = runBlocking<Unit> {
+    fun invalidOutputAndAbstentionNeverProduceRuleDecisions() = runBlocking<Unit> {
         listOf("None" to ModelOutcome.INVALID_RESPONSE, "TAP:99" to ModelOutcome.REJECTED_TARGET,
             "TAP:0" to ModelOutcome.REJECTED_TARGET, "NONE" to ModelOutcome.ABSTAINED).forEach { (raw, outcome) ->
             val result = NavigationEngine { raw }.decide(fixture.goal, fixture.elements, fixture.candidateIndices)
-            assertEquals(1, result.elementIndex)
+            assertNull(result.elementIndex)
             assertNull(result.modelIndex)
-            assertEquals(DecisionSource.RULE, result.source)
+            assertEquals(DecisionSource.NONE, result.source)
             assertEquals(outcome, result.modelOutcome)
             assertEquals(raw, result.rawResponse)
-            assertTrue(result.fallbackAttempted)
+            assertFalse(result.fallbackAttempted)
         }
     }
 
     @Test
-    fun wrongExactTargetCannotOverrideUniqueRuleEvidence() = runBlocking<Unit> {
-        val result = NavigationEngine { "TAP:2" }.decide(fixture.goal, fixture.elements, fixture.candidateIndices)
-        assertEquals(NavigationRejection.CONTRADICTS_EXACT_TARGET, result.rejection)
-        assertEquals(2, result.parsedIndex)
-        assertNull(result.modelIndex)
-        assertEquals(1, result.elementIndex)
-        assertEquals(DecisionSource.RULE, result.source)
-    }
-
-    @Test
-    fun ambiguousAndAlreadySatisfiedResponsesCannotSelect() = runBlocking<Unit> {
-        listOf("ambiguous", "ambiguous-with-descriptions", "dark-on", "already-disabled").forEach { id ->
-            val sample = navigationFixtures.first { it.id == id }
-            val result = NavigationEngine { "TAP:0" }.decide(sample.goal, sample.elements, sample.candidateIndices)
-            assertEquals(id, ModelOutcome.REJECTED_TARGET, result.modelOutcome)
-            assertNull(result.elementIndex)
-            assertEquals(DecisionSource.NONE, result.source)
-        }
+    fun modelChoosesIntermediateMenusWithoutSemanticRouteRules() = runBlocking<Unit> {
+        val result = NavigationEngine { "TAP:2" }.decide("Upload a photo", fixture.elements, fixture.candidateIndices)
+        assertEquals(2, result.elementIndex)
+        assertEquals(DecisionSource.MODEL, result.source)
+        assertNull(result.rejection)
     }
 
     @Test
@@ -71,13 +58,13 @@ class NavigationEngineTest {
     }
 
     @Test
-    fun promptBudgetRejectionSkipsGenerationButAllowsFullSetRuleFallback() = runBlocking<Unit> {
+    fun promptBudgetRejectionSkipsGenerationWithoutInventingAFallback() = runBlocking<Unit> {
         val sample = navigationFixtures.first { it.id == "too-many-candidates" }
         val result = NavigationEngine { error("Prompt rejection reached generation") }
             .decide(sample.goal, sample.elements, sample.candidateIndices)
         assertEquals(ModelOutcome.PROMPT_REJECTED, result.modelOutcome)
-        assertEquals(0, result.elementIndex)
-        assertEquals(DecisionSource.RULE, result.source)
+        assertNull(result.elementIndex)
+        assertEquals(DecisionSource.NONE, result.source)
         assertNull(result.rawResponse)
     }
 
@@ -87,7 +74,7 @@ class NavigationEngineTest {
         val result = engine.decide(fixture.goal, fixture.elements, fixture.candidateIndices)
         assertEquals(ModelOutcome.FAILED, result.modelOutcome)
         assertEquals("LocalInferenceException", result.failure)
-        assertEquals(DecisionSource.RULE, result.source)
+        assertEquals(DecisionSource.NONE, result.source)
         val missing = navigationFixtures.first { it.id == "missing-font" }
         val unable = engine.decide(missing.goal, missing.elements, missing.candidateIndices)
         assertNull(unable.elementIndex)
@@ -147,10 +134,10 @@ class NavigationEngineTest {
     }
 
     @Test
-    fun allFixturesHandleMalformedResponsesWithTheIndependentRuleBaseline() = runBlocking<Unit> {
+    fun allFixturesRejectOutOfBoundsModelOutputsWithoutRules() = runBlocking<Unit> {
         navigationFixtures.forEach { sample ->
             val result = NavigationEngine { "TAP:999" }.decide(sample.goal, sample.elements, sample.candidateIndices)
-            assertEquals(sample.id, sample.expectedRuleIndex, result.elementIndex)
+            assertNull(sample.id, result.elementIndex)
             assertNull(sample.id, result.modelIndex)
         }
     }

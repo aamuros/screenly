@@ -1,5 +1,11 @@
 # Screenly testing
 
+## Offline multimodal checks
+
+See [OFFLINE_MULTIMODAL.md](OFFLINE_MULTIMODAL.md) for the current feature's build, focused
+unit tests, opt-in physical image gate, live capture/UI checks and native quality failures.
+The historical procedures below are not evidence that multimodal acceptance has passed.
+
 ## Integration branch checks
 
 [INTEGRATION.md](INTEGRATION.md) contains the current build/unit/lint commands, opt-in real

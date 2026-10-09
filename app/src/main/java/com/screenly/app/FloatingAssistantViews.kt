@@ -65,7 +65,7 @@ internal object FloatingAssistantViews {
         return scroll(context, panel)
     }
 
-    fun infoPanel(context: Context, title: String, message: String, onDismiss: () -> Unit): View {
+    fun infoPanel(context: Context, title: String, message: String, onClear: (() -> Unit)? = null, onDismiss: () -> Unit): View {
         val panel = panel(context).apply {
             setPadding(dp(context, 20), dp(context, 20), dp(context, 20), dp(context, 16))
         }
@@ -83,6 +83,16 @@ internal object FloatingAssistantViews {
         }, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
         ).apply { topMargin = dp(context, 14) })
+        if (onClear != null) panel.addView(TextView(context).apply {
+            setText(R.string.clear_assistant_session)
+            textSize = 16f
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            isClickable = true
+            isFocusable = true
+            minimumHeight = dp(context, 48)
+            setOnClickListener { onClear() }
+        })
         panel.addView(TextView(context).apply {
             setText(R.string.assistant_close)
             textSize = 16f

@@ -1,0 +1,49 @@
+
+com.screenly.app.ai.ScreenPlannerNativeTest:INSTRUMENTATION_STATUS: photo_upload_synthetic_raw=NAVIGATE|0|-Upload photo|The user wants to upload a photo.
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: photo_upload=mode=MULTIMODAL; action=UNCERTAIN; index=null; direction=null; correct=false; elapsed_ms=48407; pss_kib=2815218
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: fixture_accuracy=0/1; synthetic; multimodal=true
+INSTRUMENTATION_STATUS_CODE: 0
+
+Error in multimodalNativePlanner(com.screenly.app.ai.ScreenPlannerNativeTest):
+java.lang.AssertionError: Native planner must pass these basic tasks before claiming guidance quality. expected:<1> but was:<0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.benchmark(ScreenPlannerNativeTest.kt:81)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.access$benchmark(ScreenPlannerNativeTest.kt:22)
+	at com.screenly.app.ai.ScreenPlannerNativeTest$benchmark$1.invokeSuspend(ScreenPlannerNativeTest.kt:15)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.multimodalNativePlanner(ScreenPlannerNativeTest.kt:37)
+
+
+Time: 48.965
+There was 1 failure:
+1) multimodalNativePlanner(com.screenly.app.ai.ScreenPlannerNativeTest)
+java.lang.AssertionError: Native planner must pass these basic tasks before claiming guidance quality. expected:<1> but was:<0>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.benchmark(ScreenPlannerNativeTest.kt:81)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.access$benchmark(ScreenPlannerNativeTest.kt:22)
+	at com.screenly.app.ai.ScreenPlannerNativeTest$benchmark$1.invokeSuspend(ScreenPlannerNativeTest.kt:15)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.multimodalNativePlanner(ScreenPlannerNativeTest.kt:37)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

@@ -1,23 +1,25 @@
 package com.screenly.app
 
-import com.screenly.app.ai.navigation.CandidateDecision
+import com.screenly.app.ai.navigation.NavigationAction
+import com.screenly.app.ai.navigation.ScreenDecision
+import com.screenly.app.ai.navigation.ScreenDecisionProtocol
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-internal enum class GuidanceStatus { IDLE, WAITING_FOR_SCREEN, PLANNING, NEXT, UNCERTAIN }
+internal enum class GuidanceStatus { IDLE, WAITING_FOR_SCREEN, PLANNING, NEXT, DONE, UNCERTAIN }
 internal data class GuidanceRequest(val goalVersion: Long, val requestId: Long, val snapshot: GuidanceSnapshot, val goal: String)
 internal data class GuidanceUpdate(
     val status: GuidanceStatus,
     val request: GuidanceRequest? = null,
-    val result: CandidateDecision? = null
+    val result: ScreenDecision? = null
 )
 
 /** Main-thread owner. Cancellation is backed by session/revision/request/goal checks. */
 internal class GuidanceController(
     private val scope: CoroutineScope,
-    private val plan: suspend (String, GuidanceSnapshot, List<String>) -> CandidateDecision,
+    private val plan: suspend (String, GuidanceSnapshot, List<String>) -> ScreenDecision,
     private val refresh: () -> GuidanceSnapshot?,
     private val render: (GuidanceUpdate) -> Unit
 ) {
@@ -30,6 +32,8 @@ internal class GuidanceController(
     private var disposed = false
     private var lastSuggestedLabel: String? = null
     private var lastSuggestedPackage: String? = null
+    private var lastSuggestedObservation: ScreenObservation? = null
+    private var lastPresented: Pair<ScreenObservation, ScreenDecision>? = null
     private val previousSuggestions = mutableListOf<String>()
     var status = GuidanceStatus.IDLE
         private set
@@ -47,9 +51,9 @@ internal class GuidanceController(
 
     fun observe(next: GuidanceSnapshot?) {
         if (disposed || snapshot?.key == next?.key) return
-        if (next != null && next.observation.packageName == lastSuggestedPackage) {
-            lastSuggestedLabel?.let { previousSuggestions += it }
-            while (previousSuggestions.size > 2) previousSuggestions.removeAt(0)
+        if (next != null && next.observation != lastSuggestedObservation) {
+            lastSuggestedLabel?.let { previousSuggestions += "Suggested in $lastSuggestedPackage: $it; observed new screen in ${next.observation.packageName}" }
+            while (previousSuggestions.size > 4) previousSuggestions.removeAt(0)
         }
         if (next != null) {
             lastSuggestedLabel = null
@@ -76,6 +80,8 @@ internal class GuidanceController(
         previousSuggestions.clear()
         lastSuggestedLabel = null
         lastSuggestedPackage = null
+        lastSuggestedObservation = null
+        lastPresented = null
         publish(GuidanceUpdate(GuidanceStatus.IDLE))
     }
 
@@ -120,12 +126,22 @@ internal class GuidanceController(
             val fresh = refresh()
             observe(fresh)
             if (fresh?.key != current.key || fresh.observation != current.observation || !canPresent(request)) return@launch
-            val index = result.decision.elementIndex
-            if (index != null && index in current.candidateIndices) {
-                lastSuggestedLabel = current.planningElements[index].text ?: current.planningElements[index].contentDescription
+            val index = result.index
+            val previous = lastPresented
+            if (previous?.first == current.observation && previous.second.action == result.action &&
+                previous.second.index == result.index && previous.second.direction == result.direction) {
+                publish(GuidanceUpdate(GuidanceStatus.UNCERTAIN, request))
+                return@launch
+            }
+            if (!ScreenDecisionProtocol.grounded(result, current)) {
+                publish(GuidanceUpdate(GuidanceStatus.UNCERTAIN, request))
+            } else if (index != null) {
+                lastSuggestedLabel = "${result.action}:${result.direction}:${current.planningElements[index].text ?: current.planningElements[index].contentDescription}"
                 lastSuggestedPackage = current.observation.packageName
+                lastSuggestedObservation = current.observation
+                lastPresented = current.observation to result
                 publish(GuidanceUpdate(GuidanceStatus.NEXT, request, result))
-            } else publish(GuidanceUpdate(GuidanceStatus.UNCERTAIN, request, result))
+            } else publish(GuidanceUpdate(if (result.action == NavigationAction.DONE) GuidanceStatus.DONE else GuidanceStatus.UNCERTAIN, request, result))
         }
     }
 

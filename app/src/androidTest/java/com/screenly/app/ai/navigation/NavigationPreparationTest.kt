@@ -25,7 +25,7 @@ class NavigationPreparationTest {
         assertFalse(NavigationProtocol.validTarget(0, elements, candidates))
         assertFalse(NavigationProtocol.validTarget(99, elements, candidates))
         assertNull(NavigationProtocol.parseResponse("TAP:1 because it matches"))
-        assertEquals(1, NavigationRules.select("Open font size", elements, candidates))
+        assertNull(NavigationRules.select("Open font size", elements, candidates))
         assertNull(NavigationRules.select("Open Wi-Fi", elements, candidates))
         assertEquals(NavigationResponse(null), NavigationProtocol.parseResponse("NONE"))
     }

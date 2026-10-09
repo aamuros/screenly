@@ -1,0 +1,65 @@
+
+com.screenly.app.ai.ScreenPlannerNativeTest:INSTRUMENTATION_STATUS: photo_upload_synthetic_raw=0
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: photo_upload=mode=TEXT_ONLY; action=NAVIGATE; index=0; direction=null; correct=true; elapsed_ms=8701; pss_kib=1198430
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: folder_creation_synthetic_raw=1
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: folder_creation=mode=TEXT_ONLY; action=NAVIGATE; index=1; direction=null; correct=true; elapsed_ms=4814; pss_kib=1127275
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: font_adjustment_synthetic_raw=1
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: font_adjustment=mode=TEXT_ONLY; action=ADJUST; index=0; direction=DECREASE; correct=false; elapsed_ms=4363; pss_kib=1128256
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: theme_toggle_synthetic_raw=0
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: theme_toggle=mode=TEXT_ONLY; action=TOGGLE; index=0; direction=ON; correct=true; elapsed_ms=4247; pss_kib=1128782
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: fixture_accuracy=3/4; synthetic; multimodal=false
+INSTRUMENTATION_STATUS_CODE: 0
+
+Error in accessibilityOnlyNativePlanner(com.screenly.app.ai.ScreenPlannerNativeTest):
+java.lang.AssertionError: Native planner must pass these basic tasks before claiming guidance quality. expected:<4> but was:<3>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.benchmark(ScreenPlannerNativeTest.kt:77)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.access$benchmark(ScreenPlannerNativeTest.kt:22)
+	at com.screenly.app.ai.ScreenPlannerNativeTest$benchmark$1.invokeSuspend(ScreenPlannerNativeTest.kt:15)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.accessibilityOnlyNativePlanner(ScreenPlannerNativeTest.kt:36)
+
+
+Time: 22.608
+There was 1 failure:
+1) accessibilityOnlyNativePlanner(com.screenly.app.ai.ScreenPlannerNativeTest)
+java.lang.AssertionError: Native planner must pass these basic tasks before claiming guidance quality. expected:<4> but was:<3>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.benchmark(ScreenPlannerNativeTest.kt:77)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.access$benchmark(ScreenPlannerNativeTest.kt:22)
+	at com.screenly.app.ai.ScreenPlannerNativeTest$benchmark$1.invokeSuspend(ScreenPlannerNativeTest.kt:15)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.ai.ScreenPlannerNativeTest.accessibilityOnlyNativePlanner(ScreenPlannerNativeTest.kt:36)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

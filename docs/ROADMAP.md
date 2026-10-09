@@ -1,5 +1,10 @@
 # Screenly roadmap
 
+Current user-authorized feature: `feat/offline-multimodal-navigation`, **IMPLEMENTED — UNVERIFIED**.
+The [feature report](OFFLINE_MULTIMODAL.md) separates passed physical image compatibility
+from outstanding navigation quality and end-to-end acceptance. No integration branch or
+`main` was merged or promoted by this work.
+
 Original documentation baseline: `51f5fb7` on `main`, 2026-10-09. M3 implementation starts
 from `e754f7b` on `feat/local-ai`; see [M3 evidence and remaining gates](LOCAL_AI.md).
 Checked boxes mean the stated task has evidence, not that an entire milestone is verified.

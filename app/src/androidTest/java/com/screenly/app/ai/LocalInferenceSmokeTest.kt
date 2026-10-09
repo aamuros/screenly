@@ -40,7 +40,7 @@ class LocalInferenceSmokeTest {
         }
 
         record("device", "${Build.MANUFACTURER} ${Build.MODEL}; API ${Build.VERSION.SDK_INT}; ABIs ${Build.SUPPORTED_ABIS.joinToString()}")
-        record("runtime", "LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens")
+        record("runtime", "LiteRT-LM 0.10.2; CPU; 4 threads; 4096 total tokens")
         record("model", "${model.absolutePath}; ${model.length()} bytes; expected SHA-256 ${LocalModel.SHA256}")
         record("offline_required", offlineRequired.toString())
         checkOffline()

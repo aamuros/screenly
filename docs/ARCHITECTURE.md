@@ -1,5 +1,12 @@
 # Screenly architecture
 
+## Offline multimodal feature branch
+
+The current `feat/offline-multimodal-navigation` implementation and physical native evidence
+are described in [OFFLINE_MULTIMODAL.md](OFFLINE_MULTIMODAL.md). It adds a unified image/text
+planner and screenshot lifecycle, and disables the deterministic route/fallback described in
+the historical integration notes below. Full product acceptance remains unverified.
+
 ## Implemented foundation
 
 One Kotlin application module (`com.screenly.app`); no backend, database or network permission.

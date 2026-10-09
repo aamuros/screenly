@@ -30,14 +30,19 @@ import android.util.Log
 import androidx.core.graphics.withTranslation
 import com.screenly.app.ai.LocalInference
 import com.screenly.app.ai.LocalInferenceException
-import com.screenly.app.ai.navigation.NavigationEngine
-import com.screenly.app.ai.navigation.NavigationRules
-import com.screenly.app.ai.navigation.SettingsWorkflow
+import com.screenly.app.ai.LiteRtMultimodalInference
+import com.screenly.app.ai.navigation.AiMode
+import com.screenly.app.ai.navigation.ScreenPlanner
+import com.screenly.app.ai.navigation.ScreenDecisionProtocol
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.abs
 import kotlin.math.min
@@ -59,13 +64,26 @@ internal class ScreenlyOverlay(
     private var lastGoal = ""
     private val sessionId = nextSession.incrementAndGet()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    private val inference = LocalInference(service)
-    private val engine = NavigationEngine { prompt -> inference.initialize(); inference.generate(prompt) }
+    private var inference = LocalInference(service)
+    private val vision = LiteRtMultimodalInference(service)
+    private val imageCapture = ScreenImageCapture(service)
+    private var questionJob: Job? = null
+    private var questionVersion = 0L
+    private var questionSnapshotKey: SnapshotKey? = null
+    private var cachedGuidanceSnapshot: GuidanceSnapshot? = null
+    private var cachedDisplaySize: Pair<Int, Int>? = null
+    private val chatHistory = mutableListOf<String>()
+    private var assistantAction = AssistantAction.GUIDE_ME
+    private val planner = ScreenPlanner(
+        vision, text = { prompt -> inference.initialize(); inference.generate(prompt) },
+        releaseText = { inference.close(); inference = LocalInference(service) },
+        capture = { snapshot -> captureImage(snapshot) },
+        fresh = { snapshot -> currentGuidanceSnapshot()?.let { it.key == snapshot.key && it.observation == snapshot.observation } == true }
+    )
     private val controller = GuidanceController(
         scope,
         plan = { goal, snapshot, history ->
-            engine.decideCandidates(goal, snapshot.planningElements, snapshot.candidateIndices,
-                snapshot.observation.packageName, verifiedRoutes(goal, snapshot), history)
+            planner.plan(goal, snapshot, history)
         },
         refresh = { refreshObservation(); currentGuidanceSnapshot() },
         render = ::renderGuidance
@@ -83,12 +101,20 @@ internal class ScreenlyOverlay(
 
     fun updateObservation(next: ScreenObservation) {
         if (disposed) return
+        val previous = state.snapshot
+        val changedApplication = previous != null &&
+            (previous.packageName != next.packageName || previous.windowId != next.windowId)
         if (state.update(next)) {
             closePicker()
-            closeMenu()
-            closeInfoPanel()
+            // Assistant menus contain no captured target IDs. Opening our windows can
+            // itself change the app's accessibility revision; keep these controls usable.
+            if (changedApplication) {
+                closeMenu()
+                closeInfoPanel()
+            }
             clearHighlight()
-            clearGuidancePanel()
+            if (!questionIsSettling()) clearGuidancePanel()
+            invalidateQuestionFromObservation()
         }
         showBubble()
         controller.observe(currentGuidanceSnapshot())
@@ -97,14 +123,28 @@ internal class ScreenlyOverlay(
     fun clearSelection() {
         state.invalidateSelection()
         closePicker()
-        closeMenu()
-        closeInfoPanel()
         clearHighlight()
-        clearGuidancePanel()
+        if (!questionIsSettling()) clearGuidancePanel()
+        invalidateQuestionFromObservation()
         controller.observe(null)
     }
 
+    /** Content events can be noisy; extraction decides whether immutable screen data changed.
+     * Remove actionable UI immediately, and refresh again before any inference is presented. */
+    fun clearVisibleTargets() {
+        val hadTarget = highlight != null
+        closePicker()
+        clearHighlight()
+        if (hadTarget && controller.status != GuidanceStatus.PLANNING && questionJob?.isActive != true) clearGuidancePanel()
+    }
+
+    private fun questionIsSettling() = questionJob?.isActive == true && questionSnapshotKey == null
+
     fun clearObservation(showWaiting: Boolean = false) {
+        invalidateQuestion()
+        chatHistory.clear()
+        cachedGuidanceSnapshot = null
+        cachedDisplaySize = null
         state.clear()
         closePicker()
         closeMenu()
@@ -131,10 +171,12 @@ internal class ScreenlyOverlay(
         disposed = true
         controller.close()
         clearObservation()
-        // Main.immediate enters close's NonCancellable block before the owner scope is cancelled.
-        scope.launch {
+        // Both native owners must close even after cancellation of the overlay's parent scope.
+        scope.launch(NonCancellable) {
             try { inference.close() }
             catch (_: LocalInferenceException) { Log.w("ScreenlyGuidance", "Local engine cleanup failed.") }
+            try { vision.close() }
+            catch (_: LocalInferenceException) { Log.w("ScreenlyGuidance", "Image engine cleanup failed.") }
         }
         scope.cancel()
     }
@@ -237,10 +279,11 @@ internal class ScreenlyOverlay(
             if (disposed || assistantMenu !== expectedView) return@actionClick
             closeMenu()
             when (action) {
-                AssistantAction.GUIDE_ME, AssistantAction.ASK_AI -> showGoalPanel()
-                AssistantAction.EXPLAIN -> showInfoPanel(
-                    R.string.assistant_action_explain, R.string.assistant_explain_unavailable
-                )
+                AssistantAction.GUIDE_ME, AssistantAction.ASK_AI -> {
+                    assistantAction = action
+                    showGoalPanel()
+                }
+                AssistantAction.EXPLAIN -> askScreen(service.getString(R.string.explain_screen_prompt))
                 AssistantAction.PRIVACY -> showInfoPanel(
                     R.string.assistant_action_privacy, R.string.privacy_notice
                 )
@@ -266,7 +309,16 @@ internal class ScreenlyOverlay(
         val area = usableScreenBounds()
         if (area.width() <= 0 || area.height() <= 0) return
         val view = FloatingAssistantViews.infoPanel(
-            service, service.getString(title), service.getString(message)
+            service, service.getString(title), service.getString(message),
+            onClear = if (title == R.string.assistant_action_privacy) ({
+                controller.stop()
+                invalidateQuestion()
+                chatHistory.clear()
+                lastGoal = ""
+                clearHighlight()
+                closeInfoPanel()
+                showGuidanceMessage(service.getString(R.string.assistant_session_cleared))
+            }) else null
         ) { closeInfoPanel() }
         view.setOnTouchListener { _, event ->
             if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) {
@@ -314,14 +366,126 @@ internal class ScreenlyOverlay(
         if (disposed) return null
         val observation = state.snapshot ?: return null
         val display = windowManager.currentWindowMetrics.bounds
-        return guidanceSnapshot(SnapshotKey(sessionId, state.revision), observation, display.width(), display.height())
+        val key = SnapshotKey(sessionId, state.revision)
+        val size = display.width() to display.height()
+        cachedGuidanceSnapshot?.takeIf { it.key == key && cachedDisplaySize == size }?.let { return it }
+        return guidanceSnapshot(key, observation, size.first, size.second).also {
+            cachedGuidanceSnapshot = it
+            cachedDisplaySize = size
+        }
     }
 
-    private fun verifiedRoutes(goal: String, snapshot: GuidanceSnapshot): Set<Int> = SettingsWorkflow.verifiedRoutes(
-        goal, snapshot.observation.packageName,
-        Build.MANUFACTURER.equals("Google", ignoreCase = true) || Build.MANUFACTURER.equals("Android", ignoreCase = true),
-        snapshot.planningElements, snapshot.candidateIndices, Build.VERSION.SDK_INT
-    )
+    private suspend fun captureImage(snapshot: GuidanceSnapshot): ScreenCapture {
+        closeMenu()
+        closeInfoPanel()
+        closeGoalPanel()
+        var imageSnapshot = snapshot
+        guidancePanel?.takeIf { it.visibility == View.VISIBLE && it.isAttachedToWindow && it.width > 0 && it.height > 0 }?.let { caption ->
+            val location = IntArray(2)
+            caption.getLocationOnScreen(location)
+            val observation = snapshot.observation
+            val crop = ImageCropBounds(observation.windowLeft, observation.windowTop, observation.windowRight, observation.windowBottom)
+                .excluding(ImageCropBounds(location[0], location[1], location[0] + caption.width, location[1] + caption.height))
+                ?: return ScreenCapture.Failed(CaptureFailure.PRIVACY)
+            // Keep the status visible; its exact window rectangle is excluded from AI pixels.
+            imageSnapshot = snapshot.copy(observation = observation.copy(
+                windowLeft = crop.left, windowTop = crop.top, windowRight = crop.right, windowBottom = crop.bottom))
+        }
+        val hidden = listOfNotNull(bubble, highlight)
+        hidden.forEach { it.visibility = View.INVISIBLE }
+        try {
+            delay(350) // Let keyboard/overlay surfaces disappear before capture.
+            refreshObservation()
+            val fresh = currentGuidanceSnapshot()
+            if (fresh?.key != snapshot.key || fresh.observation != snapshot.observation) {
+                return ScreenCapture.Failed(CaptureFailure.STALE)
+            }
+            val bounds = windowManager.currentWindowMetrics.bounds
+            return imageCapture.capture(imageSnapshot, bounds.width(), bounds.height())
+        } finally {
+            if (!disposed) hidden.forEach { it.visibility = View.VISIBLE }
+        }
+    }
+
+    private fun invalidateQuestion() {
+        questionVersion++
+        questionSnapshotKey = null
+        questionJob?.cancel()
+        questionJob = null
+    }
+
+    private fun invalidateQuestionFromObservation() {
+        if (questionSnapshotKey != null) {
+            invalidateQuestion()
+            showGuidanceMessage(service.getString(R.string.ai_screen_changed))
+        }
+    }
+
+    private fun askScreen(question: String) {
+        controller.stop()
+        invalidateQuestion()
+        val version = questionVersion
+        showGuidanceMessage(service.getString(R.string.guidance_planning))
+        questionJob = scope.launch {
+            delay(600) // Allow the input panel, keyboard and app layout to settle.
+            refreshObservation()
+            if (disposed || version != questionVersion) return@launch
+            val snapshot = currentGuidanceSnapshot() ?: run {
+                showGuidanceMessage(service.getString(R.string.guidance_waiting))
+                return@launch
+            }
+            questionSnapshotKey = snapshot.key
+            showGuidanceMessage(service.getString(R.string.guidance_planning))
+            val result = try {
+                planner.plan(question, snapshot, chatHistory.toList(), question = true)
+            } catch (cancelled: CancellationException) { throw cancelled
+            } catch (_: Exception) {
+                com.screenly.app.ai.navigation.ScreenDecision(
+                    com.screenly.app.ai.navigation.NavigationAction.UNCERTAIN, null, null, "", AiMode.UNAVAILABLE, "failed")
+            }
+            refreshObservation()
+            if (disposed || version != questionVersion || currentGuidanceSnapshot()?.key != snapshot.key) return@launch
+            val answer = decisionMessage(result)
+            chatHistory += "Question: $question; answer: ${result.explanation}"
+            while (chatHistory.size > 4) chatHistory.removeAt(0)
+            val target = result.index?.takeIf { ScreenDecisionProtocol.grounded(result, snapshot) }
+                ?.let { snapshot.observation.elements[it] }
+            target?.let(::showHighlight)
+            questionSnapshotKey = null
+            showGuidanceMessage(answer, target)
+        }
+    }
+
+    private fun decisionMessage(result: com.screenly.app.ai.navigation.ScreenDecision): String {
+        val mode = service.getString(when (result.mode) {
+            AiMode.MULTIMODAL -> R.string.ai_multimodal
+            AiMode.TEXT_ONLY -> R.string.ai_text_only
+            AiMode.UNAVAILABLE -> R.string.guidance_uncertain_model_unavailable
+        })
+        val explanation = result.explanation.ifBlank { service.getString(R.string.guidance_uncertain) }
+        val visionReason = when (result.visionStatus) {
+            "missing" -> R.string.ai_vision_missing
+            "unverified" -> R.string.ai_vision_unverified
+            "privacy" -> R.string.ai_vision_private
+            "failed", "unsupported" -> R.string.ai_vision_failed
+            "android_denied", "decode", "timeout", "stale" -> R.string.ai_capture_failed
+            else -> R.string.ai_vision_not_used
+        }
+        val label = result.index?.let { currentGuidanceSnapshot()?.planningElements?.getOrNull(it) }
+            ?.let { it.text ?: it.contentDescription } ?: service.getString(R.string.unlabelled_element)
+        val instruction = if (result.explanation.isNotBlank()) explanation else when (result.action) {
+            com.screenly.app.ai.navigation.NavigationAction.NAVIGATE -> service.getString(R.string.guidance_step, label)
+            com.screenly.app.ai.navigation.NavigationAction.ADJUST -> service.getString(
+                if (result.direction == "INCREASE") R.string.guidance_increase else R.string.guidance_decrease, label)
+            com.screenly.app.ai.navigation.NavigationAction.TOGGLE -> service.getString(
+                if (result.direction == "ON") R.string.guidance_turn_on else R.string.guidance_turn_off, label)
+            com.screenly.app.ai.navigation.NavigationAction.SCROLL -> service.getString(
+                if (result.direction == "FORWARD") R.string.guidance_scroll_forward else R.string.guidance_scroll_backward, label)
+            com.screenly.app.ai.navigation.NavigationAction.DONE -> service.getString(R.string.guidance_goal_appears_complete)
+            else -> explanation
+        }
+        return "$mode\n$instruction" + if (result.mode == AiMode.TEXT_ONLY) "\n" + service.getString(visionReason) else ""
+    }
 
     private fun showGoalPanel() {
         if (disposed || goalPanel != null) return
@@ -355,7 +519,8 @@ internal class ScreenlyOverlay(
             lastGoal = goal
             closeGoalPanel()
             refreshObservation()
-            controller.start(goal)
+            invalidateQuestion()
+            if (assistantAction == AssistantAction.ASK_AI) askScreen(goal) else controller.start(goal)
         }
         input.setOnEditorActionListener { _, action, _ ->
             if (action == EditorInfo.IME_ACTION_DONE) { submit(); true } else false
@@ -363,7 +528,7 @@ internal class ScreenlyOverlay(
         fun button(label: Int, action: () -> Unit) {
             content.addView(Button(service).apply { setText(label); isAllCaps = false; setOnClickListener { action() } })
         }
-        button(R.string.guidance_start, ::submit)
+        button(if (assistantAction == AssistantAction.ASK_AI) R.string.ask_send else R.string.guidance_start, ::submit)
         button(R.string.guidance_retry) { closeGoalPanel(); controller.retry() }
         button(R.string.guidance_stop) { closeGoalPanel(); controller.stop() }
         button(R.string.guidance_confirm) {
@@ -401,28 +566,22 @@ internal class ScreenlyOverlay(
             GuidanceStatus.IDLE -> return
             GuidanceStatus.WAITING_FOR_SCREEN -> service.getString(R.string.guidance_waiting)
             GuidanceStatus.PLANNING -> service.getString(R.string.guidance_planning)
-            GuidanceStatus.UNCERTAIN -> service.getString(
-                if (update.result?.decision?.failure != null) R.string.guidance_uncertain_model_unavailable else R.string.guidance_uncertain
-            )
+            GuidanceStatus.UNCERTAIN -> update.result?.let(::decisionMessage) ?: service.getString(R.string.guidance_uncertain)
+            GuidanceStatus.DONE -> (update.result?.let(::decisionMessage) ?: "") + "\n" + service.getString(R.string.guidance_confirm_needed)
             GuidanceStatus.NEXT -> {
                 val request = update.request ?: return
                 val result = update.result ?: return
                 val snapshot = request.snapshot
-                val index = result.decision.elementIndex ?: return
+                val index = result.index ?: return
                 val element = snapshot.observation.elements.getOrNull(index) ?: return
-                if (!controller.canPresent(request) || index !in snapshot.candidateIndices ||
-                    !state.canSelect(snapshot.observation, snapshot.key.revision, element) ||
-                    NavigationRules.rejection(SettingsWorkflow.canonicalGoal(request.goal), index,
-                        snapshot.planningElements, snapshot.candidateIndices, verifiedRoutes(request.goal, snapshot)) != null
+                if (!controller.canPresent(request) || !ScreenDecisionProtocol.grounded(result, snapshot) ||
+                    currentGuidanceSnapshot()?.key != snapshot.key || state.snapshot != snapshot.observation
                 ) return
                 showHighlight(element)
                 instructionTarget = element
-                val label = snapshot.planningElements[index].text ?: snapshot.planningElements[index].contentDescription
-                    ?: service.getString(R.string.unlabelled_element)
                 if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance",
-                    "next session=$sessionId revision=${snapshot.key.revision} index=$index source=${result.decision.source} " +
-                        "outcome=${result.decision.modelOutcome} ms=${result.decision.totalMillis}")
-                service.getString(if (result.decision.failure != null) R.string.guidance_step_model_unavailable else R.string.guidance_step, label)
+                    "revision=${snapshot.key.revision} index=$index mode=${result.mode} action=${result.action} ms=${result.millis}")
+                decisionMessage(result)
             }
         }
         showGuidanceMessage(message, instructionTarget)

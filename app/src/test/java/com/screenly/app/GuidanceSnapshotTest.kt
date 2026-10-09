@@ -24,7 +24,9 @@ class GuidanceSnapshotTest {
     @Test fun geometricContainmentDoesNotInventAParentAndOffscreenControlsAreExcluded() {
         val elements = listOf(element(null, true), element("Font size", false), element("Sound", true).copy(left = 1100, right = 1300))
         val snapshot = guidanceSnapshot(SnapshotKey(1, 1), ScreenObservation("app", 1, elements), 1080, 1920)
-        assertTrue(snapshot.candidateIndices.isEmpty())
+        // An unlabelled verified control remains eligible for vision; labels are never
+        // borrowed from a geometrically overlapping element without a tree relationship.
+        assertEquals(listOf(0), snapshot.candidateIndices)
         assertNull(snapshot.planningElements[0].text)
     }
 }

@@ -19,9 +19,12 @@ internal fun guidanceSnapshot(
     width: Int,
     height: Int
 ): GuidanceSnapshot {
-    val originals = Collections.unmodifiableList(observation.elements.toList())
+    val originals = Collections.unmodifiableList(observation.elements.map { element ->
+        element.copy(actions = Collections.unmodifiableList(element.actions.toList()))
+    })
     val planning = originals.mapIndexed { index, element ->
-        if (!element.clickable || NavigationProtocol.labelsOf(element).isNotEmpty()) element else {
+        val hasCapability = element.clickable || element.checkable || element.scrollable || element.range?.isValid() == true
+        if (!hasCapability || NavigationProtocol.labelsOf(element).isNotEmpty()) element else {
             // Follow copied tree relationships, not geometric containment or live nodes.
             val descendants = originals.indices.filter { child ->
                 var parent = originals[child].parentIndex
@@ -44,9 +47,10 @@ internal fun guidanceSnapshot(
     return GuidanceSnapshot(
         key, observation.copy(elements = originals), Collections.unmodifiableList(planning),
         Collections.unmodifiableList(originals.indices.filter { index ->
-            originals[index].enabled && originals[index].clickable &&
+            originals[index].enabled && !originals[index].editable &&
                 originals[index].intersectsScreen(width, height) &&
-                NavigationProtocol.labelsOf(planning[index]).isNotEmpty()
+                (originals[index].clickable || originals[index].scrollable ||
+                    originals[index].range?.isValid() == true || originals[index].checkable)
         })
     )
 }

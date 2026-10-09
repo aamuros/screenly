@@ -1,0 +1,58 @@
+
+com.screenly.app.LiveScreenCaptureTest:INSTRUMENTATION_STATUS: manual_service_reconnect=Waiting up to 120 seconds for user to reconnect Screenly after instrumentation restart
+INSTRUMENTATION_STATUS_CODE: 0
+
+Error in captureIsGroundedAndReleasedWithoutPersistingPixels(com.screenly.app.LiveScreenCaptureTest):
+java.lang.AssertionError: Expected a permitted capture: Failed(reason=PRIVACY)
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.screenly.app.LiveScreenCaptureTest$captureIsGroundedAndReleasedWithoutPersistingPixels$1.invokeSuspend(LiveScreenCaptureTest.kt:71)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTaskKt.resume(DispatchedTask.kt:221)
+	at kotlinx.coroutines.DispatchedTaskKt.dispatch(DispatchedTask.kt:154)
+	at kotlinx.coroutines.CancellableContinuationImpl.dispatchResume(CancellableContinuationImpl.kt:470)
+	at kotlinx.coroutines.CancellableContinuationImpl.resumeImpl$kotlinx_coroutines_core(CancellableContinuationImpl.kt:504)
+	at kotlinx.coroutines.CancellableContinuationImpl.resumeImpl$kotlinx_coroutines_core$default(CancellableContinuationImpl.kt:493)
+	at kotlinx.coroutines.CancellableContinuationImpl.resumeUndispatched(CancellableContinuationImpl.kt:596)
+	at kotlinx.coroutines.EventLoopImplBase$DelayedResumeTask.run(EventLoop.common.kt:497)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.LiveScreenCaptureTest.captureIsGroundedAndReleasedWithoutPersistingPixels(LiveScreenCaptureTest.kt:22)
+
+com.screenly.app.AssistantInferenceUiTest:INSTRUMENTATION_STATUS: explain=PASS; mode=TEXT_ONLY; answer_characters=160; no private answer logged
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: ask=PASS; mode=TEXT_ONLY; answer_characters=150; no private answer logged
+INSTRUMENTATION_STATUS_CODE: 0
+.INSTRUMENTATION_STATUS: menu_stability=PASS; target selection invalidated without dismissing assistant menu
+INSTRUMENTATION_STATUS_CODE: 0
+.
+
+Time: 225.999
+There was 1 failure:
+1) captureIsGroundedAndReleasedWithoutPersistingPixels(com.screenly.app.LiveScreenCaptureTest)
+java.lang.AssertionError: Expected a permitted capture: Failed(reason=PRIVACY)
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.screenly.app.LiveScreenCaptureTest$captureIsGroundedAndReleasedWithoutPersistingPixels$1.invokeSuspend(LiveScreenCaptureTest.kt:71)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:34)
+	at kotlinx.coroutines.DispatchedTaskKt.resume(DispatchedTask.kt:221)
+	at kotlinx.coroutines.DispatchedTaskKt.dispatch(DispatchedTask.kt:154)
+	at kotlinx.coroutines.CancellableContinuationImpl.dispatchResume(CancellableContinuationImpl.kt:470)
+	at kotlinx.coroutines.CancellableContinuationImpl.resumeImpl$kotlinx_coroutines_core(CancellableContinuationImpl.kt:504)
+	at kotlinx.coroutines.CancellableContinuationImpl.resumeImpl$kotlinx_coroutines_core$default(CancellableContinuationImpl.kt:493)
+	at kotlinx.coroutines.CancellableContinuationImpl.resumeUndispatched(CancellableContinuationImpl.kt:596)
+	at kotlinx.coroutines.EventLoopImplBase$DelayedResumeTask.run(EventLoop.common.kt:497)
+	at kotlinx.coroutines.EventLoopImplBase.processNextEvent(EventLoop.common.kt:263)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:95)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:69)
+	at kotlinx.coroutines.BuildersKt.runBlocking(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:47)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(dex-id-1002de0532a192392d3067ea5d6db14cb076b539:1)
+	at com.screenly.app.LiveScreenCaptureTest.captureIsGroundedAndReleasedWithoutPersistingPixels(LiveScreenCaptureTest.kt:22)
+
+FAILURES!!!
+Tests run: 3,  Failures: 1

@@ -3,7 +3,12 @@ package com.screenly.app
 internal data class ScreenObservation(
     val packageName: String,
     val windowId: Int,
-    val elements: List<AccessibleUiElement>
+    val elements: List<AccessibleUiElement>,
+    val imageAllowed: Boolean = false,
+    val windowLeft: Int = 0,
+    val windowTop: Int = 0,
+    val windowRight: Int = 0,
+    val windowBottom: Int = 0
 )
 
 /** A revision also rejects old picker callbacks after navigating away and back. */
