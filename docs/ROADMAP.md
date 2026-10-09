@@ -12,11 +12,11 @@ Statuses: **NOT STARTED** = no milestone implementation; **IN PROGRESS** = parti
 **BLOCKED** = a recorded prerequisite prevents progress; **VERIFIED** = all acceptance
 criteria have evidence. Do not promote status from a task title, branch name or build alone.
 
-**Current development scope (2026-10-09):** The user authorizes emulator-only M4 development
-using the verified `Screenly_M3_API30` configuration. Physical-phone absence does not block
-preparation or emulator evaluation. Existing physical acceptance criteria remain separate
-and unverified; no full milestone is promoted from emulator results. M0 joint approval still
-gates shared contracts and planner adapters. [Current M4 plan](M4_PLAN.md).
+**Current development scope (2026-10-10):** The user authorizes a standalone local navigation
+backend and offline evaluation on `Screenly_M3_API30` without waiting for M0. Physical acceptance
+remains separate and unverified. M0 joint approval still gates shared contracts and planner
+adapters, not independent backend work. [Current implementation/evidence](NAVIGATION_BACKEND.md)
+and [shared integration plan](M4_PLAN.md). No full milestone is promoted from emulator results.
 
 ## M0 — Shared Contracts & Parallel Development Setup
 
@@ -125,28 +125,28 @@ Physical acceptance remains open; the runtime/model were not replaced.
 **Status: IN PROGRESS.**
 
 - [x] Prepare isolated bounded prompt, TAP/NONE parser, original-index validation and conservative rule helpers without shared API changes.
-- [x] Add 22 synthetic navigation fixtures and deterministic unit checks; verify helpers on API 30.
+- [x] Add shared synthetic navigation fixtures and deterministic unit checks; evaluate standalone backend on API 30.
+- [x] Implement standalone decision pipeline with strict parsing, validation and explicit rule fallback; no shared Planner API.
 - [ ] Implement LlmPlanner and structured screen/goal prompts.
 - [ ] Constrain selection to enumerated candidates and agreed result schema.
 - [ ] Parse/validate malformed, out-of-range, unsupported and stale responses safely.
 - [ ] Implement RulePlanner fallback with explicit safe failure when no rule applies.
 - [ ] Add recorded sanitized snapshot tests and evaluate model selection quality.
 
-**Dependencies:** M0 API; M3 for real LLM evaluation. Parser/rule tests can precede M3.
+**Dependencies:** M0 API for shared adapters/integration; M3 for real LLM evaluation.
+Independent pipeline/parser/rule tests do not require M0 or a provisioned model.
 **Deliverable:** Validated selection/completion/unable results and snapshot fixtures.
 **Acceptance:** No invented targets/coordinates or automatic actions. Deterministic tests
 cover bad outputs/fallback; real-model evaluation reports correct/incorrect/unsupported cases.
 Jointly agree the demo quality threshold.
 **Verification:** TESTING M4; parser/rule tests plus separate offline-model fixture evaluation.
-**Evidence/gaps:** `ai/navigation/` contains bounded prompt preparation, strict TAP/NONE
-wire parsing, allowed-index validation and a conservative rule helper; 22 synthetic fixtures
-exercise these policies without JNI. Fresh debug/test APK builds and 15 targeted unit tests
-pass, along with one API 30 Android helper test and one existing offline M3 smoke test (two
-real responses). [Current verification](TESTING.md#m4-emulator-development-preparation--2026-10-09)
-records exact evidence and limitations. No shared Planner/LlmPlanner/RulePlanner implementation,
-session/request validation or real model navigation accuracy/latency exists. [M4 plan](M4_PLAN.md)
-records required Developer 1 approval, thin adapters and offline fixture evaluation. C0 approval
-remains the integration gate; phone absence is not a development gate. M5 is unchanged.
+**Evidence/gaps:** `ai/navigation/` now contains a standalone engine, bounded prompts, strict
+TAP/NONE parsing, original-index/ambiguity/state/limited-route validation and explicit fallback.
+[Current report](NAVIGATION_BACKEND.md) records shared synthetic fixtures, focused host checks,
+real offline API 30 model/rule/fallback comparisons, measurements and retained semantic failures.
+No shared Planner/LlmPlanner/RulePlanner implementation or session/request validation exists.
+Recorded live snapshots, agreed quality budgets, broader language coverage and physical testing
+remain outstanding. C0 gates integration; M5 is unchanged.
 
 ## M5 — End-to-End Guidance
 

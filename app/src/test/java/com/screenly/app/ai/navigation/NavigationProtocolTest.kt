@@ -12,8 +12,8 @@ class NavigationProtocolTest {
     fun promptPreservesOriginalIndicesAndOmitsBoundsAndIds() {
         val fixture = navigationFixtures.first { it.id == "display-font" }
         val prompt = NavigationProtocol.buildPrompt(fixture.goal, fixture.elements, fixture.candidateIndices)!!
-        assertTrue(prompt.contains("[1,\"Font size\",\"Button\",false]"))
-        assertTrue(prompt.contains("[2,\"Display size\",\"Button\",false]"))
+        assertTrue(prompt.contains("[1,[\"Font size\"],\"Button\",false]"))
+        assertTrue(prompt.contains("[2,[\"Display size\"],\"Button\",false]"))
         assertTrue(prompt.contains("\"context\":[\"Display\"]"))
         assertFalse(prompt.contains("[0,"))
         assertFalse(prompt.contains("android.widget"))
@@ -69,7 +69,7 @@ class NavigationProtocolTest {
     @Test
     fun malformedOutputCannotBeRepairedIntoASelection() {
         listOf(
-            "", " ", "tap:1", "none", "TAP:-1", "TAP:+1", "TAP:01", "TAP:1.0", "TAP:1e0",
+            "", " ", "tap:1", "none", "None", "TAP:-1", "TAP:+1", "TAP:01", "TAP:1.0", "TAP:1e0",
             "TAP: 1", "TAP:١", "TAP:2147483648", "TAP:", "TAP:1\nNONE", "TAP:1\nTAP:2",
             "TAP:1 because it matches", "Choose TAP:1", "```TAP:1```", "NONE:done", "COMPLETE",
             "{\"type\":\"next\",\"elementIndex\":1}", "TAP:1,x:100,y:200", " ".repeat(33) + "NONE"
@@ -106,5 +106,22 @@ class NavigationProtocolTest {
         assertFalse(NavigationProtocol.validTarget(0, fixture.elements, fixture.candidateIndices))
         val partial = navigationFixtures.first { it.id == "partially-visible" }
         assertTrue(NavigationProtocol.validTarget(0, partial.elements, partial.candidateIndices))
+    }
+
+    @Test
+    fun bothLabelsAndLiteralAllowedRepliesArePreserved() {
+        val fixture = navigationFixtures.first { it.id == "text-and-description" }
+        val prompt = NavigationProtocol.buildPrompt(fixture.goal, fixture.elements, fixture.candidateIndices)!!
+        assertTrue(prompt.contains("[\"Continue\",\"Continue to Display\"]"))
+        assertTrue(prompt.contains("[\"Continue\",\"Continue to Wi-Fi\"]"))
+        assertTrue(prompt.contains("TAP:0,TAP:1,NONE"))
+        assertFalse(prompt.contains("TAP:2"))
+        assertNull(NavigationProtocol.buildPrompt("Continue", listOf(fixtureElement("Continue", description = "x".repeat(49))), listOf(0)))
+    }
+
+    @Test
+    fun malformedScreenTextAndOversizedScreensFailInputValidation() {
+        assertFalse(NavigationProtocol.validInput("Open font size", listOf(fixtureElement("Font size", description = "\uD800")), listOf(0)))
+        assertFalse(NavigationProtocol.validInput("Open font size", List(501) { fixtureElement("Font size") }, listOf(0)))
     }
 }

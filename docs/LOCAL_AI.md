@@ -1,5 +1,11 @@
 # M3 local inference: implementation and pending phone validation
 
+**Current backend, 2026-10-10:** [NavigationEngine and its offline evaluation](NAVIGATION_BACKEND.md)
+are now implemented independently of the pending Planner contracts. The runtime/model
+configuration and `LocalInference`/`LocalModel` source remain unchanged. Historical statements
+below that require C0 before independent navigation evaluation are superseded by the current
+user-authorized scope; shared adapters and Android integration still require agreement.
+
 `feat/local-ai` adds an isolated `ai/LocalInference` component and an opt-in Android
 instrumented smoke test. It does not connect inference to the activity, accessibility service,
 overlay or a planner. **M3 is IMPLEMENTED — UNVERIFIED against full physical acceptance.**

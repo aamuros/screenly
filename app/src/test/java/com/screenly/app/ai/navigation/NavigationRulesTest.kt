@@ -50,4 +50,52 @@ class NavigationRulesTest {
         assertNull(NavigationRules.select("Open font size", elements, listOf(0, 0)))
         assertNull(NavigationRules.select("Open font size", elements, listOf(0, 99)))
     }
+
+    @Test
+    fun modelCannotBypassAmbiguityOrToggleSafeguards() {
+        listOf("ambiguous", "ambiguous-with-descriptions").forEach { id ->
+            val fixture = navigationFixtures.first { it.id == id }
+            fixture.candidateIndices.forEach { index ->
+                assertEquals(NavigationRejection.AMBIGUOUS_TARGET,
+                    NavigationRules.rejection(fixture.goal, index, fixture.elements, fixture.candidateIndices))
+            }
+        }
+        listOf("dark-on", "hotspot-on", "already-disabled", "wifi-menu").forEach { id ->
+            val fixture = navigationFixtures.first { it.id == id }
+            assertEquals(NavigationRejection.UNSAFE_TOGGLE,
+                NavigationRules.rejection(fixture.goal, fixture.candidateIndices.first(), fixture.elements, fixture.candidateIndices))
+        }
+    }
+
+    @Test
+    fun descriptionDisambiguatesOnlyWhenTheGoalIdentifiesIt() {
+        val fixture = navigationFixtures.first { it.id == "text-and-description" }
+        assertNull(NavigationRules.rejection(fixture.goal, 1, fixture.elements, fixture.candidateIndices))
+        assertEquals(NavigationRejection.AMBIGUOUS_TARGET,
+            NavigationRules.rejection("Continue", 1, fixture.elements, fixture.candidateIndices))
+    }
+
+    @Test
+    fun unsupportedAndUnavailableTargetsCannotBecomeUnrelatedSelections() {
+        listOf("missing-font", "wifi-unavailable", "offscreen-target").forEach { id ->
+            val fixture = navigationFixtures.first { it.id == id }
+            fixture.candidateIndices.forEach { index ->
+                org.junit.Assert.assertNotNull(id,
+                    NavigationRules.rejection(fixture.goal, index, fixture.elements, fixture.candidateIndices))
+            }
+        }
+        org.junit.Assert.assertNotNull(NavigationRules.rejection("Open brightness", 0, listOf(fixtureElement("Sound")), listOf(0)))
+    }
+
+    @Test
+    fun knownMenuRoutesRequireOneUniqueCandidateAndDoNotBecomeRuleSelections() {
+        listOf("settings-font", "settings-dark", "wifi-entry", "hotspot-entry", "network-wifi").forEach { id ->
+            val fixture = navigationFixtures.first { it.id == id }
+            assertNull(id, NavigationRules.rejection(fixture.goal, fixture.expectedIndex!!, fixture.elements, fixture.candidateIndices))
+            assertNull(id, NavigationRules.select(fixture.goal, fixture.elements, fixture.candidateIndices))
+        }
+        assertEquals(NavigationRejection.AMBIGUOUS_TARGET,
+            NavigationRules.rejection("Change font size", 0,
+                listOf(fixtureElement("Display"), fixtureElement("Display & brightness")), listOf(0, 1)))
+    }
 }

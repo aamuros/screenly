@@ -1,0 +1,48 @@
+{
+  "command": "./gradlew :app:assembleDebug :app:testDebugUnitTest --tests 'com.screenly.app.ai.navigation.*' --tests com.screenly.app.ai.LocalInferenceTest :app:assembleDebugAndroidTest --console=plain --quiet",
+  "exit_code": 0,
+  "tests": [
+    {
+      "name": "com.screenly.app.ai.navigation.NavigationProtocolTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-09T17:02:05.148Z"
+    },
+    {
+      "name": "com.screenly.app.ai.navigation.NavigationRulesTest",
+      "tests": "10",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-09T17:02:05.152Z"
+    },
+    {
+      "name": "com.screenly.app.ai.LocalInferenceTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-09T17:02:05.053Z"
+    },
+    {
+      "name": "com.screenly.app.ai.navigation.NavigationEngineTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "timestamp": "2026-10-09T17:02:05.121Z"
+    }
+  ],
+  "unchanged_paths": [
+    "app/src/main/java/com/screenly/app/MainActivity.kt",
+    "app/src/main/java/com/screenly/app/ScreenlyAccessibilityService.kt",
+    "app/src/main/java/com/screenly/app/ScreenlyOverlay.kt",
+    "app/src/main/java/com/screenly/app/AccessibleUiElement.kt",
+    "app/src/main/java/com/screenly/app/ScreenObservation.kt",
+    "app/src/main/java/com/screenly/app/ai/LocalInference.kt",
+    "app/src/main/java/com/screenly/app/ai/LocalModel.kt",
+    "app/src/main/AndroidManifest.xml"
+  ]
+}

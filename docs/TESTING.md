@@ -1,5 +1,27 @@
 # Screenly testing
 
+## Current standalone backend checks — 2026-10-10
+
+The [backend report](NAVIGATION_BACKEND.md) records the latest focused build/unit results,
+offline model evaluation and limitations. Fixtures under `app/src/sharedTest/java` are reused
+by JVM tests and opt-in instrumentation, without adding dependencies. Run:
+
+```sh
+./gradlew :app:assembleDebug :app:testDebugUnitTest \
+  --tests 'com.screenly.app.ai.navigation.*' \
+  --tests com.screenly.app.ai.LocalInferenceTest \
+  :app:assembleDebugAndroidTest --console=plain --quiet
+python3 scripts/evaluate-navigation.py --serial emulator-5554 --repetitions 3 \
+  --output /tmp/screenly-navigation-evaluation
+```
+
+The evaluator requires the provisioned `Screenly_M3_API30` emulator, an empty output directory,
+and APKs freshly built by the preceding command. It records and restores connectivity and
+accessibility settings, verifies offline state, and preserves raw outputs and separate model,
+rule and fallback results. It installs APKs with `-r`, preserving the local model.
+Instrumentation execution success is not a navigation accuracy threshold or physical acceptance.
+Historical evidence and milestone procedures follow.
+
 [ROADMAP.md](ROADMAP.md) defines acceptance gates. Source inspection establishes implementation;
 host tests establish only the tested policies. Emulator results do not establish physical-phone
 behavior. Isolated AI smoke and M4 helper tests now exist; shared planner/end-to-end

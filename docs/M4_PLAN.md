@@ -1,5 +1,13 @@
 # M4 preparation: emulator development and contract review
 
+**Current scope, 2026-10-10:** The user has authorized a standalone Developer 2 backend
+without waiting for shared contracts. `NavigationEngine` now composes the existing helpers
+and local runtime through a suspend generation function. It does not implement Planner or
+publish snapshots. See [implementation, evaluation and integration](NAVIGATION_BACKEND.md).
+The sections below preserve the `f7442d6` preparation baseline and original adapter plan;
+their helper details, prompt example, fixture counts and lack of model evaluation are historical.
+C0 still gates shared APIs and Android integration, not this independent backend.
+
 Prepared 2026-10-09 for Developer 2 on `feat/local-ai`, source baseline
 `a7eb1c436b90282565340a2c316efa404b1aad45` plus the uncommitted changes described here.
 **M4 is IN PROGRESS; M0 approval remains pending.** Pure Kotlin prompt, wire parsing,
@@ -106,7 +114,7 @@ null. This is a deliberately limited rule baseline, not navigation intelligence 
 
 ## Synthetic navigation fixtures and deterministic checks
 
-[`NavigationFixtures.kt`](../app/src/test/java/com/screenly/app/ai/navigation/NavigationFixtures.kt)
+[`NavigationFixtures.kt`](../app/src/sharedTest/java/com/screenly/app/ai/navigation/NavigationFixtures.kt)
 contains 22 synthetic, sanitized Android-like screens. These are not recorded accessibility
 hierarchies or approved shared snapshots. Elements explicitly supply the existing nullable
 labels/IDs, class, flags and screen-pixel bounds. Rows have separate positive bounds in a

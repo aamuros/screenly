@@ -1,0 +1,12 @@
+ACCESSIBILITY MANAGER (dumpsys accessibility)
+
+currentUserId=0
+User state[
+     attributes:{id=0, touchExplorationEnabled=false, serviceHandlesDoubleTap=false, requestMultiFingerGestures=false, displayMagnificationEnabled=false, autoclickEnabled=false, nonInteractiveUiTimeout=0, interactiveUiTimeout=0, installedServiceCount=1}
+     shortcut key:{}
+     button:{}
+     button target:{null}
+     Bound services:{}
+     Enabled services:{{com.screenly.app/com.screenly.app.ScreenlyAccessibilityService}}
+     Binding services:{{com.screenly.app/com.screenly.app.ScreenlyAccessibilityService}}
+     Crashed services:{}]
