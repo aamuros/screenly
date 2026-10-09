@@ -7,30 +7,27 @@ performs the action, and Screenly observes the next screen. Inference must work 
 
 ## Current status
 
-The current app has sanitized accessibility observations, a 72dp outlined edge-docked
-floating bubble, an animated four-action menu, compact panels for Ask AI, Explain, Guide Me,
-and Privacy, and touch-through highlighting with the manual picker available as a fallback.
-Ask AI and Explain provide explicitly labelled accessibility-based information.
-Guide Me collects a goal, suggests one control at a time using conservative offline rules,
-and verifies changes when possible. Screenshot capture is explicitly requested via the
-AccessibilityService API, then immediately discarded in memory. **No vision model is
-integrated on this branch**, so the screenshots are not interpreted by AI. The separate
-`feat/local-ai` branch contains a text-only inference prototype that is not merged here.
-Do not present this fallback as screenshot-grounded vision inference.
+This branch integrates the `feat/android-guidance` floating assistant with the
+CPU LiteRT-LM local text runtime and model-validated navigation from `feat/local-ai`.
+Ask AI, Explain, and Guide Me use local inference when the exact verified model has
+been imported in the main Screenly activity. Without it, accessibility-only guidance
+works offline. Screenshot capture is optional and ephemeral; the current model does
+**not** interpret image pixels. The 584 MB model is distributed separately.
+See [on-device AI setup](docs/ON_DEVICE_AI.md).
 
 M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
 automated and API 35 Pixel Tablet emulator evidence exists, but physical-device verification
-is outstanding. M0 contract setup is **IN PROGRESS**; M3–M6 are **NOT STARTED**. See the
+is outstanding. M0 contracts remain **IN PROGRESS**; M3–M6 are **INTEGRATED BUT NOT PHYSICALLY VERIFIED** on this branch. See the
 [roadmap](docs/ROADMAP.md) and preserved [verification report](VERIFICATION.md).
 
 ## Stack and scope
 
 - Implemented: Kotlin, native Android, Compose activity, AccessibilityService,
   AccessibilityNodeInfo, WindowManager accessibility overlays, one Gradle `app` module.
-- Planned: Google LiteRT-LM, quantized Gemma 3 1B pending compatibility/benchmarking,
-  Coroutines/StateFlow, deterministic guidance, LlmPlanner and RulePlanner.
-- No authentication, backend, cloud inference, database, or automatic taps. No network
-  permission is requested. Models and provisioning are not included yet.
+- Integrated: CPU LiteRT-LM 0.10.2, Gemma 3 1B INT4 text inference and asynchronous guidance.
+- Not yet verified: low-RAM devices, pixel-level vision and general production readiness.
+- No backend, cloud inference or automatic taps. No network permission is requested.
+  The model is imported once from local storage and verified before on-device inference.
 
 ## Structure
 
@@ -44,6 +41,8 @@ app/src/main/java/com/screenly/app/
   FloatingAssistantViews.kt        Live four-action menu and feature cards
   ScreenlyFeaturePanel.kt          On-demand screenshot lifecycle and panel controller
   AccessibleScreenAssistant.kt     Offline accessibility-only assistance and guidance
+  OnDeviceAssistant.kt             Bounded text prompts, model orchestration and target validation
+  ai/                              Native LiteRT-LM runtime and navigation decision backend
 app/src/main/res/xml/              Accessibility service configuration
 app/src/test/                     Observation-policy and sanitizer tests
 app/src/androidTest/              Template app-context test only
@@ -78,6 +77,13 @@ by **Check my screen**. Use **Select a control manually** for the previous picke
 touch-through highlights. Drag and release the bubble to dock it on either side without
 changing its vertical position. Screenly never taps the target app. If screenshot capability
 is not enabled after updating, re-enable Screenly in Android Accessibility Settings.
+
+## Offline model setup
+
+Transfer the verified `gemma3-1b-it-int4.litertlm` file to the device and use
+**Import local AI model** in Screenly. See [exact artifact and offline provisioning](docs/ON_DEVICE_AI.md).
+The APK contains no model weights. AI generation requires a compatible device and an
+installed verified model; without it the rule-based mode remains available.
 
 ## Shared documentation
 
