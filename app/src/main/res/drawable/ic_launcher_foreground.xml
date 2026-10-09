@@ -1,17 +1,11 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <!-- Bold, easily recognizable S that stays legible inside an adaptive icon mask. -->
-    <path
-        android:fillColor="@android:color/transparent"
-        android:strokeColor="#FFFFFF"
-        android:strokeWidth="9"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:pathData="M72,37 C66,28 43,26 37,38 C28,51 78,51 71,65 C64,81 42,81 35,70" />
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M76,21 L78,26 L83,28 L78,30 L76,35 L74,30 L69,28 L74,26z"/>
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reuses the exact PNG in design/floating-assistant/bubble-icon.png.
+     Inset the artwork to keep it safely visible within launcher adaptive icon masks. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:left="16dp"
+        android:top="16dp"
+        android:right="16dp"
+        android:bottom="16dp"
+        android:drawable="@drawable/screenly_bubble" />
+</layer-list>
