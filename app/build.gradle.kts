@@ -46,6 +46,8 @@ dependencies {
     implementation(libs.material)
     // Bundled, on-device Latin OCR: no model download is required at runtime.
     implementation("com.google.mlkit:text-recognition:16.0.1")
+    implementation("com.google.ai.edge.litertlm:litertlm-android:0.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)

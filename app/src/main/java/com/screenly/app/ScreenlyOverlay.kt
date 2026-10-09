@@ -26,6 +26,7 @@ import android.widget.TextView
 import android.widget.Toast
 import android.util.Log
 import androidx.core.graphics.withTranslation
+import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -37,6 +38,7 @@ internal class ScreenlyOverlay(
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val state = ScreenObservationState()
     private val session = ScreenlySessionStore(service)
+    private val aiGateway = OfflineAiGateway(service)
     private var dockRight = true
     private var dockY: Int? = null
     private var snapAnimator: ValueAnimator? = null
@@ -92,6 +94,10 @@ internal class ScreenlyOverlay(
     fun dispose() {
         disposed = true
         clearObservation()
+        // Native calls are serialized and may finish before cleanup takes effect.
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+            try { aiGateway.close() } catch (_: Exception) { /* best effort on teardown */ }
+        }
     }
 
 
@@ -265,7 +271,8 @@ internal class ScreenlyOverlay(
                     else Toast.makeText(service, R.string.screen_changed, Toast.LENGTH_SHORT).show()
                 },
                 onClosed = { featureController = null },
-                session = session
+                session = session,
+                aiGateway = aiGateway
             )
             featureController = controller
             controller.open(action)

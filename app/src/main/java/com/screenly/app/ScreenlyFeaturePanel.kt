@@ -14,6 +14,11 @@ import android.view.View
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * Owns focusable feature overlays, on-demand screenshots and ephemeral UI state.
@@ -28,9 +33,11 @@ internal class ScreenlyFeaturePanel(
     private val currentObservation: () -> ScreenObservation?,
     private val manualPicker: () -> Unit,
     private val onClosed: () -> Unit,
-    private val session: ScreenlySessionStore
+    private val session: ScreenlySessionStore,
+    private val aiGateway: OfflineAiGateway
 ) {
     private val handler = Handler(Looper.getMainLooper())
+    private val tasks = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val messages get() = session.messages
     private var guidance: AccessibleScreenAssistant.Guidance?
         get() = session.guidance
@@ -66,6 +73,7 @@ internal class ScreenlyFeaturePanel(
         captureRequest++
         busy = false
         handler.removeCallbacksAndMessages(null)
+        tasks.cancel()
         val view = root
         root = null
         view?.animate()?.cancel()
@@ -111,7 +119,7 @@ internal class ScreenlyFeaturePanel(
                 guidance = guidance,
                 processing = busy,
                 captureStatus = feedback,
-                processingStatus = service.getString(R.string.assistant_ai_runtime_status),
+                processingStatus = aiGateway.status(),
                 accessibilityStatus = service.getString(R.string.assistant_accessibility_status)
             ),
             AssistantPanelActions(
@@ -359,7 +367,25 @@ internal class ScreenlyFeaturePanel(
                                 lines.take(4).joinToString(", ") { it.text } +
                                 ". OCR-only labels are not verified as tappable."
                         } else ""
-                        session.addMessage(AssistantChatEntry(false, answer + supplement))
+                        val offlineFallback = answer + supplement
+                        if (aiGateway.available()) {
+                            busy = true
+                            feedback = "Running the local text model..."
+                            render()
+                            tasks.launch {
+                                val modelAnswer = aiGateway.answer(question, snapshot, ocrLines)
+                                if (stopped || requestId != captureRequest) return@launch
+                                session.addMessage(AssistantChatEntry(false,
+                                    if (modelAnswer != null)
+                                        "Local AI (unverified explanation): $modelAnswer"
+                                    else offlineFallback))
+                                busy = false
+                                feedback = if (modelAnswer == null)
+                                    "Local AI could not run; using accessibility and OCR."
+                                else "Generated offline. No automated taps were performed."
+                                render()
+                            }
+                        } else session.addMessage(AssistantChatEntry(false, offlineFallback))
                     }
                 }
                 AssistantAction.EXPLAIN -> selectedItem = null

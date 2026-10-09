@@ -52,7 +52,7 @@
     <string name="assistant_clear_guidance">Clear saved Guide Me goal</string>
     <string name="assistant_clear_screenshots">Clear temporary screenshots</string>
     <string name="assistant_open_permissions">Open accessibility permissions</string>
-    <string name="assistant_ai_runtime_status">Vision model not connected. Accessibility-based assistance works offline. The text-only model is on a separate development branch.</string>
+    <string name="assistant_ai_runtime_status">On-device text inference uses an optional verified Gemma model. OCR and accessibility remain available without it.</string>
     <string name="assistant_accessibility_status">Accessibility service enabled. Screenshot access requires the accessibility capture capability to be approved.</string>
     <string name="assistant_guide_cancelled">Guidance cancelled.</string>
     <string name="assistant_history_cleared">In-memory chat history cleared.</string>
