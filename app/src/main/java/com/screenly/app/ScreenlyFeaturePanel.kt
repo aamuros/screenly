@@ -15,6 +15,13 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * Owns focusable feature overlays, on-demand screenshots and ephemeral UI state.
@@ -23,8 +30,9 @@ import android.view.inputmethod.InputMethodManager
 internal class AssistantSessionStore {
     val messages = mutableListOf<AssistantChatEntry>()
     var guidance: AccessibleScreenAssistant.Guidance? = null
+    var explanation: String? = null
     var captureStatus: String = ""
-    fun clear() { messages.clear(); guidance = null; captureStatus = "" }
+    fun clear() { messages.clear(); guidance = null; explanation = null; captureStatus = "" }
 }
 
 internal class ScreenlyFeaturePanel(
@@ -32,13 +40,19 @@ internal class ScreenlyFeaturePanel(
     private val windowManager: WindowManager,
     private val bubble: View,
     private val session: AssistantSessionStore,
+    private val assistant: OnDeviceAssistant,
     private val layoutParams: (Int, Int) -> WindowManager.LayoutParams,
     private val refreshObservation: () -> Boolean,
     private val currentObservation: () -> ScreenObservation?,
+    private val currentRevision: () -> Long,
+    private val highlightTarget: (ScreenObservation, Int, Long) -> Unit,
     private val manualPicker: () -> Unit,
     private val onClosed: () -> Unit
 ) {
     private val handler = Handler(Looper.getMainLooper())
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private var inferenceJob: Job? = null
+    private var inferenceRunning = false
     private val messages get() = session.messages
     private var guidance: AccessibleScreenAssistant.Guidance?
         get() = session.guidance
@@ -64,6 +78,9 @@ internal class ScreenlyFeaturePanel(
         if (stopped) return
         stopped = true
         captureRequest++
+        inferenceJob?.cancel()
+        scope.cancel()
+        inferenceRunning = false
         busy = false
         handler.removeCallbacksAndMessages(null)
         val view = root
@@ -95,7 +112,8 @@ internal class ScreenlyFeaturePanel(
                 action = action,
                 messages = messages.toList(),
                 detail = if (action == AssistantAction.EXPLAIN)
-                    currentObservation()?.let(AccessibleScreenAssistant::describeScreen).orEmpty() else "",
+                    session.explanation ?: currentObservation()
+                        ?.let(AccessibleScreenAssistant::describeScreen).orEmpty() else "",
                 items = if (action == AssistantAction.EXPLAIN)
                     currentObservation()?.let(AccessibleScreenAssistant::visibleItems).orEmpty() else emptyList(),
                 selectedItemIndex = selectedItem,
@@ -106,7 +124,7 @@ internal class ScreenlyFeaturePanel(
                         service.getString(R.string.assistant_capture_idle)
                     }
                 } else feedback,
-                processingStatus = service.getString(R.string.assistant_ai_runtime_status),
+                processingStatus = assistant.runtimeStatus(),
                 accessibilityStatus = service.getString(R.string.assistant_accessibility_status)
             ),
             AssistantPanelActions(
@@ -147,6 +165,8 @@ internal class ScreenlyFeaturePanel(
                 },
                 clearScreenshots = {
                     captureRequest++
+                    inferenceJob?.cancel()
+                    inferenceRunning = false
                     busy = false
                     feedback = service.getString(R.string.assistant_images_cleared)
                     session.captureStatus = service.getString(R.string.assistant_capture_idle)
@@ -254,6 +274,7 @@ internal class ScreenlyFeaturePanel(
         }
         render()
         val requestId = ++captureRequest
+        val revision = currentRevision()
         root?.let {
             it.clearFocus()
             service.getSystemService(InputMethodManager::class.java)
@@ -280,18 +301,18 @@ internal class ScreenlyFeaturePanel(
                             } finally {
                                 buffer.close()
                             }
-                            completeCapture(requestId, action, prompt, snapshot, decoded)
+                            completeCapture(requestId, revision, action, prompt, snapshot, decoded)
                         }
                         override fun onFailure(errorCode: Int) {
-                            completeCapture(requestId, action, prompt, snapshot, false)
+                            completeCapture(requestId, revision, action, prompt, snapshot, false)
                         }
                     })
             } catch (_: RuntimeException) {
-                completeCapture(requestId, action, prompt, snapshot, false)
+                completeCapture(requestId, revision, action, prompt, snapshot, false)
             }
         }, 360L)
         handler.postDelayed({
-            if (!stopped && requestId == captureRequest && busy) {
+            if (!stopped && requestId == captureRequest && busy && !inferenceRunning) {
                 captureRequest++
                 busy = false
                 feedback = service.getString(R.string.assistant_capture_failed)
@@ -304,49 +325,132 @@ internal class ScreenlyFeaturePanel(
 
     private fun completeCapture(
         requestId: Long,
+        revision: Long,
         action: AssistantAction,
         prompt: String?,
         snapshot: ScreenObservation,
         success: Boolean
     ) {
         if (stopped || requestId != captureRequest) return
-        busy = false
         lastCaptureStatus = if (success) service.getString(R.string.assistant_capture_success)
-            else service.getString(R.string.assistant_capture_failed)
-        feedback = lastCaptureStatus
+            else "Screenshot unavailable. Using accessible text labels instead."
         session.captureStatus = lastCaptureStatus
+        feedback = lastCaptureStatus
         root?.visibility = View.VISIBLE
-        if (success && feature == action) {
-            // Reject a stale text snapshot if the user navigated during screenshot capture.
-            if (!refreshObservation() || currentObservation() != snapshot) {
-                feedback = service.getString(R.string.assistant_capture_stale)
-                session.captureStatus = feedback
-                render()
-                return
-            }
-            // The fallback uses only sanitized accessibility data, not the screenshot.
-            when (action) {
-                AssistantAction.ASK_AI -> {
-                    val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
-                    if (!question.isNullOrBlank()) {
-                        messages += AssistantChatEntry(
-                            false, AccessibleScreenAssistant.ask(question, snapshot)
-                        )
-                        trimHistory()
+        // A screenshot never enters text-only AI. Stale Android targets cannot be acted on.
+        if (!refreshObservation() || currentObservation() != snapshot ||
+            currentRevision() != revision || feature != action) {
+            busy = false
+            feedback = service.getString(R.string.assistant_capture_stale)
+            session.captureStatus = feedback
+            render()
+            return
+        }
+        if (assistant.modelAvailable() && action != AssistantAction.PRIVACY) {
+            inferenceRunning = true
+            feedback = "Generating answer offline from accessible controls..."
+            render()
+            inferenceJob?.cancel()
+            val guideBefore = guidance
+            inferenceJob = scope.launch {
+                try {
+                    when (action) {
+                        AssistantAction.ASK_AI -> {
+                            val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
+                            if (!question.isNullOrBlank()) {
+                                val answer = assistant.ask(question, snapshot)
+                                if (requestIsCurrent(requestId, revision, snapshot)) {
+                                    messages += AssistantChatEntry(false, answer)
+                                    trimHistory()
+                                }
+                            }
+                        }
+                        AssistantAction.EXPLAIN -> {
+                            val answer = assistant.explain(snapshot)
+                            if (requestIsCurrent(requestId, revision, snapshot)) {
+                                session.explanation = answer
+                                selectedItem = null
+                            }
+                        }
+                        AssistantAction.GUIDE_ME -> {
+                            val goal = prompt ?: guideBefore?.goal
+                            if (!goal.isNullOrBlank()) {
+                                val next = assistant.guide(
+                                    goal, snapshot, if (prompt == null) guideBefore else null
+                                )
+                                if (requestIsCurrent(requestId, revision, snapshot)) {
+                                    guidance = next
+                                    next.targetIndex?.let { highlightTarget(snapshot, it, revision) }
+                                }
+                            }
+                        }
+                        AssistantAction.PRIVACY -> Unit
+                    }
+                    if (requestIsCurrent(requestId, revision, snapshot)) {
+                        feedback = "Processed locally using accessible screen information."
+                    }
+                } catch (_: CancellationException) {
+                    return@launch
+                } catch (error: Exception) {
+                    if (requestIsCurrent(requestId, revision, snapshot)) {
+                        applyAccessibilityFallback(action, prompt, snapshot)
+                        feedback = "Local AI unavailable. Used offline accessibility rules."
+                    }
+                } catch (error: LinkageError) {
+                    if (requestIsCurrent(requestId, revision, snapshot)) {
+                        applyAccessibilityFallback(action, prompt, snapshot)
+                        feedback = "Model runtime unsupported on this device. Using offline rules."
+                    }
+                } finally {
+                    if (!stopped && requestId == captureRequest) {
+                        inferenceRunning = false
+                        busy = false
+                        if (!requestIsCurrent(requestId, revision, snapshot)) {
+                            feedback = service.getString(R.string.assistant_capture_stale)
+                        }
+                        render()
                     }
                 }
-                AssistantAction.EXPLAIN -> selectedItem = null
-                AssistantAction.GUIDE_ME -> {
-                    guidance = if (guidance != null && prompt == null)
-                        AccessibleScreenAssistant.check(guidance!!, snapshot)
-                    else if (!prompt.isNullOrBlank())
-                        AccessibleScreenAssistant.begin(prompt, snapshot)
-                    else guidance
-                }
-                AssistantAction.PRIVACY -> Unit
             }
+        } else {
+            applyAccessibilityFallback(action, prompt, snapshot)
+            busy = false
+            render()
         }
-        render()
+    }
+
+    private fun requestIsCurrent(
+        requestId: Long, revision: Long, snapshot: ScreenObservation
+    ): Boolean = !stopped && requestId == captureRequest &&
+        currentRevision() == revision && currentObservation() == snapshot
+
+    private fun applyAccessibilityFallback(
+        action: AssistantAction, prompt: String?, snapshot: ScreenObservation
+    ) {
+        when (action) {
+            AssistantAction.ASK_AI -> {
+                val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
+                if (!question.isNullOrBlank()) {
+                    messages += AssistantChatEntry(
+                        false, AccessibleScreenAssistant.ask(question, snapshot)
+                    )
+                    trimHistory()
+                }
+            }
+            AssistantAction.EXPLAIN -> {
+                session.explanation = AccessibleScreenAssistant.describeScreen(snapshot)
+                selectedItem = null
+            }
+            AssistantAction.GUIDE_ME -> {
+                guidance = if (guidance != null && prompt == null)
+                    AccessibleScreenAssistant.check(guidance!!, snapshot)
+                else if (!prompt.isNullOrBlank())
+                    AccessibleScreenAssistant.begin(prompt, snapshot)
+                else guidance
+                guidance?.targetIndex?.let { highlightTarget(snapshot, it, currentRevision()) }
+            }
+            AssistantAction.PRIVACY -> Unit
+        }
     }
 
     private fun trimHistory() {
