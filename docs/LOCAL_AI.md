@@ -9,6 +9,10 @@ a loaded-process memory sample. The API 35 ARM64 emulator crashes in native CPU 
 physical behavior and M1/M2 phone regressions remain unverified. Current results and raw
 evidence are recorded in the final section below.
 
+The latest [physical verification attempt](#physical-verification-attempt-and-host-checks--2026-10-09)
+found no connected ADB device. [M4 preparation](M4_PLAN.md) records contract decisions and
+evaluation proposals only; physical acceptance and joint contract approval remain open.
+
 ## Runtime and model selection
 
 Sources inspected on 2026-10-09:
@@ -494,3 +498,86 @@ Remaining: physical load/offline/lifecycle and M1/M2 regression acceptance, phon
 latency measurements and agreed budgets; separately, an upstream/runtime/emulator remedy for
 the API 35 SME crash. Generated-answer quality is a recorded model limitation. **M4 remains
 not started; full milestone acceptance has not been declared.**
+
+## Physical verification attempt and host checks — 2026-10-09
+
+Date / tester / commit / milestone: 2026-10-09, Codex for Developer 2,
+`cfb893c11dcc59bcbfc42ff9c0bc83dfdd9e66ce` on `feat/local-ai`, M3 verification/M4 preparation.
+Working tree was clean at inspection. Environment: macOS, Temurin JDK 21.0.9, existing SDK;
+checks completed around 14:38–14:39 UTC. Only documentation changes follow these source checks.
+
+### Fresh results
+
+`adb devices -l` returned exit 0 with no devices (physical or emulator):
+
+```text
+List of devices attached
+
+```
+
+**Physical verification is blocked by the absence of a connected authorized phone.** No
+phone Android version/API, ABI, RAM, chipset, available memory/storage or native compatibility
+could be measured. No device provisioning, APK installation, LocalInferenceSmokeTest execution,
+network-state change, offline restart, physical response, initialization/response timing,
+loaded memory or device failure was observed in this attempt. These are NOT RUN/NOT MEASURED,
+not failed inference tests. No emulator was started as a substitute.
+
+| Check / command | Expected / actual | Evidence / limitation |
+| --- | --- | --- |
+| `wc -c < /Users/aamuros/Downloads/screenly-models/gemma3-1b-it-int4.litertlm` | PASS: 584,417,280 bytes | Existing host artifact located; not a new download or device copy |
+| `shasum -a 256 /Users/aamuros/Downloads/screenly-models/gemma3-1b-it-int4.litertlm` | PASS: `1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be` | Matches the pinned model/source record and LocalModel constants |
+| Cached LiteRT-LM 0.10.2 AAR ZIP inspection | API 23 minimum; native `arm64-v8a` and `x86_64` | Fresh package inspection, not phone execution; app minimum remains API 30 |
+| Debug APK ZIP inspection | `liblitertlm_jni.so` in `arm64-v8a` and `x86_64` | Other dependencies package some 32-bit libraries; that does not make the AI runtime 32-bit compatible |
+| App/test APK build tasks | PASS, exit 0 | Both existing APK outputs available; compilation/build success does not establish native/device behavior |
+| Targeted LocalInferenceTest rerun | PASS: 9 tests, 0 failures/errors/skips | XML timestamp `2026-10-09T14:38:10.464Z`; integrity, typed response and pre-native lifecycle policies only |
+| Physical model/runtime compatibility, smoke and offline tests | NOT RUN | No connected phone; no generated text or physical timings/memory available |
+| Android UI physical regressions | NOT RUN | Developer 1 source unchanged; this task does not verify overlays/accessibility on a phone |
+
+Automated command (exit 0; `--rerun` forces the targeted test task):
+
+```sh
+./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest --rerun --tests com.screenly.app.ai.LocalInferenceTest --console=plain --quiet
+```
+
+Unit evidence: `app/build/test-results/testDebugUnitTest/TEST-com.screenly.app.ai.LocalInferenceTest.xml`.
+The only emitted build warning concerned SDK XML version 4 versus a reader supporting version 3;
+it did not fail compilation/tests. No source/dependency changes justify a full suite or lint
+rerun; the previous 24-test/lint results above remain historical, not fresh results here.
+
+| APK | Fresh size / SHA-256 |
+| --- | --- |
+| `app/build/outputs/apk/debug/app-debug.apk` | 78,297,976 bytes; `af5844a4c88e854c18c737497938bbe67afa07587cec2724387839a0e62f1899` |
+| `app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk` | 1,453,484 bytes; `c1aa7a5c3c4cff526cef4b489759158a9ae637b839679537c2f5512d449c4083` |
+
+Both APK identities match the prior successful emulator evidence. Runtime remains LiteRT-LM
+0.10.2, CPU/four threads, 1,024 total tokens, unchanged exact Gemma INT4 model. No AI runtime,
+model, shared contract, Developer 1 source, Gradle or manifest change was made.
+
+### Readiness and next verification
+
+Historical results remain: API 30 emulator genuine CPU inference passed three runs, including
+two offline process restarts; initialization 421–1,474 ms, generation 5,667–6,273 ms and one
+loaded-process PSS sample 1,054,031 KiB. Full actual responses and final JUnit outcomes are in
+[raw emulator evidence](verification/m3-emulator-2026-10-09.txt). The answers include the
+contradictory opening “There isn't one single Android setting that controls font size directly”
+and an unsupported “Settings > Theme > Font Size” route. These are historical emulator
+responses/measurements, not new phone results or navigation accuracy.
+
+The historical API 35 ARM64 emulator SIGILL at SME `rdsvl` remains unresolved. It is not evidence
+that every API 35 phone fails, and ABI/API eligibility is not proof of actual chipset/RAM/native
+compatibility. No runtime replacement or model substitution was attempted.
+
+**M3 remains IMPLEMENTED — UNVERIFIED for full acceptance.** Developer 2's next check is to
+connect an authorized USB-debugging API 30+ phone with a runtime-supported 64-bit ABI, record
+hardware/storage and follow the existing [provisioning](#reproducible-debug-provisioning-over-usb)
+and [offline acceptance](#isolated-inference-and-offline-acceptance) procedures using the host
+file above. Preserve complete instrumented results, actual answers, loaded-process memory,
+first/subsequent load conditions, two offline process restarts, reuse/close and all failures.
+Agree phone budgets from that evidence; Developer 1 handles physical M1/M2 regression checks.
+
+M0 contracts are still proposals, with eligibility transport, authoritative session/revision,
+immutable list/index semantics and completion evidence requiring joint approval. The
+[M4 plan](M4_PLAN.md) defines a bounded prompt/schema, rejection/fallback policy, synthetic
+fixture set, measurements, rule comparison and implementation order. **M4 remains NOT STARTED.**
+Documentation/diff/link review completes this preparation; no branch merge or planner
+implementation is part of it.

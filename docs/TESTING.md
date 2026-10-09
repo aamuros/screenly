@@ -106,6 +106,10 @@ Parser/rule tests are deterministic; real-model evaluations are separate. Report
 invalid outputs, fallback use, failures and latency. Sanitizer tests do not verify live
 sensitive-node filtering on a phone.
 
+[M4 preparation](M4_PLAN.md) proposes the joint contract decisions, prompt/output limits,
+sanitized fixture set, rejection/fallback policy and paired RulePlanner/model measurements.
+These are review proposals, not implemented APIs, tests or measured navigation accuracy.
+
 ### M5 stale rejection and completion (future)
 
 Delay MockPlanner, change screen, navigate A→B→A, replace goal, stop, lock or disconnect/
@@ -157,3 +161,12 @@ Limitations / remaining failure / owner / next check:
 Keep FAIL/NOT RUN cases visible. Update ROADMAP from linked evidence; check off physical
 tests only after physical results. Open decisions: model compatibility/provisioning, demo
 hardware/app/task, runtime memory/latency budgets and AI quality thresholds.
+
+Physical verification attempt, 2026-10-09, source baseline `cfb893c` on `feat/local-ai`:
+`adb devices -l` returned no devices. Host model size/SHA-256 matched the pinned artifact;
+`:app:assembleDebug`, `:app:assembleDebugAndroidTest` and a forced targeted `LocalInferenceTest`
+rerun passed (9 tests, 0 failures/errors/skips). No physical provisioning, installation,
+inference, offline checks or device metrics ran. Full command, identities, compatibility
+inspection and NOT RUN results: [latest M3 report](LOCAL_AI.md#physical-verification-attempt-and-host-checks--2026-10-09).
+Historical emulator/build/lint results above are not new physical results. M3 remains
+IMPLEMENTED — UNVERIFIED; M0 approval and M4 implementation remain outstanding.

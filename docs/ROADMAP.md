@@ -107,6 +107,11 @@ The API 35 incompatibility, physical M1/M2/model acceptance and agreed phone per
 remain open. Emulator inference is verified to its stated scope; full M3 is not VERIFIED and
 M4 remains not started.
 
+The [later physical verification attempt](LOCAL_AI.md#physical-verification-attempt-and-host-checks--2026-10-09)
+on `cfb893c` found no connected ADB device. Host model size/hash, runtime packaging, both APK
+builds and 9 targeted local-AI tests passed; no physical inference or benchmarks ran.
+Physical acceptance remains open; the runtime/model were not replaced.
+
 ## M4 — AI Navigation Planner
 
 **Objective:** Choose one allowed current element from a goal and sanitized snapshot.
@@ -125,7 +130,10 @@ M4 remains not started.
 cover bad outputs/fallback; real-model evaluation reports correct/incorrect/unsupported cases.
 Jointly agree the demo quality threshold.
 **Verification:** TESTING M4; parser/rule tests plus separate offline-model fixture evaluation.
-**Evidence/gaps:** No Planner/LlmPlanner/RulePlanner or AI fixtures/tests exist.
+**Evidence/gaps:** No Planner/LlmPlanner/RulePlanner or AI navigation fixtures/tests exist.
+[M4 preparation](M4_PLAN.md) now proposes minimal joint contract decisions, a bounded prompt
+and strict output schema, sanitized fixtures, validation/fallback and model/rule measurements.
+It adds no shared API or planner implementation and does not satisfy M0/M3 acceptance.
 
 ## M5 — End-to-End Guidance
 
