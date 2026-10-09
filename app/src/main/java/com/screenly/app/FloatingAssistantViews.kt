@@ -39,7 +39,8 @@ internal class AssistantPanelActions(
     val cancelGuide: () -> Unit,
     val clearHistory: () -> Unit,
     val clearScreenshots: () -> Unit,
-    val openPermissions: () -> Unit
+    val openPermissions: () -> Unit,
+    val manualPicker: () -> Unit
 )
 
 /** Artwork defines the appearance; native controls provide real tap targets. */
@@ -256,6 +257,8 @@ internal object FloatingAssistantViews {
                 state.processing, actions.submit)
             root.addView(secondary(context, R.string.assistant_guide_description),
                 gap(context, 10))
+            root.addView(actionText(context,
+                R.string.assistant_manual_picker, state.processing, actions.manualPicker), gap(context, 6))
         } else {
             root.addView(TextView(context).apply {
                 text = context.getString(R.string.assistant_guide_step, guide.step)
@@ -277,6 +280,8 @@ internal object FloatingAssistantViews {
                 root.addView(primaryButton(context, R.string.assistant_check_screen,
                     state.processing, actions.checkScreen), gap(context, 12))
             }
+            root.addView(actionText(context,
+                R.string.assistant_manual_picker, state.processing, actions.manualPicker), gap(context, 6))
             root.addView(actionText(context,
                 R.string.assistant_cancel, state.processing, actions.cancelGuide), gap(context, 6))
         }

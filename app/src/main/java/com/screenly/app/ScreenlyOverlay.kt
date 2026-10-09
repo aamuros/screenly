@@ -43,7 +43,7 @@ internal class ScreenlyOverlay(
     private var bubble: View? = null
     private var picker: View? = null
     private var assistantMenu: View? = null
-    private var infoPanel: View? = null
+    private var featureController: ScreenlyFeaturePanel? = null
     private val bubbleBitmap by lazy {
         BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
             BitmapFactory.Options().apply { inSampleSize = 4; inScaled = false })
@@ -57,7 +57,6 @@ internal class ScreenlyOverlay(
         if (state.update(next)) {
             closePicker()
             closeMenu(immediate = true)
-            closeInfoPanel()
             clearHighlight()
         }
         showBubble()
@@ -67,7 +66,6 @@ internal class ScreenlyOverlay(
         state.invalidateSelection()
         closePicker()
         closeMenu(immediate = true)
-        closeInfoPanel()
         clearHighlight()
     }
 
@@ -77,7 +75,8 @@ internal class ScreenlyOverlay(
         snapAnimator = null
         closePicker()
         closeMenu(immediate = true)
-        closeInfoPanel()
+        featureController?.dismiss(immediate = true, restoreBubble = false)
+        featureController = null
         clearHighlight()
         val previousBubble = bubble
         bubble = null
@@ -117,12 +116,12 @@ internal class ScreenlyOverlay(
             setOnClickListener {
                 if (disposed || bubble !== it) return@setOnClickListener
                 val closesPanel = picker != null || assistantMenu != null ||
-                    infoPanel != null || bubbleClickClosesPicker
+                    featureController != null || bubbleClickClosesPicker
                 bubbleClickClosesPicker = false
                 if (closesPanel) {
                     closePicker()
                     closeMenu()
-                    closeInfoPanel()
+                    featureController?.dismiss()
                 } else showMenu()
             }
         }
@@ -156,7 +155,7 @@ internal class ScreenlyOverlay(
                     snapAnimator?.cancel()
                     snapAnimator = null
                     bubbleClickClosesPicker = picker != null || assistantMenu != null ||
-                        infoPanel != null || outsideDismissalDownTime == event.downTime
+                        featureController != null || outsideDismissalDownTime == event.downTime
                     downX = event.rawX
                     downY = event.rawY
                     startX = params.x
@@ -171,7 +170,7 @@ internal class ScreenlyOverlay(
                         bubbleClickClosesPicker = false
                         closePicker()
                         closeMenu(immediate = true)
-                        closeInfoPanel()
+                        featureController?.dismiss(immediate = true)
                         val area = usableScreenBounds()
                         params.x = (startX + deltaX.toInt()).coerceIn(
                             area.left, (area.right - params.width).coerceAtLeast(area.left)
@@ -239,7 +238,6 @@ internal class ScreenlyOverlay(
     private fun showMenu() {
         if (disposed || assistantMenu != null) return
         closePicker()
-        closeInfoPanel()
         snapAnimator?.end()
         snapAnimator = null
         val area = usableScreenBounds()
@@ -249,22 +247,23 @@ internal class ScreenlyOverlay(
         var expectedView: View? = null
         val view = FloatingAssistantViews.menu(service, onAction = actionClick@ { action ->
             if (disposed || assistantMenu !== expectedView) return@actionClick
-            closeMenu()
-            when (action) {
-                AssistantAction.GUIDE_ME -> {
+            closeMenu(immediate = true, restoreBubble = false)
+            val bubbleView = bubble ?: return@actionClick
+            val controller = ScreenlyFeaturePanel(
+                service = service,
+                windowManager = windowManager,
+                bubble = bubbleView,
+                layoutParams = { width, height -> featurePanelParams(width, height) },
+                refreshObservation = refreshObservation,
+                currentObservation = { state.snapshot },
+                manualPicker = {
                     if (refreshObservation()) showPicker()
                     else Toast.makeText(service, R.string.screen_changed, Toast.LENGTH_SHORT).show()
-                }
-                AssistantAction.ASK_AI -> showInfoPanel(
-                    R.string.assistant_action_ask, R.string.assistant_ask_unavailable
-                )
-                AssistantAction.EXPLAIN -> showInfoPanel(
-                    R.string.assistant_action_explain, R.string.assistant_explain_unavailable
-                )
-                AssistantAction.PRIVACY -> showInfoPanel(
-                    R.string.assistant_action_privacy, R.string.privacy_notice
-                )
-            }
+                },
+                onClosed = { featureController = null }
+            )
+            featureController = controller
+            controller.open(action)
         })
         expectedView = view
         view.setOnTouchListener { _, event ->
@@ -299,29 +298,9 @@ internal class ScreenlyOverlay(
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility") // Only ACTION_OUTSIDE dismisses the panel.
-    private fun showInfoPanel(title: Int, message: Int) {
-        if (disposed) return
-        closeInfoPanel()
-        val area = usableScreenBounds()
-        if (area.width() <= 0 || area.height() <= 0) return
-        val view = FloatingAssistantViews.infoPanel(
-            service, service.getString(title), service.getString(message)
-        ) { closeInfoPanel() }
-        view.setOnTouchListener { _, event ->
-            if (event.actionMasked == MotionEvent.ACTION_OUTSIDE) {
-                outsideDismissalDownTime = event.downTime
-                closeInfoPanel()
-                true
-            } else false
-        }
-        if (attach(view, sidePanelParams(
-            min(dp(288), area.width()), min(dp(228), area.height())
-        ))) infoPanel = view
-    }
-
-    private fun sidePanelParams(width: Int, height: Int): WindowManager.LayoutParams {
-        val area = usableScreenBounds()
+    private fun sidePanelParams(
+        width: Int, height: Int, area: Rect = usableScreenBounds()
+    ): WindowManager.LayoutParams {
         val bubbleY = (bubble?.layoutParams as? WindowManager.LayoutParams)?.y
             ?: dockY ?: area.bottom - dp(BUBBLE_SIZE_DP)
         val (edgeX, alignedY) = BubbleDocking.panelPosition(
@@ -336,7 +315,19 @@ internal class ScreenlyOverlay(
         }
     }
 
-    private fun closeMenu(immediate: Boolean = false) {
+    private fun featurePanelParams(width: Int, height: Int): WindowManager.LayoutParams {
+        val area = usableScreenBounds()
+        val insets = windowManager.currentWindowMetrics.windowInsets
+        if (insets.isVisible(WindowInsets.Type.ime())) {
+            val keyboardTop = windowManager.currentWindowMetrics.bounds.height() -
+                insets.getInsets(WindowInsets.Type.ime()).bottom
+            area.bottom = min(area.bottom, keyboardTop).coerceAtLeast(area.top)
+        }
+        val adjustedWidth = min(width, (area.width() - dp(12)).coerceAtLeast(1))
+        return sidePanelParams(adjustedWidth, height, area)
+    }
+
+    private fun closeMenu(immediate: Boolean = false, restoreBubble: Boolean = true) {
         val previous = assistantMenu ?: return
         assistantMenu = null
         previous.animate().cancel()
@@ -349,7 +340,7 @@ internal class ScreenlyOverlay(
             previous.animate().alpha(0f).scaleX(size / width).scaleY(size / height)
                 .setDuration(170L).withEndAction { detach(previous) }.start()
         }
-        bubble?.let { bubbleView ->
+        if (restoreBubble) bubble?.let { bubbleView ->
             bubbleView.animate().cancel()
             bubbleView.visibility = View.VISIBLE
             if (immediate || disposed) {
@@ -364,12 +355,6 @@ internal class ScreenlyOverlay(
                     .setDuration(180L).start()
             }
         }
-    }
-
-    private fun closeInfoPanel() {
-        val previous = infoPanel
-        infoPanel = null
-        previous?.let(::detach)
     }
 
     @SuppressLint("ClickableViewAccessibility") // Handles only ACTION_OUTSIDE; normal clicks use ScrollView.
