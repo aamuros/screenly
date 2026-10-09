@@ -16,7 +16,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
+      - name: Verify Android SDK command-line tools
+        run: sdkmanager --version
       - name: Install target Android SDK
         run: sdkmanager "platforms;android-36.1" "build-tools;36.0.0" "platform-tools"
       - name: Verify build, unit tests and Android lint
