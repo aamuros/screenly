@@ -37,6 +37,20 @@ internal class OfflineOcr : AutoCloseable {
 
 /** OCR is evidence of visible text, never proof that a text region is clickable. */
 internal object OcrEvidence {
+    /** Never surface screenshot OCR overlapping known editable fields. */
+    fun withoutEditableText(observation: ScreenObservation, lines: List<OcrTextLine>): List<OcrTextLine> {
+        val editable = observation.elements.filter {
+            it.className?.contains("EditText", ignoreCase = true) == true ||
+                it.viewId?.contains("password", ignoreCase = true) == true
+        }
+        return lines.filterNot { line ->
+            editable.any { node ->
+                line.left < node.right && line.right > node.left &&
+                    line.top < node.bottom && line.bottom > node.top
+            }
+        }
+    }
+
     fun summary(lines: List<OcrTextLine>): String {
         if (lines.isEmpty()) return "OCR found no readable text."
         return "Offline OCR text (not verified tap targets):\n" +

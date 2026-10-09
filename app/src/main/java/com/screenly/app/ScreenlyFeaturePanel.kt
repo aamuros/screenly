@@ -368,9 +368,10 @@ internal class ScreenlyFeaturePanel(
             render()
             return
         }
-        ocrLines = if (success) lines else emptyList()
+        ocrLines = if (success) OcrEvidence.withoutEditableText(snapshot, lines)
+            else emptyList()
         lastCaptureStatus = if (success)
-            "Offline OCR analyzed ${lines.size} text lines. Image pixels were released."
+            "Offline OCR analyzed ${ocrLines.size} permitted text lines. Image pixels were released."
         else "Screenshot/OCR unavailable. Using accessibility-only information."
         feedback = lastCaptureStatus
         if (feature == action) {
@@ -379,9 +380,9 @@ internal class ScreenlyFeaturePanel(
                     val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
                     if (!question.isNullOrBlank()) {
                         val answer = AccessibleScreenAssistant.ask(question, snapshot)
-                        val supplement = if (success && lines.isNotEmpty()) {
+                        val supplement = if (success && ocrLines.isNotEmpty()) {
                             "\nOCR also found: " +
-                                lines.take(4).joinToString(", ") { it.text } +
+                                ocrLines.take(4).joinToString(", ") { it.text } +
                                 ". OCR-only labels are not verified as tappable."
                         } else ""
                         val offlineFallback = answer + supplement
@@ -407,11 +408,22 @@ internal class ScreenlyFeaturePanel(
                 }
                 AssistantAction.EXPLAIN -> selectedItem = null
                 AssistantAction.GUIDE_ME -> {
-                    guidance = if (guidance != null && prompt == null)
-                        AccessibleScreenAssistant.check(guidance!!, snapshot)
-                    else if (!prompt.isNullOrBlank())
-                        AccessibleScreenAssistant.begin(prompt, snapshot)
-                    else guidance
+                    val merged = ScreenEvidenceMerger.augment(snapshot, ocrLines)
+                    val prior = guidance
+                    val result = if (prior != null && prompt == null) {
+                        if (prior.observed == snapshot) AccessibleScreenAssistant.check(prior, snapshot)
+                        else AccessibleScreenAssistant.check(prior, merged)
+                    } else if (!prompt.isNullOrBlank())
+                        AccessibleScreenAssistant.begin(prompt, merged)
+                    else prior
+                    guidance = result?.copy(
+                        observed = snapshot,
+                        status = if (result?.targetIndex != null &&
+                            merged.elements[result.targetIndex].text !=
+                            snapshot.elements[result.targetIndex].text)
+                            "OCR associated a label with an Android control; verify before tapping."
+                        else result?.status.orEmpty()
+                    )
                     clearTargetHighlight()
                     val next = guidance
                     if (next != null && next.observed == snapshot &&
