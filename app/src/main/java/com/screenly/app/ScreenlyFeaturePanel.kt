@@ -382,7 +382,8 @@ internal class ScreenlyFeaturePanel(
                             }
                         }
                         AssistantAction.GUIDE_ME -> {
-                            val goal = prompt ?: guideBefore?.goal
+                            // A restored guide has no trusted previous screen, but its goal survives.
+                            val goal = prompt ?: guidance?.goal
                             if (!goal.isNullOrBlank()) {
                                 val next = assistant.guide(
                                     goal, snapshot, if (prompt == null) guideBefore else null
