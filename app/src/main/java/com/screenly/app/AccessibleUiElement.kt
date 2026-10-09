@@ -13,7 +13,10 @@ data class AccessibleUiElement(
     val left: Int,
     val top: Int,
     val right: Int,
-    val bottom: Int
+    val bottom: Int,
+    // Original accessibility-tree parent, preserving the raw node index.
+    // Null means this node has no retained visible ancestor.
+    val parentIndex: Int? = null
 ) {
     internal fun intersectsScreen(width: Int, height: Int): Boolean =
         right > left && bottom > top && width > 0 && height > 0 &&
