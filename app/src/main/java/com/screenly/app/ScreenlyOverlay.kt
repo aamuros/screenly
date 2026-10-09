@@ -2,6 +2,9 @@ package com.screenly.app
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
@@ -9,11 +12,13 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
+import android.os.PowerManager
 import android.text.InputFilter
 import android.text.InputType
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -43,6 +48,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.abs
 import kotlin.math.min
@@ -70,6 +76,10 @@ internal class ScreenlyOverlay(
     private var questionJob: Job? = null
     private var questionVersion = 0L
     private var questionSnapshotKey: SnapshotKey? = null
+    private var capturedQuestion: GuidanceSnapshot? = null
+    private var capturedPreview: Bitmap? = null
+    private var capturedAnswerPanel: View? = null
+    private var capturedReturnStatus = "not_requested"
     private var cachedGuidanceSnapshot: GuidanceSnapshot? = null
     private var cachedDisplaySize: Pair<Int, Int>? = null
     private val chatHistory = mutableListOf<String>()
@@ -138,11 +148,15 @@ internal class ScreenlyOverlay(
         if (hadTarget && controller.status != GuidanceStatus.PLANNING && questionJob?.isActive != true) clearGuidancePanel()
     }
 
-    private fun questionIsSettling() = questionJob?.isActive == true && questionSnapshotKey == null
+    private fun questionIsSettling() = questionJob?.isActive == true &&
+        (questionSnapshotKey == null || capturedQuestion != null)
 
-    fun clearObservation(showWaiting: Boolean = false) {
-        invalidateQuestion()
-        chatHistory.clear()
+    fun clearObservation(showWaiting: Boolean = false, preserveCapturedQuestion: Boolean = false) {
+        val keepQuestion = preserveCapturedQuestion && capturedQuestion != null
+        if (!keepQuestion) {
+            invalidateQuestion()
+            chatHistory.clear()
+        }
         cachedGuidanceSnapshot = null
         cachedDisplaySize = null
         state.clear()
@@ -152,10 +166,10 @@ internal class ScreenlyOverlay(
         closeGoalPanel()
         clearHighlight()
         // Keep one stable caption for an unavailable root; recreating it emits more window
-        // events. Locks, our activity and lifecycle cleanup still remove every overlay.
-        if (!showWaiting || controller.status != GuidanceStatus.WAITING_FOR_SCREEN) clearGuidancePanel()
+        // events. Locks and lifecycle cleanup still release the captured question.
+        if (!keepQuestion && (!showWaiting || controller.status != GuidanceStatus.WAITING_FOR_SCREEN)) clearGuidancePanel()
         controller.observe(null)
-        if (!showWaiting) clearGuidancePanel()
+        if (!showWaiting && !keepQuestion) clearGuidancePanel()
         else if (controller.status == GuidanceStatus.WAITING_FOR_SCREEN && guidancePanel == null) {
             showGuidanceMessage(service.getString(R.string.guidance_waiting))
         }
@@ -197,13 +211,14 @@ internal class ScreenlyOverlay(
             setOnClickListener {
                 if (disposed || bubble !== it) return@setOnClickListener
                 val closesPanel = picker != null || assistantMenu != null ||
-                    infoPanel != null || goalPanel != null || bubbleClickClosesPicker
+                    infoPanel != null || goalPanel != null || capturedAnswerPanel != null || bubbleClickClosesPicker
                 bubbleClickClosesPicker = false
                 if (closesPanel) {
                     closePicker()
                     closeMenu()
                     closeInfoPanel()
                     closeGoalPanel()
+                    if (capturedAnswerPanel != null) invalidateQuestion()
                 } else showMenu()
             }
         }
@@ -280,6 +295,7 @@ internal class ScreenlyOverlay(
             closeMenu()
             when (action) {
                 AssistantAction.GUIDE_ME, AssistantAction.ASK_AI -> {
+                    invalidateQuestion()
                     assistantAction = action
                     showGoalPanel()
                 }
@@ -410,12 +426,14 @@ internal class ScreenlyOverlay(
     private fun invalidateQuestion() {
         questionVersion++
         questionSnapshotKey = null
+        capturedQuestion = null
         questionJob?.cancel()
         questionJob = null
+        closeCapturedAnswer()
     }
 
     private fun invalidateQuestionFromObservation() {
-        if (questionSnapshotKey != null) {
+        if (questionSnapshotKey != null && capturedQuestion == null) {
             invalidateQuestion()
             showGuidanceMessage(service.getString(R.string.ai_screen_changed))
         }
@@ -435,25 +453,97 @@ internal class ScreenlyOverlay(
                 return@launch
             }
             questionSnapshotKey = snapshot.key
-            showGuidanceMessage(service.getString(R.string.guidance_planning))
-            val result = try {
-                planner.plan(question, snapshot, chatHistory.toList(), question = true)
-            } catch (cancelled: CancellationException) { throw cancelled
-            } catch (_: Exception) {
-                com.screenly.app.ai.navigation.ScreenDecision(
-                    com.screenly.app.ai.navigation.NavigationAction.UNCERTAIN, null, null, "", AiMode.UNAVAILABLE, "failed")
+            showGuidanceMessage(service.getString(R.string.captured_capturing))
+            val captured = if (vision.availability() == com.screenly.app.ai.ImageModelAvailability.VERIFIED)
+                captureImage(snapshot) else ScreenCapture.Failed(CaptureFailure.PRIVACY)
+            val frame = (captured as? ScreenCapture.Image)?.frame
+            var preview: Bitmap? = null
+            try {
+                refreshObservation()
+                if (disposed || version != questionVersion || currentGuidanceSnapshot()?.key != snapshot.key ||
+                    captured == ScreenCapture.Failed(CaptureFailure.STALE)) return@launch
+                // From here on this question owns immutable data, not the current app screen.
+                capturedQuestion = snapshot
+                capturedReturnStatus = "not_requested"
+                questionSnapshotKey = null
+                showGuidanceMessage(service.getString(if (frame != null) R.string.captured_thinking else R.string.captured_thinking_text))
+                if (frame != null) withContext(Dispatchers.IO) {
+                    try { preview = BitmapFactory.decodeByteArray(frame.bytes, 0, frame.bytes.size) }
+                    catch (_: RuntimeException) { /* The answer can still use the encoded image. */ }
+                }
+                capturedPreview = preview
+                preview = null // Clear/lock can release the review bitmap even during native work.
+                val result = try {
+                    planner.answerCaptured(question, snapshot, captured, chatHistory.toList())
+                } catch (cancelled: CancellationException) { throw cancelled
+                } catch (_: Exception) {
+                    com.screenly.app.ai.navigation.ScreenDecision(
+                        com.screenly.app.ai.navigation.NavigationAction.UNCERTAIN, null, null, "", AiMode.UNAVAILABLE, "failed")
+                }
+                if (disposed || version != questionVersion || !canShowCapturedAnswer()) return@launch
+                chatHistory += "Captured in ${snapshot.observation.packageName}: $question; answer: ${result.explanation}"
+                while (chatHistory.size > 4) chatHistory.removeAt(0)
+                clearGuidancePanel()
+                // The cached observation can still describe the captured app when
+                // events are coalesced or native work finishes during a transition.
+                refreshObservation()
+                if (disposed || version != questionVersion || !canShowCapturedAnswer()) return@launch
+                if (result.explanation.isNotBlank() && state.snapshot?.packageName != snapshot.observation.packageName) {
+                    returnToCapturedApp(snapshot)
+                }
+                showCapturedAnswer(snapshot, decisionMessage(result))
+                if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance",
+                    "captured_answer mode=${result.mode} status=${result.visionStatus} ms=${result.millis}")
+            } finally {
+                frame?.close()
+                preview?.recycle()
             }
-            refreshObservation()
-            if (disposed || version != questionVersion || currentGuidanceSnapshot()?.key != snapshot.key) return@launch
-            val answer = decisionMessage(result)
-            chatHistory += "Question: $question; answer: ${result.explanation}"
-            while (chatHistory.size > 4) chatHistory.removeAt(0)
-            val target = result.index?.takeIf { ScreenDecisionProtocol.grounded(result, snapshot) }
-                ?.let { snapshot.observation.elements[it] }
-            target?.let(::showHighlight)
-            questionSnapshotKey = null
-            showGuidanceMessage(answer, target)
         }
+    }
+
+    private fun canShowCapturedAnswer() = !disposed &&
+        service.getSystemService(PowerManager::class.java).isInteractive &&
+        !service.getSystemService(KeyguardManager::class.java).isKeyguardLocked
+
+    private fun returnToCapturedApp(snapshot: GuidanceSnapshot) {
+        if (!canShowCapturedAnswer() || capturedQuestion?.key != snapshot.key) return
+        try {
+            val intent = service.packageManager.getLaunchIntentForPackage(snapshot.observation.packageName)
+                ?: throw android.content.ActivityNotFoundException()
+            // A launcher intent resumes an existing task when Android/app policy permits.
+            // Never simulate Back, scrolling or app controls to recreate old navigation.
+            service.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            capturedReturnStatus = "requested"
+        } catch (_: RuntimeException) {
+            capturedReturnStatus = "failed"
+            Toast.makeText(service, R.string.captured_return_failed, Toast.LENGTH_SHORT).show()
+        }
+        if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance", "captured_return status=$capturedReturnStatus")
+    }
+
+    private fun showCapturedAnswer(snapshot: GuidanceSnapshot, answer: String) {
+        val area = usableScreenBounds()
+        val title = service.getString(R.string.captured_answer_title, snapshot.observation.packageName)
+        val view = FloatingAssistantViews.infoPanel(service, title,
+            "$answer\n\n${service.getString(R.string.captured_return_notice)}", preview = capturedPreview,
+            onReturn = { returnToCapturedApp(snapshot) }, onDismiss = { invalidateQuestion() })
+        if (attach(view, anchoredPanelParams(min(dp(340), area.width()), min(dp(540), area.height() * 3 / 4)))) {
+            capturedAnswerPanel = view
+        } else invalidateQuestion()
+    }
+
+    private fun closeCapturedAnswer() {
+        capturedAnswerPanel?.let { root ->
+            fun clearImages(view: View) {
+                if (view is ImageView) view.setImageDrawable(null)
+                if (view is ViewGroup) for (index in 0 until view.childCount) clearImages(view.getChildAt(index))
+            }
+            clearImages(root)
+            detach(root)
+        }
+        capturedAnswerPanel = null
+        capturedPreview?.recycle()
+        capturedPreview = null
     }
 
     private fun decisionMessage(result: com.screenly.app.ai.navigation.ScreenDecision): String {

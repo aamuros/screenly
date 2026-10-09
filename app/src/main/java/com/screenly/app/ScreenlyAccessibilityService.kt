@@ -102,7 +102,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         lastCapture = SystemClock.uptimeMillis()
         val root = activeApplicationRoot()
         if (root == null) {
-            clearObservation(showWaiting = true)
+            clearObservation(showWaiting = true, preserveCapturedQuestion = true)
             if (BuildConfig.DEBUG) Log.d(TAG, "Active window unavailable; observation skipped.")
             return false
         }
@@ -110,7 +110,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         try {
             val targetPackage = root.packageName?.toString()
             if (targetPackage == null || targetPackage == packageName) {
-                clearObservation()
+                clearObservation(preserveCapturedQuestion = true)
                 return false
             }
 
@@ -267,7 +267,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        clearObservation()
+        clearObservation(preserveCapturedQuestion = canObserve())
         observeScreen()
     }
 
@@ -281,11 +281,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         super.onDestroy()
     }
 
-    private fun clearObservation(showWaiting: Boolean = false) {
+    private fun clearObservation(showWaiting: Boolean = false, preserveCapturedQuestion: Boolean = false) {
         handler.removeCallbacks(capture)
         observationPending = false
         lastObservation = null
-        overlay?.clearObservation(showWaiting)
+        overlay?.clearObservation(showWaiting, preserveCapturedQuestion)
     }
 
     private fun registerScreenReceiver() {

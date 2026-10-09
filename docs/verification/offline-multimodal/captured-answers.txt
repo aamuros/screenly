@@ -1,0 +1,34 @@
+
+com.screenly.app.AssistantInferenceUiTest:INSTRUMENTATION_STATUS: manual_service_reconnect=Live test waiting for Screenly service; reconnect manually if the runner restarted it
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: captured_browsing=PASS; mode=MULTIMODAL; answer_characters=301; no private answer logged
+INSTRUMENTATION_STATUS_CODE: 0
+
+Error in capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(com.screenly.app.AssistantInferenceUiTest):
+java.lang.AssertionError: Android must bring the original app back for this physical return test.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.screenly.app.AssistantInferenceUiTest.capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(AssistantInferenceUiTest.kt:64)
+
+com.screenly.app.ai.CapturedAnswerNativeTest:INSTRUMENTATION_STATUS: text_initialize_ms=2585
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: previous_text_question=elapsed_ms=9586; native_calls=2; valid_answer=true
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: captured_text_question=elapsed_ms=7016; native_calls=1; valid_answer=true; pss_kib=3035321
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: vision_initialize_ms=10893
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: captured_image_question=elapsed_ms=28051; mode=MULTIMODAL; pss_kib=3766169; synthetic_answer=The image is predominantly red.
+INSTRUMENTATION_STATUS_CODE: 0
+.
+
+Time: 343.221
+There was 1 failure:
+1) capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(com.screenly.app.AssistantInferenceUiTest)
+java.lang.AssertionError: Android must bring the original app back for this physical return test.
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.assertTrue(Assert.java:42)
+	at com.screenly.app.AssistantInferenceUiTest.capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(AssistantInferenceUiTest.kt:64)
+
+FAILURES!!!
+Tests run: 2,  Failures: 1

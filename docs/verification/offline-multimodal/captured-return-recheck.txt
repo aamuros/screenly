@@ -1,0 +1,19 @@
+
+com.screenly.app.AssistantInferenceUiTest:INSTRUMENTATION_STATUS: manual_service_reconnect=Live test waiting for Screenly service; reconnect manually if the runner restarted it
+INSTRUMENTATION_STATUS_CODE: 0
+
+Error in capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(com.screenly.app.AssistantInferenceUiTest):
+java.lang.AssertionError: Manually reconnect Screenly after instrumentation restarts its process.
+	at com.screenly.app.AssistantInferenceUiTest.waitForService(AssistantInferenceUiTest.kt:152)
+	at com.screenly.app.AssistantInferenceUiTest.capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(AssistantInferenceUiTest.kt:31)
+
+
+Time: 120.26
+There was 1 failure:
+1) capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(com.screenly.app.AssistantInferenceUiTest)
+java.lang.AssertionError: Manually reconnect Screenly after instrumentation restarts its process.
+	at com.screenly.app.AssistantInferenceUiTest.waitForService(AssistantInferenceUiTest.kt:152)
+	at com.screenly.app.AssistantInferenceUiTest.capturedQuestionSurvivesBrowsingAndReturnsToOriginalApp(AssistantInferenceUiTest.kt:31)
+
+FAILURES!!!
+Tests run: 1,  Failures: 1

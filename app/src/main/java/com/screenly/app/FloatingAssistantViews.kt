@@ -3,6 +3,7 @@ package com.screenly.app
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
@@ -65,7 +66,10 @@ internal object FloatingAssistantViews {
         return scroll(context, panel)
     }
 
-    fun infoPanel(context: Context, title: String, message: String, onClear: (() -> Unit)? = null, onDismiss: () -> Unit): View {
+    fun infoPanel(
+        context: Context, title: String, message: String, onClear: (() -> Unit)? = null,
+        preview: Bitmap? = null, onReturn: (() -> Unit)? = null, onDismiss: () -> Unit
+    ): View {
         val panel = panel(context).apply {
             setPadding(dp(context, 20), dp(context, 20), dp(context, 20), dp(context, 16))
         }
@@ -75,6 +79,11 @@ internal object FloatingAssistantViews {
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(Color.WHITE)
         })
+        if (preview != null) panel.addView(ImageView(context).apply {
+            setImageBitmap(preview)
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            contentDescription = context.getString(R.string.captured_screen_preview)
+        }, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(context, 180)))
         panel.addView(TextView(context).apply {
             text = message
             textSize = 14f
@@ -92,6 +101,16 @@ internal object FloatingAssistantViews {
             isFocusable = true
             minimumHeight = dp(context, 48)
             setOnClickListener { onClear() }
+        })
+        if (onReturn != null) panel.addView(TextView(context).apply {
+            setText(R.string.captured_return_app)
+            textSize = 16f
+            gravity = Gravity.CENTER
+            setTextColor(Color.WHITE)
+            isClickable = true
+            isFocusable = true
+            minimumHeight = dp(context, 48)
+            setOnClickListener { onReturn() }
         })
         panel.addView(TextView(context).apply {
             setText(R.string.assistant_close)

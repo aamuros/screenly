@@ -45,6 +45,14 @@
     <string name="ai_vision_failed">Image inference is unavailable on this device.</string>
     <string name="ai_capture_failed">Android could not provide a current screenshot.</string>
     <string name="ai_screen_changed">The screen changed while Screenly was checking it. Wait for it to settle, then ask again.</string>
+    <string name="captured_capturing">Capturing this screen. Please wait a moment before browsing.</string>
+    <string name="captured_thinking">Screen captured. You can browse while local AI thinks. Screenly will reopen the original app when the answer is ready.</string>
+    <string name="captured_thinking_text">Accessibility snapshot captured; screenshot unavailable. You can browse while text-only AI thinks. Screenly will reopen the original app when the answer is ready.</string>
+    <string name="captured_answer_title">Answer for captured screen: %1$s</string>
+    <string name="captured_screen_preview">Captured screen preview. Read-only; these controls cannot be tapped.</string>
+    <string name="captured_return_app">Return to original app</string>
+    <string name="captured_return_notice">This answer describes the captured screen. Reopening the app cannot undo changes to its page or scroll position. Use Guide Me for fresh control highlights.</string>
+    <string name="captured_return_failed">Android could not reopen the original app. You can return to it manually.</string>
     <string name="model_import_notice">Import the exact supported model files after accepting their license. Imports stay on your device.</string>
     <string name="model_import_text">Import Gemma 3 1B text model</string>
     <string name="model_import_vision">Import Gemma 3n E2B image model</string>
