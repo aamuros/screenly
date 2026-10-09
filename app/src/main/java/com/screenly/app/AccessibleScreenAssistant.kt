@@ -36,14 +36,29 @@ internal object AccessibleScreenAssistant {
 
     fun ask(question: String, observation: ScreenObservation): String {
         if (question.isBlank()) return "Enter a question about the current screen."
+        // Useful first-run help even before the separately distributed model is installed.
+        // These are fixed, general instructions, never claims about unseen screen pixels.
+        val q = normalize(question)
+        if (Regex("\\b(call|dial|phone somebody|phone someone)\\b").containsMatchIn(q)) {
+            return "To call someone, open the Phone app. Choose Contacts to find a person, or " +
+                "Keypad to enter their number, then press the call button. " +
+                "This is general offline guidance, not a screenshot analysis."
+        }
+        if (q.contains("email") || q.contains("e-mail") || q.contains("gmail")) {
+            return "To write and send an email, open Gmail or your email app, tap Compose, " +
+                "enter the recipient in To, add a subject and message, then tap Send. " +
+                "If you mean creating a new email account, tell me. " +
+                "This is general offline guidance, not a screenshot analysis."
+        }
         val result = choose(question, observation)
         return when {
             result != null ->
                 "From the accessible controls on this screen, I found “${result.title}”. " +
                     "You can tap it to continue. I have not visually analyzed the screenshot."
             visibleItems(observation).isEmpty() ->
-                "I cannot identify any labeled, actionable controls on this screen. " +
-                    "Screenshot vision inference is not connected yet."
+                "I cannot identify actionable controls on this screen. " +
+                    "For open-ended answers, import the local AI model in Screenly. " +
+                    "Basic offline help works without it."
             else ->
                 "I cannot safely identify a control for that question. " +
                     "Visible accessible options include: " +
