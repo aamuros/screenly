@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import androidx.core.content.ContextCompat
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
@@ -38,6 +39,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             when (intent?.action) {
                 Intent.ACTION_SCREEN_OFF -> clearObservation()
                 Intent.ACTION_SCREEN_ON, Intent.ACTION_USER_PRESENT -> scheduleObservation()
+                MainActivity.ACTION_APP_VISIBILITY -> {
+                    val visible = intent.getBooleanExtra(MainActivity.EXTRA_VISIBLE, false)
+                    overlay?.setOwnAppVisible(visible)
+                    if (!visible) scheduleObservation()
+                }
             }
         }
     }
@@ -46,6 +52,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         overlay?.dispose()
         overlay = ScreenlyOverlay(this) { observeScreen() }
+        overlay?.setOwnAppVisible(MainActivity.isForeground)
         registerScreenReceiver()
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "Service connected. Open Android Settings to inspect its interface.")
@@ -294,12 +301,12 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_USER_PRESENT)
+            addAction(MainActivity.ACTION_APP_VISIBILITY)
         }
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(screenReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(screenReceiver, filter)
-        }
+        // Contains an app-private visibility broadcast, so it must be non-exported.
+        ContextCompat.registerReceiver(
+            this, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         receiverRegistered = true
     }
 
