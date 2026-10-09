@@ -14,7 +14,7 @@ internal object NavigationRules {
         return index.takeIf { rejection(goal, it, elements, candidateIndices) == null }
     }
 
-    private fun targetLabels(goal: String): Set<String> {
+    internal fun targetLabels(goal: String): Set<String> {
         val normalizedGoal = NavigationProtocol.normalize(goal)
         val target = goalAction.matchEntire(normalizedGoal)?.groupValues?.get(2) ?: normalizedGoal
         return when (target) {
@@ -33,7 +33,10 @@ internal object NavigationRules {
     }
 
     /** Applies the same deterministic safeguards to rules and model selections. Not semantic proof. */
-    fun rejection(goal: String, index: Int, elements: List<AccessibleUiElement>, candidates: List<Int>): NavigationRejection? {
+    fun rejection(
+        goal: String, index: Int, elements: List<AccessibleUiElement>, candidates: List<Int>,
+        verifiedRouteIndices: Set<Int>? = null
+    ): NavigationRejection? {
         if (!NavigationProtocol.validInput(goal, elements, candidates)) return NavigationRejection.INVALID_INPUT
         if (!NavigationProtocol.validTarget(index, elements, candidates)) return NavigationRejection.TARGET_NOT_ALLOWED
         val labels = NavigationProtocol.labelsOf(elements[index]).map(NavigationProtocol::normalize).toSet()
@@ -60,13 +63,18 @@ internal object NavigationRules {
                 "mobile hotspot" in target -> setOf("network", "network & internet", "hotspot & tethering")
                 else -> emptySet()
             }
-            val routes = candidates.filter { candidate ->
-                NavigationProtocol.labelsOf(elements[candidate]).any { NavigationProtocol.normalize(it) in routeLabels }
-            }
+            val routes = if (verifiedRouteIndices != null) candidates.filter { it in verifiedRouteIndices }
+                else candidates.filter { candidate ->
+                    NavigationProtocol.labelsOf(elements[candidate]).any { NavigationProtocol.normalize(it) in routeLabels }
+                }
             if (routes.size > 1) return NavigationRejection.AMBIGUOUS_TARGET
             if (routes.singleOrNull() != index) return NavigationRejection.UNSUPPORTED_TARGET
         }
         val verb = goalAction.matchEntire(NavigationProtocol.normalize(goal))?.groupValues?.get(1)
+        // Opening a settings page is not permission to flip a toggle already visible there.
+        if (verifiedRouteIndices != null && verb in setOf("open", "change") && index in matches &&
+            elements[index].className?.substringAfterLast('.') in toggleClasses
+        ) return NavigationRejection.UNSAFE_TOGGLE
         if (verb in setOf("enable", "disable", "turn on", "turn off")) {
             val element = elements[index]
             val isToggle = element.className?.substringAfterLast('.') in toggleClasses

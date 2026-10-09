@@ -144,7 +144,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         val elements = mutableListOf<AccessibleUiElement>()
         var visitedNodes = 0
 
-        fun visit(node: AccessibilityNodeInfo, depth: Int) {
+        fun visit(node: AccessibilityNodeInfo, depth: Int, parentIndex: Int?) {
             if (visitedNodes >= MAX_NODES || depth > MAX_DEPTH) return
             visitedNodes++
 
@@ -154,9 +154,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             ) return
 
             val editable = node.isEditable
+            var capturedIndex = parentIndex
             if (node.isVisibleToUser) {
                 val bounds = Rect()
                 node.getBoundsInScreen(bounds)
+                capturedIndex = elements.size
                 elements += AccessibleUiElement(
                     text = if (editable) null else sanitizeObservationText(node.text),
                     contentDescription = if (editable) null else sanitizeObservationText(node.contentDescription),
@@ -169,7 +171,8 @@ class ScreenlyAccessibilityService : AccessibilityService() {
                     left = bounds.left,
                     top = bounds.top,
                     right = bounds.right,
-                    bottom = bounds.bottom
+                    bottom = bounds.bottom,
+                    parentIndex = parentIndex
                 )
             }
 
@@ -183,14 +186,14 @@ class ScreenlyAccessibilityService : AccessibilityService() {
                     continue
                 }
                 try {
-                    visit(child, depth + 1)
+                    visit(child, depth + 1, capturedIndex)
                 } finally {
                     recycleIfNeeded(child)
                 }
             }
         }
 
-        visit(root, 0)
+        visit(root, 0, null)
         if (BuildConfig.DEBUG && visitedNodes >= MAX_NODES) {
             Log.d(TAG, "Observation reached the $MAX_NODES-node traversal limit.")
         }

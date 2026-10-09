@@ -4,7 +4,11 @@
     <string name="service_disabled">Accessibility service: Disabled</string>
     <string name="open_accessibility_settings">Open Accessibility Settings</string>
     <string name="enable_instructions">In Accessibility Settings, open Downloaded apps or Installed services, select Screenly, and turn on Use Screenly. Return here to check the status.</string>
+<<<<<<< feat/backend-tests
     <string name="testing_instructions">After enabling the service, open Android Settings. Tap the floating Screenly bubble to select an enabled, clickable element for highlighting. Drag the bubble to move it. The highlight allows taps through and clears when the target screen changes. Debug builds still print elements and screen coordinates to Logcat with the tag ScreenlyAccessibility.</string>
+=======
+    <string name="testing_instructions">After enabling the service, open Android Settings. Tap the floating Screenly bubble, then Guide Me, and enter a goal such as How do I change my font size? Manually tap the highlighted control; Screenly will check the next screen. Open Guide Me to recheck, stop, confirm completion, or use the manual picker. Drag the bubble to move it. Debug builds print observations to Logcat.</string>
+>>>>>>> local
     <string name="privacy_notice">Screen observations stay in memory and debug Logcat. Password and sensitive nodes are skipped; editable values are omitted. Screenly does not save screen contents, use the network, or tap for you.</string>
     <string name="accessibility_service_description">Inspects accessible interface elements in other apps and displays a floating assistant for manual highlighting. Debug observations appear in Logcat. Password and sensitive nodes are skipped, and editable values are omitted. No screen contents are saved or sent over the network; Screenly does not tap for you.</string>
     <string name="assistant_bubble">S</string>
@@ -16,4 +20,19 @@
     <string name="highlight_candidate">Highlight: %1$s\n(%2$d, %3$d)–(%4$d, %5$d)</string>
     <string name="unlabelled_element">Unlabelled element</string>
     <string name="screen_changed">The screen changed. Open the picker again to select a current element.</string>
+    <string name="guidance_goal_title">What would you like to do?</string>
+    <string name="guidance_goal_hint">How do I change my font size?</string>
+    <string name="guidance_goal_required">Enter a goal first.</string>
+    <string name="guidance_start">Start guidance</string>
+    <string name="guidance_retry">Recheck screen</string>
+    <string name="guidance_stop">Stop guidance</string>
+    <string name="guidance_confirm">I completed my goal</string>
+    <string name="guidance_manual_picker">Choose a control manually</string>
+    <string name="guidance_waiting">Waiting for an accessible screen. Open the relevant application.</string>
+    <string name="guidance_planning">Checking this screen on your device…</string>
+    <string name="guidance_uncertain">I couldn\'t identify the correct button on this screen. Try opening the relevant menu, then ask me again.</string>
+    <string name="guidance_uncertain_model_unavailable">Local AI is unavailable, and I couldn\'t verify a next step. Open the relevant menu or use the manual picker.</string>
+    <string name="guidance_step">Tap “%1$s”. You perform the action; Screenly will check the next screen.</string>
+    <string name="guidance_step_model_unavailable">Tap “%1$s”. Local AI is unavailable; this is a verified step. You perform the action.</string>
+    <string name="guidance_user_confirmed">You confirmed that your goal is complete.</string>
 </resources>
