@@ -96,7 +96,15 @@ internal class ScreenlyOverlay(
         if (disposed) return
         disposed = true
         clearObservation()
-        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch { assistant.close() }
+        CoroutineScope(SupervisorJob() + Dispatchers.IO).launch {
+            try {
+                assistant.close()
+            } catch (_: Exception) {
+                // Device/runtime failures must not crash AccessibilityService teardown.
+            } catch (_: LinkageError) {
+                // Native loader errors are handled as unsupported-device failures.
+            }
+        }
     }
 
 
