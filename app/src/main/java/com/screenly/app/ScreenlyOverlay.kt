@@ -61,13 +61,15 @@ internal class ScreenlyOverlay(
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val state = ScreenObservationState()
     private var disposed = false
+    private var ownAppVisible = false
     private var bubble: View? = null
     private var picker: View? = null
     private var assistantMenu: View? = null
     private var infoPanel: View? = null
     private var goalPanel: View? = null
     private var guidancePanel: View? = null
-    private var lastGoal = ""
+    private val history = AssistantHistoryStore(java.io.File(service.noBackupFilesDir, "assistant-history.properties"))
+    private var lastGoal = history.goal
     private val sessionId = nextSession.incrementAndGet()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var inference = LocalInference(service)
@@ -82,7 +84,7 @@ internal class ScreenlyOverlay(
     private var capturedReturnStatus = "not_requested"
     private var cachedGuidanceSnapshot: GuidanceSnapshot? = null
     private var cachedDisplaySize: Pair<Int, Int>? = null
-    private val chatHistory = mutableListOf<String>()
+    private val chatHistory = history.messages
     private var assistantAction = AssistantAction.GUIDE_ME
     private val planner = ScreenPlanner(
         vision, text = { prompt -> inference.initialize(); inference.generate(prompt) },
@@ -108,6 +110,13 @@ internal class ScreenlyOverlay(
 
     val isEnteringGoal: Boolean
         get() = goalPanel != null
+
+    /** Hide all assistant windows on Screenly's launcher, keeping only private text history. */
+    fun setOwnAppVisible(visible: Boolean) {
+        if (disposed || ownAppVisible == visible) return
+        ownAppVisible = visible
+        if (visible) clearObservation()
+    }
 
     fun updateObservation(next: ScreenObservation) {
         if (disposed) return
@@ -155,7 +164,6 @@ internal class ScreenlyOverlay(
         val keepQuestion = preserveCapturedQuestion && capturedQuestion != null
         if (!keepQuestion) {
             invalidateQuestion()
-            chatHistory.clear()
         }
         cachedGuidanceSnapshot = null
         cachedDisplaySize = null
@@ -196,7 +204,7 @@ internal class ScreenlyOverlay(
     }
 
     private fun showBubble() {
-        if (bubble != null) return
+        if (bubble != null || ownAppVisible || disposed || state.snapshot == null) return
         val size = dp(56)
         val area = usableScreenBounds()
         val params = overlayParams(size, size).apply {
@@ -329,7 +337,7 @@ internal class ScreenlyOverlay(
             onClear = if (title == R.string.assistant_action_privacy) ({
                 controller.stop()
                 invalidateQuestion()
-                chatHistory.clear()
+                history.clearAll()
                 lastGoal = ""
                 clearHighlight()
                 closeInfoPanel()
@@ -481,8 +489,7 @@ internal class ScreenlyOverlay(
                         com.screenly.app.ai.navigation.NavigationAction.UNCERTAIN, null, null, "", AiMode.UNAVAILABLE, "failed")
                 }
                 if (disposed || version != questionVersion || !canShowCapturedAnswer()) return@launch
-                chatHistory += "Captured in ${snapshot.observation.packageName}: $question; answer: ${result.explanation}"
-                while (chatHistory.size > 4) chatHistory.removeAt(0)
+                history.rememberQuestion("Captured in ${snapshot.observation.packageName}: $question; answer: ${result.explanation}")
                 clearGuidancePanel()
                 // The cached observation can still describe the captured app when
                 // events are coalesced or native work finishes during a transition.
@@ -603,10 +610,21 @@ internal class ScreenlyOverlay(
             maxLines = 3
         }
         content.addView(input)
+        if (assistantAction == AssistantAction.GUIDE_ME && history.guideSteps.isNotEmpty()) {
+            content.addView(TextView(service).apply {
+                text = service.getString(R.string.saved_guide_steps) + "\n" +
+                    history.guideSteps.takeLast(3).mapIndexed { i, text -> "${i + 1}. $text" }.joinToString("\n") +
+                    "\n" + service.getString(R.string.saved_guide_recheck)
+                textSize = 12f
+                setTextColor(Color.DKGRAY)
+                setPadding(dp(4), dp(8), dp(4), dp(8))
+            })
+        }
         fun submit() {
             val goal = input.text.toString().trim()
             if (goal.isBlank()) { input.error = service.getString(R.string.guidance_goal_required); return }
             lastGoal = goal
+            if (assistantAction == AssistantAction.GUIDE_ME) history.rememberGoal(goal)
             closeGoalPanel()
             refreshObservation()
             invalidateQuestion()
@@ -619,10 +637,22 @@ internal class ScreenlyOverlay(
             content.addView(Button(service).apply { setText(label); isAllCaps = false; setOnClickListener { action() } })
         }
         button(if (assistantAction == AssistantAction.ASK_AI) R.string.ask_send else R.string.guidance_start, ::submit)
-        button(R.string.guidance_retry) { closeGoalPanel(); controller.retry() }
-        button(R.string.guidance_stop) { closeGoalPanel(); controller.stop() }
+        button(R.string.guidance_retry) {
+            closeGoalPanel()
+            if (controller.status == GuidanceStatus.IDLE && lastGoal.isNotBlank()) controller.start(lastGoal)
+            else controller.retry()
+        }
+        button(R.string.guidance_stop) {
+            closeGoalPanel()
+            controller.stop()
+            history.endGuide()
+            lastGoal = ""
+        }
         button(R.string.guidance_confirm) {
-            closeGoalPanel(); controller.stop()
+            closeGoalPanel()
+            controller.stop()
+            history.endGuide()
+            lastGoal = ""
             showGuidanceMessage(service.getString(R.string.guidance_user_confirmed))
         }
         button(R.string.guidance_manual_picker) {
@@ -671,7 +701,9 @@ internal class ScreenlyOverlay(
                 instructionTarget = element
                 if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance",
                     "revision=${snapshot.key.revision} index=$index mode=${result.mode} action=${result.action} ms=${result.millis}")
-                decisionMessage(result)
+                val instruction = decisionMessage(result)
+                history.rememberGuideStep(instruction)
+                instruction
             }
         }
         showGuidanceMessage(message, instructionTarget)
@@ -679,6 +711,7 @@ internal class ScreenlyOverlay(
 
     private fun showGuidanceMessage(message: String, target: AccessibleUiElement? = null) {
         clearGuidancePanel()
+        if (ownAppVisible || disposed) return
         val area = usableScreenBounds()
         val view = TextView(service).apply {
             text = message
