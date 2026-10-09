@@ -2,7 +2,9 @@
 
 [ROADMAP.md](ROADMAP.md) defines acceptance gates. Source inspection establishes implementation;
 host tests establish only the tested policies. Emulator results do not establish physical-phone
-behavior. Future procedures below are plans; AI/end-to-end tests do not exist yet.
+behavior. An isolated, opt-in AI smoke test now exists; planner/end-to-end procedures remain
+plans. [M3 provisioning, commands and evidence](LOCAL_AI.md) distinguish compilation from
+real physical offline inference.
 
 ## Host checks and Android Studio
 
@@ -26,7 +28,9 @@ for host checks. Emulators provide preliminary checks; phone gates remain requir
 observation, overlays or guidance. Run only when instrumentation testing is requested.
 
 Meaningful current unit coverage: 8 revision/selection/bounds/scheduling tests and 6 sanitizer
-tests. The extra arithmetic template test provides no Screenly feature evidence.
+tests, plus 6 local model integrity/failure/lifecycle tests. The extra arithmetic template test
+provides no Screenly feature evidence. Native inference is checked separately by the opt-in
+`ai/LocalInferenceSmokeTest`; host tests do not load the real model.
 
 ## Physical-device setup (manual)
 
@@ -56,7 +60,7 @@ Logcat contains ordinary non-editable app labels.
 | M0 | After implementation, compile both consumers; test index/key validation and wrong session/revision/request/goal rejection | Jointly review/merge API; build both branches and check shared fixtures |
 | M1 | Build; sanitizer/observation-policy tests; inspect extraction/privacy limits | Enable service; inspect Settings/chosen app labels/descriptions/class/IDs/states/bounds, missing fields, checked/disabled/scrollable controls; navigate/scroll, unavailable root and safe recovery; lock suppression |
 | M2 | Build; revision/bounds tests; inspect window type/touch flags | Bubble/picker checklist below, portrait/landscape/cutout alignment, touch pass-through, lock and disable/re-enable |
-| M3 (future) | Build runtime integration; isolatable missing/corrupt model and failure tests | Exact artifact on demo phone; cold/warm load and repeated inference; offline restart, close/reload and errors |
+| M3 (implemented, unverified) | Build runtime integration; model integrity/failure/lifecycle unit tests; compile isolated smoke test | Exact artifact on demo phone; cold/warm load and repeated inference; offline restart, close/reload and errors; [commands and evidence](LOCAL_AI.md) |
 | M4 (future) | Recorded sanitized fixtures: parser/rules, malformed schema/types, invalid/noncandidate indices, fallback/no-match and stale responses | Real offline model on labelled snapshots; report selection quality and unsupported cases against agreed schema |
 | M5 (future) | Delayed MockPlanner/state tests: stop, goal replacement, unchanged observations, A→B→A, lock/reconnect during planning | Real-model multistep goal, manual actions, navigation during inference, corroborated completion |
 | M6 (future) | Exact final artifact build and relevant regressions | Offline restart, repeated demo rehearsals, reliability/lifecycle checks and performance measurements |
@@ -83,7 +87,7 @@ Logcat contains ordinary non-editable app labels.
    no old highlight after unlock. Use an already PIN/password-configured phone and never record
    credentials. Exercise unavailable-root recovery.
 
-### M3/M4 model and snapshot evaluation (future)
+### M3 model validation and future M4 snapshot evaluation
 
 Record LiteRT-LM version/backend, exact artifact format/quantization/hash, source/license,
 provisioning, hardware and free storage. Check initialization/inference, missing/corrupt file,

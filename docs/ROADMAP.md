@@ -1,6 +1,7 @@
 # Screenly roadmap
 
-Baseline inspected: `51f5fb7` on `main`, 2026-10-09. This change adds documentation only.
+Original documentation baseline: `51f5fb7` on `main`, 2026-10-09. M3 implementation starts
+from `e754f7b` on `feat/local-ai`; see [M3 evidence and remaining gates](LOCAL_AI.md).
 Checked boxes mean the stated task has evidence, not that an entire milestone is verified.
 Procedures: [TESTING.md](TESTING.md). Contracts: [ARCHITECTURE.md](ARCHITECTURE.md).
 Preserve [VERIFICATION.md](../VERIFICATION.md) as the historical audit; its “CONDITIONALLY
@@ -78,10 +79,10 @@ multiple displays remain untested. No new device checks were performed for this 
 ## M3 — Local AI Integration
 
 **Objective:** Load a compatible local model and infer without network access.
-**Owner:** Developer 2. **Status: NOT STARTED.**
+**Owner:** Developer 2. **Status: IMPLEMENTED — UNVERIFIED.**
 
-- [ ] Integrate LiteRT-LM with explicit initialization/error/close handling.
-- [ ] Define local provisioning, model format, integrity, license and storage requirements.
+- [x] Integrate LiteRT-LM with explicit initialization/error/close handling.
+- [x] Define local provisioning, model format, integrity, license and storage requirements.
 - [ ] Load a compatible model; evaluate quantized Gemma 3 1B as the initial candidate.
 - [ ] Verify offline inference, including restart in airplane mode.
 - [ ] Benchmark initialization, inference, memory and APK/model size on the demo phone.
@@ -92,8 +93,11 @@ Compatibility/provisioning investigation can proceed independently.
 **Acceptance:** Exact model loads/responds offline on the chosen phone without blocking UI;
 missing/corrupt model and runtime failures are safe. Agree latency/memory budgets from evidence.
 **Verification:** TESTING M3; cold/warm loads, repeated inference, offline restart and errors.
-**Evidence/gaps:** No runtime dependency, loader, artifact or benchmark exists. Format/backend,
-device suitability and provisioning method remain open.
+**Evidence/gaps:** `ai/LocalInference`, integrity/lifecycle unit tests and an opt-in Android
+smoke test implement isolated CPU inference with LiteRT-LM 0.10.2. [M3 report](LOCAL_AI.md)
+pins the INT4 artifact/hash and documents private ADB provisioning. No device is connected;
+exact binary/runtime compatibility, real/offline generation, timing/memory and physical M1/M2
+regressions remain unverified. A build is not M3 acceptance; M4 remains not started.
 
 ## M4 — AI Navigation Planner
 

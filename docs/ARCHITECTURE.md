@@ -4,6 +4,12 @@
 
 One Kotlin application module (`com.screenly.app`); no backend, database or network permission.
 
+An isolated `ai/LocalInference` component now verifies a private `.litertlm` file and uses
+LiteRT-LM 0.10.2 on CPU. Its suspend initialization/generation/close calls run on IO with a
+mutex; it reuses the engine and closes per-prompt conversations. Only an opt-in instrumented
+smoke test consumes it. No activity/service/overlay or planner integration exists, and real
+phone inference remains unverified. See [M3 implementation and evidence](LOCAL_AI.md).
+
 ```text
 MainActivity (Compose) → Android accessibility settings / enabled-service status
 Accessibility events → ScreenlyAccessibilityService → ScreenObservation
@@ -133,9 +139,10 @@ change alone cannot prove task success.
 
 ## Proposed model lifecycle
 
-LocalAI: Unloaded → Loading → Ready or Failed, with explicit resource close. Provision a
-compatible artifact locally before inference; current APK has none. Choose import/bundling
-and format after testing runtime/device compatibility; do not assume any Gemma export works.
+For future guidance integration, LocalAI's proposed states are Unloaded → Loading → Ready or
+Failed, with explicit resource close. The current isolated component has no published state
+flow. Provision the documented INT4 `.litertlm` candidate privately using ADB; the APK has no
+model. Exact binary/runtime/device compatibility still requires physical validation.
 
 Initialize/infer off the main thread, bound/serialize requests and handle cancellation without
 leaving old callbacks eligible to draw. Reuse the loaded model within the agreed session;
