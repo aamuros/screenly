@@ -1,0 +1,26 @@
+{
+  "base_commit": "f7442d638be180a4cea237ae15c1fcf1a9a48465",
+  "avd": "Screenly_M3_API30\nOK",
+  "serial": "emulator-5554",
+  "source_sha256": {
+    "app/src/main/java/com/screenly/app/ai/LocalInference.kt": "880531f7fda342562af1148bc4c760892e6765bdecd6d7418ee5131422183767",
+    "app/src/main/java/com/screenly/app/ai/LocalModel.kt": "df2ab5b96fad4530a7257b249dcc556a29d1ea4117b79e04e9de2161748006da",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationEngine.kt": "d5cb7b75750a292e5af63a3d109fcef864c72c43f7d06c83ff007d363eacdfe2",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationRules.kt": "173051b6364883bb808a0a059b9f096702fd80794c09bbe98989062ba19bc3e1",
+    "app/src/main/java/com/screenly/app/ai/navigation/NavigationProtocol.kt": "0d7f14db6ca5d1cc0e2d6cf16d9d576fae8c46daf3ab9e0e1f34465de9f779da",
+    "app/src/sharedTest/java/com/screenly/app/ai/navigation/NavigationFixtures.kt": "ec261c7749d3fffa9dd27db5100fd378bba9cfeec7027f816af77be10fe67409",
+    "app/src/androidTest/java/com/screenly/app/ai/LocalInferenceSmokeTest.kt": "514d1f810d55db216bf22dfb6e608207e7dff8be259889cb82f92bb56e6f023d",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/NavigationEvaluationTest.kt": "48a6673626d0191b886173e5d7ddb6deaa10905a6ff3802eba3516bf35f10742",
+    "app/src/androidTest/java/com/screenly/app/ai/navigation/NavigationPreparationTest.kt": "200f86e4aa2d26f041214c16d4aa7d16640b69dc766d277e74a9b52940503595"
+  },
+  "apks": {
+    "app-debug.apk": {
+      "bytes": 79605962,
+      "sha256": "f181562f5e73163187ff8a8fdcba7f21770b39cbe8d0182693b7470dd0a4d8a2"
+    },
+    "app-debug-androidTest.apk": {
+      "bytes": 1522315,
+      "sha256": "fc1ff38235420abc1498def79edd842dcbf69d2c6781318cbe960392e0d82dc2"
+    }
+  }
+}

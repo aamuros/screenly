@@ -4,6 +4,21 @@
 
 One Kotlin application module (`com.screenly.app`); no backend, database or network permission.
 
+An isolated `ai/LocalInference` component now verifies a private `.litertlm` file and uses
+LiteRT-LM 0.10.2 on CPU. Its suspend initialization/generation/close calls run on IO with a
+mutex; it reuses the engine and closes per-prompt conversations. Opt-in instrumented smoke
+and navigation tests consume it. No activity/service/overlay or shared planner integration exists, and real
+phone inference remains unverified. See [M3 implementation and evidence](LOCAL_AI.md).
+
+M4 adds isolated `ai/navigation/NavigationProtocol`, `NavigationRules` and `NavigationEngine`.
+They consume copied element values and caller-supplied allowed original indices; they do not
+publish snapshots or implement a shared Planner API. The engine prepares a bounded prompt,
+strictly parses TAP:<index>/NONE, validates targets and attempts deterministic fallback.
+Both text and descriptions are retained; model and rule selections share ambiguity and toggle
+checks. NONE is abstention, never completion. Diagnostics distinguish model outcomes and rules.
+[Standalone backend evaluation and integration](NAVIGATION_BACKEND.md) records current evidence
+and semantic limitations. Shared RulePlanner/LlmPlanner adapters still require M0 approval.
+
 ```text
 MainActivity (Compose) → Android accessibility settings / enabled-service status
 Accessibility events → ScreenlyAccessibilityService → ScreenObservation
@@ -111,7 +126,7 @@ internal sealed interface PlannerResult {
 
 Pending agreement: names/visibility and wrapper vs adaptation, wire schema/prompt limits,
 session/request lifecycle, completion evidence and fallback rules. Merge contracts during M0
-before dependent work. This task introduces no Kotlin APIs.
+before dependent work. These shared Kotlin APIs remain unimplemented.
 
 ## Proposed guidance transitions
 
@@ -133,9 +148,10 @@ change alone cannot prove task success.
 
 ## Proposed model lifecycle
 
-LocalAI: Unloaded → Loading → Ready or Failed, with explicit resource close. Provision a
-compatible artifact locally before inference; current APK has none. Choose import/bundling
-and format after testing runtime/device compatibility; do not assume any Gemma export works.
+For future guidance integration, LocalAI's proposed states are Unloaded → Loading → Ready or
+Failed, with explicit resource close. The current isolated component has no published state
+flow. Provision the documented INT4 `.litertlm` candidate privately using ADB; the APK has no
+model. Exact binary/runtime/device compatibility still requires physical validation.
 
 Initialize/infer off the main thread, bound/serialize requests and handle cancellation without
 leaving old callbacks eligible to draw. Reuse the loaded model within the agreed session;

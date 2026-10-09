@@ -8,22 +8,26 @@ performs the action, and Screenly observes the next screen. Inference must work 
 ## Current status
 
 The current app is a **manual accessibility prototype**: sanitized screen observations, a
-draggable **S** bubble, an element picker, and touch-through highlighting. Goal input, AI
-inference, and multistep guidance are not implemented.
+draggable **S** bubble, an element picker, and touch-through highlighting. An isolated local
+inference component and opt-in instrumented smoke test exist; real phone inference is unverified
+and is not connected to the UI. Goal input and multistep guidance are not implemented.
 
 M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
 automated and API 35 Pixel Tablet emulator evidence exists, but physical-device verification
-is outstanding. M0 contract setup is **IN PROGRESS**; M3–M6 are **NOT STARTED**. See the
+is outstanding. M0 contract setup is **IN PROGRESS**; M3 is **IMPLEMENTED — UNVERIFIED**;
+M4–M6 are **NOT STARTED**. See the
 [roadmap](docs/ROADMAP.md) and preserved [verification report](VERIFICATION.md).
 
 ## Stack and scope
 
 - Implemented: Kotlin, native Android, Compose activity, AccessibilityService,
   AccessibilityNodeInfo, WindowManager accessibility overlays, one Gradle `app` module.
-- Planned: Google LiteRT-LM, quantized Gemma 3 1B pending compatibility/benchmarking,
-  Coroutines/StateFlow, deterministic guidance, LlmPlanner and RulePlanner.
+- Isolated M3: Google LiteRT-LM **0.10.2**, coroutines, CPU text inference; INT4 Gemma 3 1B
+  candidate pending exact artifact/phone compatibility and offline benchmarking.
+- Planned: StateFlow, deterministic guidance, LlmPlanner and RulePlanner.
 - No authentication, backend, cloud inference, database, or automatic taps. No network
-  permission is requested. Models and provisioning are not included yet.
+  permission is requested. The APK contains no model; [ADB provisioning and M3 evidence](docs/LOCAL_AI.md)
+  are documented separately.
 
 ## Structure
 
@@ -34,9 +38,10 @@ app/src/main/java/com/screenly/app/
   AccessibleUiElement.kt           Element values, bounds checks, label sanitation
   ScreenObservation.kt             Snapshot equality and selection revisions
   ScreenlyOverlay.kt               Native bubble, picker, and highlight windows
+  ai/                             Isolated local model verification and inference
 app/src/main/res/xml/              Accessibility service configuration
 app/src/test/                     Observation-policy and sanitizer tests
-app/src/androidTest/              Template app-context test only
+app/src/androidTest/              App-context test and opt-in local inference smoke test
 docs/                             Shared plan, architecture, testing
 VERIFICATION.md                   Preserved M2 audit and emulator evidence
 ```
@@ -73,3 +78,4 @@ selection; Screenly's own activity hides overlays.
 - [Actual architecture and proposed contracts](docs/ARCHITECTURE.md)
 - [Verification procedures and result recording](docs/TESTING.md)
 - [Existing M2 verification report](VERIFICATION.md)
+- [M3 runtime, model provisioning and verification](docs/LOCAL_AI.md)
