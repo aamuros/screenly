@@ -308,6 +308,7 @@ internal object FloatingAssistantViews {
             R.string.assistant_clear_screenshots, false, actions.clearScreenshots), gap(context, 4))
         root.addView(actionText(context,
             R.string.assistant_open_permissions, false, actions.openPermissions), gap(context, 4))
+        status(context, root, state)
     }
 
     private fun section(context: Context, title: Int, body: String) =

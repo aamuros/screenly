@@ -57,4 +57,6 @@
     <string name="assistant_capture_success">Screen captured locally and discarded. Only accessibility labels were interpreted; no vision model is connected.</string>
     <string name="assistant_capture_failed">Capture failed or this screen is protected. No screenshot was analyzed.</string>
     <string name="assistant_capture_not_permitted">Screenshot permission unavailable. Check Screenly in Accessibility Settings.</string>
+    <string name="assistant_capture_idle">No active capture session. Screenshots are never saved.</string>
+    <string name="assistant_capture_running">One requested screenshot is being captured.</string>
 </resources>

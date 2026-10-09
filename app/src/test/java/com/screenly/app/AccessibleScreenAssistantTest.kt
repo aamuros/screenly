@@ -33,6 +33,18 @@ class AccessibleScreenAssistantTest {
         assertEquals(AccessibleScreenAssistant.GuidancePhase.COMPLETED, state.phase)
     }
 
+    @Test fun changesAreRecheckedOneStepAtATime() {
+        val settings = ScreenObservation("com.android.settings", 1,
+            listOf(element("Display & touch")))
+        val display = ScreenObservation("com.android.settings", 2,
+            listOf(element("Dark theme")))
+        val first = AccessibleScreenAssistant.begin("Enable dark mode", settings)
+        val second = AccessibleScreenAssistant.check(first, display)
+        assertEquals(2, second.step)
+        assertTrue(second.instruction.contains("Dark theme"))
+        assertEquals(AccessibleScreenAssistant.GuidancePhase.NEEDS_ACTION, second.phase)
+    }
+
     @Test fun ambiguousTargetsAbstain() {
         val view = ScreenObservation("com.android.settings", 1,
             listOf(element("Dark mode"), element("Dark theme")))

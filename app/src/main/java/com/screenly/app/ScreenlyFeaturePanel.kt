@@ -23,7 +23,8 @@ import android.view.inputmethod.InputMethodManager
 internal class AssistantSessionStore {
     val messages = mutableListOf<AssistantChatEntry>()
     var guidance: AccessibleScreenAssistant.Guidance? = null
-    fun clear() { messages.clear(); guidance = null }
+    var captureStatus: String = ""
+    fun clear() { messages.clear(); guidance = null; captureStatus = "" }
 }
 
 internal class ScreenlyFeaturePanel(
@@ -100,7 +101,11 @@ internal class ScreenlyFeaturePanel(
                 selectedItemIndex = selectedItem,
                 guidance = guidance,
                 processing = busy,
-                captureStatus = feedback,
+                captureStatus = if (action == AssistantAction.PRIVACY) {
+                    session.captureStatus.ifBlank {
+                        service.getString(R.string.assistant_capture_idle)
+                    }
+                } else feedback,
                 processingStatus = service.getString(R.string.assistant_ai_runtime_status),
                 accessibilityStatus = service.getString(R.string.assistant_accessibility_status)
             ),
@@ -110,6 +115,7 @@ internal class ScreenlyFeaturePanel(
                     if (!busy) when (action) {
                         AssistantAction.ASK_AI -> {
                             messages += AssistantChatEntry(true, prompt)
+                            trimHistory()
                             capture(action, prompt)
                         }
                         AssistantAction.GUIDE_ME -> {
@@ -143,6 +149,7 @@ internal class ScreenlyFeaturePanel(
                     captureRequest++
                     busy = false
                     feedback = service.getString(R.string.assistant_images_cleared)
+                    session.captureStatus = service.getString(R.string.assistant_capture_idle)
                     render()
                 },
                 openPermissions = {
@@ -235,11 +242,13 @@ internal class ScreenlyFeaturePanel(
         if (stopped || busy || feature != action) return
         busy = true
         feedback = service.getString(R.string.assistant_capture_starting)
+        session.captureStatus = service.getString(R.string.assistant_capture_running)
         val available = refreshObservation()
         val snapshot = currentObservation()?.takeIf { available && !stopped }
         if (snapshot == null) {
             busy = false
             feedback = service.getString(R.string.assistant_screen_unavailable)
+            session.captureStatus = feedback
             render()
             return
         }
@@ -286,6 +295,7 @@ internal class ScreenlyFeaturePanel(
                 captureRequest++
                 busy = false
                 feedback = service.getString(R.string.assistant_capture_failed)
+                session.captureStatus = feedback
                 root?.visibility = View.VISIBLE
                 render()
             }
@@ -304,15 +314,19 @@ internal class ScreenlyFeaturePanel(
         lastCaptureStatus = if (success) service.getString(R.string.assistant_capture_success)
             else service.getString(R.string.assistant_capture_failed)
         feedback = lastCaptureStatus
+        session.captureStatus = lastCaptureStatus
         root?.visibility = View.VISIBLE
         if (success && feature == action) {
             // The fallback uses only sanitized accessibility data, not the screenshot.
             when (action) {
                 AssistantAction.ASK_AI -> {
                     val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
-                    if (!question.isNullOrBlank()) messages += AssistantChatEntry(
-                        false, AccessibleScreenAssistant.ask(question, snapshot)
-                    )
+                    if (!question.isNullOrBlank()) {
+                        messages += AssistantChatEntry(
+                            false, AccessibleScreenAssistant.ask(question, snapshot)
+                        )
+                        trimHistory()
+                    }
                 }
                 AssistantAction.EXPLAIN -> selectedItem = null
                 AssistantAction.GUIDE_ME -> {
@@ -326,6 +340,10 @@ internal class ScreenlyFeaturePanel(
             }
         }
         render()
+    }
+
+    private fun trimHistory() {
+        if (messages.size > 24) messages.subList(0, messages.size - 24).clear()
     }
 
     private fun detach(view: View) {
