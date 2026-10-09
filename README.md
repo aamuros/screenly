@@ -11,7 +11,8 @@ This branch integrates the `feat/android-guidance` floating assistant with the
 CPU LiteRT-LM local text runtime and model-validated navigation from `feat/local-ai`.
 Ask AI, Explain, and Guide Me use local inference when the exact verified model has
 been imported in the main Screenly activity. Without it, accessibility-only guidance
-works offline. Screenshot capture is optional and ephemeral; the current model does
+works offline. Ask AI, Explain and Guide Me read sanitized accessibility
+labels directly without capturing screenshots. The text-only model does
 **not** interpret image pixels. The 584 MB model is distributed separately.
 See [on-device AI setup](docs/ON_DEVICE_AI.md).
 
@@ -90,8 +91,19 @@ guide never reuses a previously highlighted element's screen coordinates.
 **Privacy:** This small text history stays on the device in private storage and
 is not automatically deleted when the service stops. Use **Privacy** →
 **Clear chat and guide history** to delete it, or uninstall Screenly.
-Screenshots and raw accessibility snapshots are never persisted.
-The on-screen panel also preserves scroll position during routine updates.
+Screenshots and raw accessibility snapshots are never persisted, and the
+current text-only assistant does not request screenshots at all. The on-screen
+panel also preserves scroll position during routine updates.
+
+## Screen-answer workflow
+
+Ask AI uses the most recent sanitized accessibility snapshot and responds without
+waiting for a screenshot or discarding replies when a subsequent accessibility
+revision changes. Guide Me still checks target freshness before highlighting.
+Without the separately provisioned text model, Screenly offers general offline
+calling and email instructions and conservative accessibility guidance, but cannot
+answer arbitrary open-ended questions. The Android emulator should show an answer
+bubble for a sent question rather than a stale screenshot warning.
 
 ## Offline model setup
 
