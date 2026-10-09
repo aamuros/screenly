@@ -10,6 +10,14 @@ mutex; it reuses the engine and closes per-prompt conversations. Only an opt-in 
 smoke test consumes it. No activity/service/overlay or planner integration exists, and real
 phone inference remains unverified. See [M3 implementation and evidence](LOCAL_AI.md).
 
+M4 preparation now adds isolated `ai/navigation/NavigationProtocol` and `NavigationRules`
+helpers plus synthetic unit fixtures. They consume existing element values and caller-supplied
+allowed original indices; they do not publish snapshots or implement a shared Planner API.
+`NavigationResponse` represents wire parsing only; NONE is abstention, never completion.
+The [M4 plan](M4_PLAN.md) recommends TAP:<index>/NONE for joint review and defines the thin
+RulePlanner/LlmPlanner adapters to implement after M0 approval. API 30 emulator development
+can proceed without a phone; no actual model navigation evaluation has run yet.
+
 ```text
 MainActivity (Compose) → Android accessibility settings / enabled-service status
 Accessibility events → ScreenlyAccessibilityService → ScreenObservation
@@ -117,7 +125,7 @@ internal sealed interface PlannerResult {
 
 Pending agreement: names/visibility and wrapper vs adaptation, wire schema/prompt limits,
 session/request lifecycle, completion evidence and fallback rules. Merge contracts during M0
-before dependent work. This task introduces no Kotlin APIs.
+before dependent work. These shared Kotlin APIs remain unimplemented.
 
 ## Proposed guidance transitions
 

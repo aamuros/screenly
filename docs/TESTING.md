@@ -2,8 +2,8 @@
 
 [ROADMAP.md](ROADMAP.md) defines acceptance gates. Source inspection establishes implementation;
 host tests establish only the tested policies. Emulator results do not establish physical-phone
-behavior. An isolated, opt-in AI smoke test now exists; planner/end-to-end procedures remain
-plans. [M3 provisioning, commands and evidence](LOCAL_AI.md) distinguish compilation from
+behavior. Isolated AI smoke and M4 helper tests now exist; shared planner/end-to-end
+integration remains planned. [M3 provisioning, commands and evidence](LOCAL_AI.md) distinguish compilation from
 real physical offline inference.
 
 ## Host checks and Android Studio
@@ -22,13 +22,15 @@ controller tests by their actual class names after implementation.
 
 Android Studio: sync Gradle, select the `app` debug configuration and target device, Run to
 install/launch, and inspect Build/Test output and Logcat. Run unit classes from `app/src/test`
-for host checks. Emulators provide preliminary checks; phone gates remain required.
+for host checks. The current user-authorized M4 development scope uses `Screenly_M3_API30`;
+phone absence does not block emulator checks. Physical milestone gates remain unverified.
 `ExampleInstrumentedTest` checks the application ID only;
 `./gradlew :app:connectedDebugAndroidTest` requires a device/emulator and does not verify
 observation, overlays or guidance. Run only when instrumentation testing is requested.
 
 Meaningful current unit coverage: 8 revision/selection/bounds/scheduling tests and 6 sanitizer
-tests, plus 9 local model integrity/response/failure/lifecycle tests. The extra arithmetic template test
+tests, plus 9 local model integrity/response/failure/lifecycle tests and 15 navigation preparation
+tests over 22 synthetic fixtures. The extra arithmetic template test
 provides no Screenly feature evidence. Native inference is checked separately by the opt-in
 `ai/LocalInferenceSmokeTest`; host tests do not load the real model.
 
@@ -61,7 +63,7 @@ Logcat contains ordinary non-editable app labels.
 | M1 | Build; sanitizer/observation-policy tests; inspect extraction/privacy limits | Enable service; inspect Settings/chosen app labels/descriptions/class/IDs/states/bounds, missing fields, checked/disabled/scrollable controls; navigate/scroll, unavailable root and safe recovery; lock suppression |
 | M2 | Build; revision/bounds tests; inspect window type/touch flags | Bubble/picker checklist below, portrait/landscape/cutout alignment, touch pass-through, lock and disable/re-enable |
 | M3 (implemented, unverified) | Build runtime integration; model integrity/failure/lifecycle unit tests; compile isolated smoke test | Exact artifact on demo phone; cold/warm load and repeated inference; offline restart, close/reload and errors; [commands and evidence](LOCAL_AI.md) |
-| M4 (future) | Recorded sanitized fixtures: parser/rules, malformed schema/types, invalid/noncandidate indices, fallback/no-match and stale responses | Real offline model on labelled snapshots; report selection quality and unsupported cases against agreed schema |
+| M4 (preparation) | Synthetic fixtures and implemented prompt/parser/rule/index checks; shared-key/fallback adapter checks after M0 | API 30 helper test and M3 smoke; real offline navigation fixture evaluation after approved contracts |
 | M5 (future) | Delayed MockPlanner/state tests: stop, goal replacement, unchanged observations, A→B→A, lock/reconnect during planning | Real-model multistep goal, manual actions, navigation during inference, corroborated completion |
 | M6 (future) | Exact final artifact build and relevant regressions | Offline restart, repeated demo rehearsals, reliability/lifecycle checks and performance measurements |
 
@@ -106,9 +108,9 @@ Parser/rule tests are deterministic; real-model evaluations are separate. Report
 invalid outputs, fallback use, failures and latency. Sanitizer tests do not verify live
 sensitive-node filtering on a phone.
 
-[M4 preparation](M4_PLAN.md) proposes the joint contract decisions, prompt/output limits,
-sanitized fixture set, rejection/fallback policy and paired RulePlanner/model measurements.
-These are review proposals, not implemented APIs, tests or measured navigation accuracy.
+[M4 preparation](M4_PLAN.md) records implemented isolated helpers/synthetic tests, pending
+joint contract/protocol decisions, thin planner adapters and paired rule/model measurements.
+Shared APIs and model navigation evaluation remain unimplemented/unmeasured.
 
 ### M5 stale rejection and completion (future)
 
@@ -170,3 +172,87 @@ inference, offline checks or device metrics ran. Full command, identities, compa
 inspection and NOT RUN results: [latest M3 report](LOCAL_AI.md#physical-verification-attempt-and-host-checks--2026-10-09).
 Historical emulator/build/lint results above are not new physical results. M3 remains
 IMPLEMENTED — UNVERIFIED; M0 approval and M4 implementation remain outstanding.
+
+## M4 emulator development preparation — 2026-10-09
+
+Date / tester / commit / milestone: 2026-10-09, Codex for Developer 2,
+`a7eb1c436b90282565340a2c316efa404b1aad45` plus uncommitted M4 preparation on `feat/local-ai`.
+Environment: macOS/JDK 21, existing SDK; `Screenly_M3_API30` at `emulator-5554`,
+Android 11/API 30, ARM64, `ro.boot.qemu=1`. Model/runtime unchanged: Gemma 3 1B INT4,
+584,417,280 bytes, SHA-256 `1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be`,
+LiteRT-LM 0.10.2, CPU/four threads, 1,024 total tokens. Existing private model reused;
+no model download, runtime replacement, Gradle changes or Developer 1 source edits.
+
+Fresh host command (exit 0, final run after fixture layout/format corrections):
+
+```sh
+./gradlew :app:assembleDebug :app:testDebugUnitTest --tests 'com.screenly.app.ai.navigation.*' :app:assembleDebugAndroidTest --console=plain --quiet
+```
+
+| Check | Expected / actual | Evidence / limitation |
+| --- | --- | --- |
+| Debug and instrumentation APK builds | PASS | Compilation/packaging only |
+| NavigationProtocolTest | PASS: 9 tests, 0 failures/errors/skips | Prompt quoting/limits, parser negatives, original-index/allowed-set checks; no JNI |
+| NavigationRulesTest | PASS: 6 tests, 0 failures/errors/skips | 22 synthetic fixture assertions plus matching/toggle/fallback safeguards; no AI |
+| NavigationPreparationTest on API 30 | PASS: 1 test | Prompt/parser/target/rule helpers run on Android; no native inference |
+| Existing LocalInferenceSmokeTest | PASS: 2 executions, 4 real responses | Basic text generation/reuse/close only; not a navigation fixture evaluation |
+| Confirmed offline smoke rerun | PASS: 1 execution, 2 responses | Airplane/Wi-Fi/data 1/0/0 and no active default network before/after a force-stopped process restart |
+| Model navigation accuracy/latency, LLM+fallback comparison | NOT RUN / NOT MEASURED | M0 unapproved; shared Planner/adapters intentionally absent |
+| Physical phone, full Android UI regressions, API 35 crash investigation | NOT RUN | Current scope uses API 30; no phone prerequisite for this development task |
+
+Unit XML timestamps: `2026-10-09T15:01:22.585Z` and `2026-10-09T15:01:22.610Z`,
+under `app/build/test-results/testDebugUnitTest/TEST-com.screenly.app.ai.navigation.*.xml`.
+No full suite or lint rerun; new source compiled and the targeted checks passed.
+
+Installed and final rebuilt APK identities match:
+
+| Artifact | Bytes / SHA-256 |
+| --- | --- |
+| app-debug.apk | 78,298,034 / `01553ce405e1ef88dd34a494b7edefb5443bd51db619ba830f96be98bfc2af50` |
+| app-debug-androidTest.apk | 1,456,883 / `cb106cdc2412133089865dc8219493284e1e1e289db11f38eb4a85bbc7266a1b` |
+
+Fresh device commands (full setup/output/restoration in the linked evidence):
+
+```sh
+adb -s emulator-5554 shell am instrument -w -r \
+  -e class com.screenly.app.ai.navigation.NavigationPreparationTest \
+  com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner
+adb -s emulator-5554 shell am force-stop com.screenly.app
+adb -s emulator-5554 shell am instrument -w -r \
+  -e class com.screenly.app.ai.LocalInferenceSmokeTest \
+  -e localAiSmoke true -e requireOffline true \
+  com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+Both smoke executions report `OK (1 test)` and cleanup PASS. The first settings-only run
+initialized in **850 ms** and generated in **6,753 / 6,136 ms**. Its initial network dump
+still showed an active default network during asynchronous disconnection; it is not counted
+as fully confirmed offline acceptance. The rerun waited for no active default network,
+then initialized in **944 ms** and generated in **6,987 / 8,351 ms**. These are four whole-response
+M3 smoke timings, including conversation creation; initialization includes hashing. They are
+not navigation planner latency, token/sec, phone measurements or memory benchmarks.
+Full answers retain the contradictory font-size opening recorded in M3; nonblank text does
+not establish useful navigation selection. No model accuracy was inferred from these answers.
+
+The passing rule fixture assertions establish **18/22 decisions matching the provisional
+navigation labels**, with **9/13 expected target selections**, **9/9 expected abstentions**,
+zero wrong-target/invalid selections, and **13 total rule abstentions** (including four
+unsupported semantic menu routes). This is deterministic rule-only coverage, not AI accuracy.
+Four of the 22 fixtures reject prompt preparation; the rule baseline still examines them.
+Fixture labels need joint review before real-model comparison; no quality threshold is agreed.
+
+Restoration: original global connectivity **0/1/1** and enabled accessibility-service setting
+restored. Writing unchanged service settings did not clear its post-instrumentation crashed
+state; toggling the enabled-service setting with a quoted empty remote value restored binding.
+A restoration checker falsely expected the component class in `Bound services`, which actually
+reports `label=Screenly`; final dumps confirm bound Screenly, empty binding/crashed entries
+and an active service record. These setup/checker failures are preserved in the evidence,
+not JUnit failures. This restoration is not a full overlay/accessibility regression test.
+
+Evidence: [complete emulator outputs and restoration](verification/m4-emulator-2026-10-09.txt).
+Limitations / owner / next check: **M4 IN PROGRESS**, M0 approval pending; Developer 2's next
+step is joint review of [contract decisions and implementation order](M4_PLAN.md), then
+merged shared contracts, thin RulePlanner/LlmPlanner adapters and actual offline navigation
+fixture evaluation on the same API 30 AVD. Developer 1 supplies immutable observations,
+allowed original indices, authoritative keys and independent freshness/request/goal validation.
+No shared contracts implemented/merged, no M5 work, no physical acceptance claimed.

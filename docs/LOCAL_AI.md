@@ -9,9 +9,13 @@ a loaded-process memory sample. The API 35 ARM64 emulator crashes in native CPU 
 physical behavior and M1/M2 phone regressions remain unverified. Current results and raw
 evidence are recorded in the final section below.
 
-The latest [physical verification attempt](#physical-verification-attempt-and-host-checks--2026-10-09)
-found no connected ADB device. [M4 preparation](M4_PLAN.md) records contract decisions and
-evaluation proposals only; physical acceptance and joint contract approval remain open.
+**Current development scope:** Use the working `Screenly_M3_API30` AVD for all
+device-dependent development. Phone absence does not block emulator-based M4 progress.
+[M4 preparation](M4_PLAN.md) now includes isolated prompt/parser/validation/rule helpers
+and synthetic fixtures; shared contracts/adapters still await joint approval. Historical
+physical-first next-step instructions below are superseded for this development task;
+physical acceptance remains separately unverified. [Fresh M4 preparation checks](TESTING.md#m4-emulator-development-preparation--2026-10-09)
+also rerun the existing smoke test; this does not measure model navigation accuracy.
 
 ## Runtime and model selection
 
@@ -581,3 +585,29 @@ immutable list/index semantics and completion evidence requiring joint approval.
 fixture set, measurements, rule comparison and implementation order. **M4 remains NOT STARTED.**
 Documentation/diff/link review completes this preparation; no branch merge or planner
 implementation is part of it.
+
+## Emulator-only M4 preparation — 2026-10-09
+
+The current user request supersedes the physical-first next steps in the historical sections.
+Developer 2 prepared pure Kotlin prompt, TAP/NONE parsing, target validation and conservative
+rule helpers, 22 synthetic fixtures, 15 host unit tests and one Android helper test. **M4 is
+IN PROGRESS**, while M0 shared contracts and RulePlanner/LlmPlanner adapters remain pending
+joint approval. Developer 1's implementation and the runtime/model configuration are unchanged.
+
+The existing `Screenly_M3_API30` AVD and already provisioned exact INT4 model were reused.
+Both APK builds, the targeted units and the Android helper test pass. Two executions of the
+existing M3 smoke test pass (four real responses); the confirmed offline rerun has 1/0/0
+connectivity settings and no active default network before/after a process restart.
+That run initialized in **944 ms** and generated in **6,987 / 8,351 ms**. The first run's
+pre-test network was still disconnecting and is not counted as fully confirmed offline.
+Complete outputs, setup/checker failures and successful state restoration are preserved in
+[raw evidence](verification/m4-emulator-2026-10-09.txt); [verification details](TESTING.md#m4-emulator-development-preparation--2026-10-09)
+record commands, identities, unit counts and limitations.
+
+These are basic text-generation results, **not model navigation selections or latency**.
+The same contradictory font-size response remains a quality limitation. Navigation accuracy,
+LLM/fallback comparison and navigation latency are NOT MEASURED until approved contracts
+enable the real fixture evaluator. Physical tests remain NOT RUN and do not block emulator
+development. API 35 remains untouched. Next: jointly approve C0, merge contracts in a separately
+authorized change, then implement the small adapters and run offline fixture evaluation as
+specified in [M4_PLAN.md](M4_PLAN.md). M5 remains not started.

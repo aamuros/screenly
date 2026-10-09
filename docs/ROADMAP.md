@@ -12,6 +12,12 @@ Statuses: **NOT STARTED** = no milestone implementation; **IN PROGRESS** = parti
 **BLOCKED** = a recorded prerequisite prevents progress; **VERIFIED** = all acceptance
 criteria have evidence. Do not promote status from a task title, branch name or build alone.
 
+**Current development scope (2026-10-09):** The user authorizes emulator-only M4 development
+using the verified `Screenly_M3_API30` configuration. Physical-phone absence does not block
+preparation or emulator evaluation. Existing physical acceptance criteria remain separate
+and unverified; no full milestone is promoted from emulator results. M0 joint approval still
+gates shared contracts and planner adapters. [Current M4 plan](M4_PLAN.md).
+
 ## M0 — Shared Contracts & Parallel Development Setup
 
 **Objective:** Give both branches stable observation/planning contracts and ownership.
@@ -104,8 +110,8 @@ cleanup success. Initialization is 421–1,474 ms; generation is 5,667–6,273 m
 PSS sample is 1,054,031 KiB. Full responses show contradictory/unsupported claims despite
 naming Font Size. [Raw evidence](verification/m3-emulator-2026-10-09.txt) preserves actual results.
 The API 35 incompatibility, physical M1/M2/model acceptance and agreed phone performance budgets
-remain open. Emulator inference is verified to its stated scope; full M3 is not VERIFIED and
-M4 remains not started.
+remain open. Emulator inference is verified to its stated scope; full M3 is not VERIFIED.
+M4 preparation now proceeds under the emulator-only scope described above.
 
 The [later physical verification attempt](LOCAL_AI.md#physical-verification-attempt-and-host-checks--2026-10-09)
 on `cfb893c` found no connected ADB device. Host model size/hash, runtime packaging, both APK
@@ -116,8 +122,10 @@ Physical acceptance remains open; the runtime/model were not replaced.
 
 **Objective:** Choose one allowed current element from a goal and sanitized snapshot.
 **Owner:** Developer 2; Developer 1 reviews Android validation compatibility.
-**Status: NOT STARTED.**
+**Status: IN PROGRESS.**
 
+- [x] Prepare isolated bounded prompt, TAP/NONE parser, original-index validation and conservative rule helpers without shared API changes.
+- [x] Add 22 synthetic navigation fixtures and deterministic unit checks; verify helpers on API 30.
 - [ ] Implement LlmPlanner and structured screen/goal prompts.
 - [ ] Constrain selection to enumerated candidates and agreed result schema.
 - [ ] Parse/validate malformed, out-of-range, unsupported and stale responses safely.
@@ -130,10 +138,15 @@ Physical acceptance remains open; the runtime/model were not replaced.
 cover bad outputs/fallback; real-model evaluation reports correct/incorrect/unsupported cases.
 Jointly agree the demo quality threshold.
 **Verification:** TESTING M4; parser/rule tests plus separate offline-model fixture evaluation.
-**Evidence/gaps:** No Planner/LlmPlanner/RulePlanner or AI navigation fixtures/tests exist.
-[M4 preparation](M4_PLAN.md) now proposes minimal joint contract decisions, a bounded prompt
-and strict output schema, sanitized fixtures, validation/fallback and model/rule measurements.
-It adds no shared API or planner implementation and does not satisfy M0/M3 acceptance.
+**Evidence/gaps:** `ai/navigation/` contains bounded prompt preparation, strict TAP/NONE
+wire parsing, allowed-index validation and a conservative rule helper; 22 synthetic fixtures
+exercise these policies without JNI. Fresh debug/test APK builds and 15 targeted unit tests
+pass, along with one API 30 Android helper test and one existing offline M3 smoke test (two
+real responses). [Current verification](TESTING.md#m4-emulator-development-preparation--2026-10-09)
+records exact evidence and limitations. No shared Planner/LlmPlanner/RulePlanner implementation,
+session/request validation or real model navigation accuracy/latency exists. [M4 plan](M4_PLAN.md)
+records required Developer 1 approval, thin adapters and offline fixture evaluation. C0 approval
+remains the integration gate; phone absence is not a development gate. M5 is unchanged.
 
 ## M5 — End-to-End Guidance
 
@@ -180,7 +193,7 @@ highlight, blocked underlying touch, critical crash or false completion in rehea
 
 | Stage | Developer 1 — `feat/android-guidance` | Developer 2 — `feat/local-ai` | Integration gate |
 | --- | --- | --- | --- |
-| Now / M0 | Physical M1/M2 checklist; review snapshot/revision semantics | Runtime/model/device compatibility investigation; review schema | C0: agree/merge contracts before dependent code |
+| Now / M0 | Review snapshot/revision/eligibility semantics; physical M1/M2 remains a later acceptance check | Emulator-only prompt/parser/rule preparation and synthetic fixtures; review schema | C0: agree/merge contracts before planner adapters |
 | After C0 | Goal UI, controller and overlays with MockPlanner | Model provisioning/load/benchmarks; parser, RulePlanner, fixtures | C1: shared fixtures/results pass both consumers |
 | After C1 + M3/M4 | Integrate real results and manual-action loop | Tune prompts; runtime/fallback handling | C2: real offline physical M5 task passes |
 | After C2 | Lifecycle/touch reliability and demo setup | Offline restart, selection quality, performance | C3: exact APK/model passes M6 rehearsal |
