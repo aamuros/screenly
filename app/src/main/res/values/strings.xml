@@ -4,7 +4,7 @@
     <string name="service_disabled">Accessibility service: Disabled</string>
     <string name="open_accessibility_settings">Open Accessibility Settings</string>
     <string name="accessibility_permission_heading">Accessibility permission</string>
-    <string name="accessibility_disclosure">Screenly reads permitted on-screen labels, control states, app identity, and positions to help you navigate other applications. This access can reveal sensitive content. Extraction stays on your device, but debug builds may print sanitized metadata to Logcat. Screenly does not upload the extracted data or automatically tap controls.</string>
+    <string name="accessibility_disclosure">Screenly reads permitted UI labels, control states, app identity and positions. When you request screen recognition, it captures the display and runs bundled OCR on-device. Screens can contain sensitive information. Images are released without saving; debug builds may log sanitized accessibility labels. Screenly does not upload screen data or automatically tap controls.</string>
     <string name="accessibility_consent_label">I understand and agree to Screenly accessing permitted on-screen UI information.</string>
     <string name="accessibility_ready">Access enabled. Ready to inspect Android Settings.</string>
     <string name="open_settings_test">Open Android Settings to test</string>
@@ -46,7 +46,7 @@
     <string name="assistant_privacy_capture">Screen capture</string>
     <string name="assistant_privacy_data">Local data</string>
     <string name="assistant_privacy_permissions">Permissions</string>
-    <string name="assistant_capture_on_demand">Captures happen only when requested. There is no continuous screen recording.</string>
+    <string name="assistant_capture_on_demand">Screenly takes screenshots only when you request analysis. Bundled OCR runs on your phone. No continuous recording.</string>
     <string name="assistant_data_notice">Screen images are not saved or uploaded. Chat stays in memory; the active Guide Me goal and step number are saved privately on this device until cancelled, completed or cleared.</string>
     <string name="assistant_clear_history">Clear chat history</string>
     <string name="assistant_clear_guidance">Clear saved Guide Me goal</string>
@@ -60,7 +60,7 @@
     <string name="assistant_manual_picker">Select a control manually</string>
     <string name="assistant_capture_starting">Hiding Screenly and capturing the current view...</string>
     <string name="assistant_screen_unavailable">The current app screen is unavailable.</string>
-    <string name="assistant_capture_success">Screen captured locally and discarded. Only accessibility labels were interpreted; no vision model is connected.</string>
+    <string name="assistant_capture_success">Screenshot text recognized offline; image pixels discarded.</string>
     <string name="assistant_capture_failed">Capture failed or this screen is protected. No screenshot was analyzed.</string>
     <string name="assistant_capture_not_permitted">Screenshot permission unavailable. Check Screenly in Accessibility Settings.</string>
 </resources>

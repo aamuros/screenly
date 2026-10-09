@@ -43,6 +43,9 @@ internal class ScreenlyFeaturePanel(
     private var captureRequest = 0L
     private var stopped = false
     private var lastCaptureStatus = ""
+    private val ocrDelegate = lazy { OfflineOcr() }
+    private val ocr by ocrDelegate
+    private var ocrLines: List<OcrTextLine> = emptyList()
 
     fun open(action: AssistantAction) {
         if (stopped) return
@@ -73,6 +76,8 @@ internal class ScreenlyFeaturePanel(
             else view.animate().alpha(0f).scaleX(0.5f).scaleY(0.5f)
                 .setDuration(160L).withEndAction { detach(view) }.start()
         }
+        if (ocrDelegate.isInitialized()) ocr.close()
+        ocrLines = emptyList()
         // Closing only hides the panel. The session is owned by ScreenlyOverlay.
         if (restoreBubble) {
             bubble.animate().cancel()
@@ -96,8 +101,10 @@ internal class ScreenlyFeaturePanel(
             AssistantPanelState(
                 action = action,
                 messages = messages.toList(),
-                detail = diagnostics?.summary ?: observed
-                    ?.let(AccessibleScreenAssistant::describeScreen).orEmpty(),
+                detail = (diagnostics?.summary ?: observed
+                    ?.let(AccessibleScreenAssistant::describeScreen).orEmpty()) +
+                    if (action == AssistantAction.EXPLAIN && ocrLines.isNotEmpty())
+                        "\\n" + OcrEvidence.summary(ocrLines) else "",
                 items = diagnostics?.entries ?: observed
                     ?.let(AccessibleScreenAssistant::visibleItems).orEmpty(),
                 selectedItemIndex = selectedItem,
@@ -126,9 +133,7 @@ internal class ScreenlyFeaturePanel(
                     if (!busy) {
                         if (action == AssistantAction.EXPLAIN) {
                             selectedItem = null
-                            feedback = if (refreshObservation()) ""
-                                else service.getString(R.string.assistant_screen_unavailable)
-                            render()
+                            capture(action, null)
                         } else capture(action, messages.lastOrNull { it.fromUser }?.content)
                     }
                 },
@@ -157,6 +162,7 @@ internal class ScreenlyFeaturePanel(
                 clearScreenshots = {
                     captureRequest++
                     busy = false
+                    ocrLines = emptyList()
                     feedback = service.getString(R.string.assistant_images_cleared)
                     render()
                 },
@@ -239,7 +245,7 @@ internal class ScreenlyFeaturePanel(
         }
     }
 
-    /** Called only by explicit Send, Explain, Refresh, or Check my screen interactions. */
+    /** On-demand OCR; screenshots are never written to disk or retained in a session. */
     private fun capture(action: AssistantAction, prompt: String?) {
         if (stopped || busy || feature != action) return
         busy = true
@@ -268,39 +274,55 @@ internal class ScreenlyFeaturePanel(
                     object : AccessibilityService.TakeScreenshotCallback {
                         override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
                             val buffer = result.hardwareBuffer
-                            val decoded = try {
-                                // No vision backend is integrated: validate the transient buffer,
-                                // then immediately discard it without claiming image interpretation.
-                                val image = Bitmap.wrapHardwareBuffer(buffer, result.colorSpace)
-                                val valid = image != null && image.width > 0 && image.height > 0
-                                image?.recycle()
-                                valid
+                            val copy = try {
+                                val original = Bitmap.wrapHardwareBuffer(buffer, result.colorSpace)
+                                val pixels = original?.copy(Bitmap.Config.ARGB_8888, false)
+                                original?.recycle()
+                                pixels
                             } catch (_: RuntimeException) {
-                                false
+                                null
                             } finally {
                                 buffer.close()
                             }
-                            completeCapture(requestId, action, prompt, snapshot, decoded)
+                            if (copy == null) {
+                                completeCapture(requestId, action, prompt, snapshot, false, emptyList())
+                                return
+                            }
+                            if (stopped || requestId != captureRequest) {
+                                copy.recycle()
+                                return
+                            }
+                            try {
+                                ocr.recognize(copy) { result ->
+                                    copy.recycle()
+                                    completeCapture(requestId, action, prompt, snapshot,
+                                        result.isSuccess, result.getOrDefault(emptyList()))
+                                }
+                            } catch (_: RuntimeException) {
+                                copy.recycle()
+                                completeCapture(requestId, action, prompt, snapshot, false, emptyList())
+                            }
                         }
+
                         override fun onFailure(errorCode: Int) {
-                            completeCapture(requestId, action, prompt, snapshot, false)
+                            completeCapture(requestId, action, prompt, snapshot, false, emptyList())
                         }
                     })
             } catch (_: SecurityException) {
-                completeCapture(requestId, action, prompt, snapshot, false)
+                completeCapture(requestId, action, prompt, snapshot, false, emptyList())
             } catch (_: IllegalStateException) {
-                completeCapture(requestId, action, prompt, snapshot, false)
+                completeCapture(requestId, action, prompt, snapshot, false, emptyList())
             }
         }, 360L)
         handler.postDelayed({
             if (!stopped && requestId == captureRequest && busy) {
-                captureRequest++
+                ++captureRequest
                 busy = false
-                feedback = service.getString(R.string.assistant_capture_failed)
+                feedback = "Screen recognition timed out. Try again; accessibility is still available."
                 root?.visibility = View.VISIBLE
                 render()
             }
-        }, 5000L)
+        }, 8000L)
     }
 
     private fun completeCapture(
@@ -308,22 +330,37 @@ internal class ScreenlyFeaturePanel(
         action: AssistantAction,
         prompt: String?,
         snapshot: ScreenObservation,
-        success: Boolean
+        success: Boolean,
+        lines: List<OcrTextLine>
     ) {
         if (stopped || requestId != captureRequest) return
         busy = false
-        lastCaptureStatus = if (success) service.getString(R.string.assistant_capture_success)
-            else service.getString(R.string.assistant_capture_failed)
-        feedback = lastCaptureStatus
         root?.visibility = View.VISIBLE
-        if (success && feature == action) {
-            // The fallback uses only sanitized accessibility data, not the screenshot.
+        // Do not attach OCR from a stale screenshot to a newer application screen.
+        if (currentObservation() != snapshot) {
+            feedback = "Screen changed during recognition. Please check the current screen again."
+            ocrLines = emptyList()
+            render()
+            return
+        }
+        ocrLines = if (success) lines else emptyList()
+        lastCaptureStatus = if (success)
+            "Offline OCR analyzed ${lines.size} text lines. Image pixels were released."
+        else "Screenshot/OCR unavailable. Using accessibility-only information."
+        feedback = lastCaptureStatus
+        if (feature == action) {
             when (action) {
                 AssistantAction.ASK_AI -> {
                     val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
-                    if (!question.isNullOrBlank()) session.addMessage(AssistantChatEntry(
-                        false, AccessibleScreenAssistant.ask(question, snapshot)
-                    ))
+                    if (!question.isNullOrBlank()) {
+                        val answer = AccessibleScreenAssistant.ask(question, snapshot)
+                        val supplement = if (success && lines.isNotEmpty()) {
+                            "\nOCR also found: " +
+                                lines.take(4).joinToString(", ") { it.text } +
+                                ". OCR-only labels are not verified as tappable."
+                        } else ""
+                        session.addMessage(AssistantChatEntry(false, answer + supplement))
+                    }
                 }
                 AssistantAction.EXPLAIN -> selectedItem = null
                 AssistantAction.GUIDE_ME -> {
