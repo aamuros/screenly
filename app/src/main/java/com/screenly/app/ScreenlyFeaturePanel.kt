@@ -3,6 +3,8 @@ package com.screenly.app
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -21,8 +23,8 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 /**
- * Owns focusable feature overlays, on-demand screenshots and ephemeral UI state.
- * Screen pixels never enter a disk cache or the accessibility observation model.
+ * Owns focusable feature overlays and ephemeral UI state.
+ * Text-only inference reads sanitized accessibility observations without taking screenshots.
  */
 internal class ScreenlyFeaturePanel(
     private val service: AccessibilityService,
@@ -38,6 +40,7 @@ internal class ScreenlyFeaturePanel(
     private val manualPicker: () -> Unit,
     private val onClosed: () -> Unit
 ) {
+    private val handler = Handler(Looper.getMainLooper())
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var inferenceJob: Job? = null
     private val messages get() = session.messages
@@ -66,6 +69,7 @@ internal class ScreenlyFeaturePanel(
         captureRequest++
         inferenceJob?.cancel()
         scope.cancel()
+        handler.removeCallbacksAndMessages(null)
         busy = false
         val view = root
         root = null
