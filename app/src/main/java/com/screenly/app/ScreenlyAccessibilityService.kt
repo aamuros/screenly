@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import androidx.core.content.ContextCompat
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
@@ -243,11 +244,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             addAction(Intent.ACTION_USER_PRESENT)
             addAction(MainActivity.ACTION_APP_VISIBILITY)
         }
-        if (Build.VERSION.SDK_INT >= 33) {
-            registerReceiver(screenReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            registerReceiver(screenReceiver, filter)
-        }
+        // App-only visibility events must be non-exported on every Android version.
+        // ContextCompat supplies the correct platform flags/backport for API 30+.
+        ContextCompat.registerReceiver(
+            this, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED
+        )
         receiverRegistered = true
     }
 
