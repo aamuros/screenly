@@ -1,0 +1,21 @@
+[
+ {"id":"clock-timer-exact","screen":"clock","goal":"Open Timer","expected":14,"category":"unfamiliar-exact"},
+ {"id":"clock-timer-paraphrase","screen":"clock","goal":"I need a countdown","expected":14,"category":"paraphrase"},
+ {"id":"clock-cities-exact","screen":"clock","goal":"Open Cities","expected":33,"category":"unfamiliar-exact"},
+ {"id":"clock-cities-paraphrase","screen":"clock","goal":"Show the time in another city","expected":33,"category":"paraphrase"},
+ {"id":"clock-stopwatch-exact","screen":"clock","goal":"Open Stopwatch","expected":16,"category":"unfamiliar-exact"},
+ {"id":"clock-stopwatch-paraphrase","screen":"clock","goal":"Measure elapsed time","expected":16,"category":"paraphrase"},
+ {"id":"clock-missing","screen":"clock","goal":"Open Calendar","expected":null,"category":"missing-target"},
+ {"id":"contacts-create-exact","screen":"contacts","goal":"Open Create new contact","expected":25,"category":"unfamiliar-exact"},
+ {"id":"contacts-create-paraphrase","screen":"contacts","goal":"Add someone to my address book","expected":25,"category":"paraphrase"},
+ {"id":"contacts-import-exact","screen":"contacts","goal":"Open IMPORT","expected":22,"category":"unfamiliar-exact"},
+ {"id":"contacts-import-paraphrase","screen":"contacts","goal":"Bring in contacts from a file","expected":22,"category":"paraphrase"},
+ {"id":"contacts-missing","screen":"contacts","goal":"Open Favorites","expected":null,"category":"missing-target"},
+ {"id":"stopwatch-start-exact","screen":"stopwatch","goal":"Open Start","expected":31,"category":"unfamiliar-exact"},
+ {"id":"stopwatch-start-paraphrase","screen":"stopwatch","goal":"Begin measuring elapsed time","expected":31,"category":"paraphrase"},
+ {"id":"stopwatch-ambiguous","screen":"stopwatch","goal":"Open Start","expected":null,"category":"ambiguity","mutation":"duplicate-start"},
+ {"id":"contacts-label-missing","screen":"contacts","goal":"Open Create new contact","expected":null,"category":"missing-data","mutation":"remove-create-label","latent_expected":25},
+ {"id":"contacts-target-disabled","screen":"contacts","goal":"Open Create new contact","expected":null,"category":"unavailable","mutation":"disable-create"},
+ {"id":"stopwatch-route-1","screen":"clock","goal":"Start stopwatch","expected":16,"category":"multi-step","task":"start-stopwatch","step":1},
+ {"id":"stopwatch-route-2","screen":"stopwatch","goal":"Start stopwatch","expected":31,"category":"multi-step","task":"start-stopwatch","step":2}
+]

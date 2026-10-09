@@ -1,0 +1,22 @@
+{
+  "base_commit": "c5f4adbe83282a960aeb5649cff14ff32b829c38",
+  "capture_date": "2026-10-10",
+  "corpus_sha256": {
+    "stopwatch.xml": "724790c0d80101aedef18116d7ca623482762f673c29a19e262ac31b9bdc4813",
+    "README.md": "d3a9632e231595588c9541c0c956be0504c165ce8ae8ac334398ba517272de64",
+    "cases.json": "4e2daced7fe481fd306128e2b028fe105b0fa4463f3f566d96f696852430944b",
+    "clock.xml": "d73122a57be77f4ac9be9cf09a50b0bd59df16e61511cefd34c372ecae04d568",
+    "contacts.xml": "23fb62218f128dd4fc93cbe07de99265bdf0d7984fae5953b213cbd5347b5a73"
+  },
+  "app_versions": {
+    "com.google.android.deskclock": {
+      "versionName": "6.2 (259367952)",
+      "versionCode": "62000712 minSdk=21 targetSdk=29"
+    },
+    "com.android.contacts": {
+      "versionName": "1.7.31",
+      "versionCode": "10731 minSdk=21 targetSdk=29"
+    }
+  },
+  "diagnostic_apk_sha256": "fae1caa1ed337b6bd55f6ff1c4c6094748f69d93d1a24bbbc49dea392b3a7edc"
+}

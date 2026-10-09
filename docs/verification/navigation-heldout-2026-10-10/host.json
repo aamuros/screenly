@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-10",
+  "base_commit": "c5f4adbe83282a960aeb5649cff14ff32b829c38",
+  "production_changes": false,
+  "command": "./gradlew :app:assembleDebug :app:assembleDebugAndroidTest :app:testDebugUnitTest --console=plain --quiet",
+  "result": "PASS",
+  "unit_tests": {
+    "tests": 94,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "python_syntax": "PASS",
+  "limitations": "Host policies only; emulator/JNI checks are recorded separately"
+}

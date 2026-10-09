@@ -1,0 +1,2701 @@
+{
+  "task_runs": 54,
+  "navigation_task_runs": 39,
+  "rules_tasks_solved": 18,
+  "combined_tasks_solved": 18,
+  "additional_tasks_solved": 0,
+  "regressed_tasks": 0,
+  "task_results": [
+    {
+      "task": "clock-timer-exact",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-timer-exact",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-timer-exact",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-timer-paraphrase",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-timer-paraphrase",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-timer-paraphrase",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-cities-exact",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-cities-exact",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-cities-exact",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-cities-paraphrase",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-cities-paraphrase",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-cities-paraphrase",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-stopwatch-exact",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-stopwatch-exact",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-stopwatch-exact",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-stopwatch-paraphrase",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-stopwatch-paraphrase",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-stopwatch-paraphrase",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "clock-missing",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-missing",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "clock-missing",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-create-exact",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-create-exact",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-create-exact",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-create-paraphrase",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "contacts-create-paraphrase",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "contacts-create-paraphrase",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "contacts-import-exact",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-import-exact",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-import-exact",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-import-paraphrase",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "contacts-import-paraphrase",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "contacts-import-paraphrase",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "contacts-missing",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-missing",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-missing",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "stopwatch-start-exact",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "stopwatch-start-exact",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "stopwatch-start-exact",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "stopwatch-start-paraphrase",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "stopwatch-start-paraphrase",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "stopwatch-start-paraphrase",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "stopwatch-ambiguous",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "stopwatch-ambiguous",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "stopwatch-ambiguous",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-label-missing",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-label-missing",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-label-missing",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-target-disabled",
+      "run": 1,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-target-disabled",
+      "run": 2,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "contacts-target-disabled",
+      "run": 3,
+      "steps": 1,
+      "requires_navigation": false,
+      "rules_solved": true,
+      "combined_solved": true
+    },
+    {
+      "task": "start-stopwatch",
+      "run": 1,
+      "steps": 2,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "start-stopwatch",
+      "run": 2,
+      "steps": 2,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    },
+    {
+      "task": "start-stopwatch",
+      "run": 3,
+      "steps": 2,
+      "requires_navigation": true,
+      "rules_solved": false,
+      "combined_solved": false
+    }
+  ],
+  "failure_classification": {
+    "validation_rejected_correct_reasoning": 0,
+    "model_reasoning_or_response_failure": 27,
+    "candidate_budget_excluded_target": 18,
+    "missing_accessibility_data": 3
+  },
+  "rule_correct_abstentions": 15,
+  "combined_correct_abstentions": 15,
+  "rule_wrong_selected": 0,
+  "fixtures": 19,
+  "decisions": 57,
+  "model_decisions": 57,
+  "native_calls": 171,
+  "rules_correct": 33,
+  "model_correct": 12,
+  "raw_single_wrong_selection": 9,
+  "raw_multiple_positive_responses": 15,
+  "raw_model_correct": 12,
+  "model_selected_correct": 0,
+  "model_canonical_abstentions_correct": 12,
+  "model_wrong_selected": 0,
+  "malformed_responses": 0,
+  "rejected_targets": 24,
+  "runtime_failures": 0,
+  "fallback_attempts": 57,
+  "fallback_selections": 18,
+  "combined_correct": 33,
+  "combined_wrong_selected": 0,
+  "generation_ms": {
+    "median": 1653,
+    "min": 1579,
+    "max": 6546
+  },
+  "sampled_pss_kib_max": 1092069,
+  "per_fixture": [
+    {
+      "id": "clock-timer-exact",
+      "expected_index": 14,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-timer-exact",
+          "run": 1,
+          "rule_index": 14,
+          "rule_correct": true,
+          "rule_ms": 4,
+          "combined_index": 14,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1603,
+          "total_ms": 1605,
+          "pss_kib": 1088714,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-timer-exact",
+          "run": 2,
+          "rule_index": 14,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 14,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1654,
+          "total_ms": 1654,
+          "pss_kib": 1091829,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-timer-exact",
+          "run": 3,
+          "rule_index": 14,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 14,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1682,
+          "total_ms": 1682,
+          "pss_kib": 1089249,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clock-timer-paraphrase",
+      "expected_index": 14,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-timer-paraphrase",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 2,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1579,
+          "total_ms": 1581,
+          "pss_kib": 1088130,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-timer-paraphrase",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1647,
+          "total_ms": 1648,
+          "pss_kib": 1090045,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-timer-paraphrase",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1740,
+          "total_ms": 1741,
+          "pss_kib": 1087488,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clock-cities-exact",
+      "expected_index": 33,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-cities-exact",
+          "run": 1,
+          "rule_index": 33,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 33,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1611,
+          "total_ms": 1611,
+          "pss_kib": 1088337,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 33,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-cities-exact",
+          "run": 2,
+          "rule_index": 33,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 33,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1673,
+          "total_ms": 1673,
+          "pss_kib": 1090389,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 33,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-cities-exact",
+          "run": 3,
+          "rule_index": 33,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 33,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1655,
+          "total_ms": 1655,
+          "pss_kib": 1087844,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 33,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clock-cities-paraphrase",
+      "expected_index": 33,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-cities-paraphrase",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 1,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1609,
+          "total_ms": 1610,
+          "pss_kib": 1089349,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-cities-paraphrase",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1660,
+          "total_ms": 1660,
+          "pss_kib": 1091077,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-cities-paraphrase",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1643,
+          "total_ms": 1644,
+          "pss_kib": 1088504,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clock-stopwatch-exact",
+      "expected_index": 16,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-stopwatch-exact",
+          "run": 1,
+          "rule_index": 16,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 16,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1594,
+          "total_ms": 1594,
+          "pss_kib": 1089973,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 16,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-stopwatch-exact",
+          "run": 2,
+          "rule_index": 16,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 16,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1656,
+          "total_ms": 1656,
+          "pss_kib": 1091409,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 16,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-stopwatch-exact",
+          "run": 3,
+          "rule_index": 16,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 16,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1657,
+          "total_ms": 1657,
+          "pss_kib": 1088844,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 16,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clock-stopwatch-paraphrase",
+      "expected_index": 16,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-stopwatch-paraphrase",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1594,
+          "total_ms": 1595,
+          "pss_kib": 1088835,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-stopwatch-paraphrase",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1653,
+          "total_ms": 1654,
+          "pss_kib": 1092069,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-stopwatch-paraphrase",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1650,
+          "total_ms": 1651,
+          "pss_kib": 1089500,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "clock-missing",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "clock-missing",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 1,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1603,
+          "total_ms": 1604,
+          "pss_kib": 1089539,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-missing",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1653,
+          "total_ms": 1654,
+          "pss_kib": 1090769,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "clock-missing",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1766,
+          "total_ms": 1767,
+          "pss_kib": 1088316,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-create-exact",
+      "expected_index": 25,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-create-exact",
+          "run": 1,
+          "rule_index": 25,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 25,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1625,
+          "total_ms": 1626,
+          "pss_kib": 1090360,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 25,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-create-exact",
+          "run": 2,
+          "rule_index": 25,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 25,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1664,
+          "total_ms": 1664,
+          "pss_kib": 1088353,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 25,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-create-exact",
+          "run": 3,
+          "rule_index": 25,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 25,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1838,
+          "total_ms": 1838,
+          "pss_kib": 1088560,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 25,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-create-paraphrase",
+      "expected_index": 25,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-create-paraphrase",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1627,
+          "total_ms": 1628,
+          "pss_kib": 1090939,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-create-paraphrase",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1652,
+          "total_ms": 1652,
+          "pss_kib": 1088745,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-create-paraphrase",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1714,
+          "total_ms": 1715,
+          "pss_kib": 1088952,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-import-exact",
+      "expected_index": 22,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-import-exact",
+          "run": 1,
+          "rule_index": 22,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 22,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1617,
+          "total_ms": 1617,
+          "pss_kib": 1091263,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-import-exact",
+          "run": 2,
+          "rule_index": 22,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 22,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1656,
+          "total_ms": 1656,
+          "pss_kib": 1088981,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-import-exact",
+          "run": 3,
+          "rule_index": 22,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 22,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "RULE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1663,
+          "total_ms": 1663,
+          "pss_kib": 1089180,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-import-paraphrase",
+      "expected_index": 22,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-import-paraphrase",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1636,
+          "total_ms": 1636,
+          "pss_kib": 1091731,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-import-paraphrase",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 4445,
+          "total_ms": 4445,
+          "pss_kib": 1089381,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-import-paraphrase",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1656,
+          "total_ms": 1657,
+          "pss_kib": 1089572,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-missing",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-missing",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1649,
+          "total_ms": 1650,
+          "pss_kib": 1089597,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-missing",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 2,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 6546,
+          "total_ms": 6548,
+          "pss_kib": 1087137,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-missing",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1651,
+          "total_ms": 1652,
+          "pss_kib": 1087336,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stopwatch-start-exact",
+      "expected_index": 31,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-start-exact",
+          "run": 1,
+          "rule_index": 31,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 31,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1671,
+          "total_ms": 1672,
+          "pss_kib": 1090121,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 31,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-start-exact",
+          "run": 2,
+          "rule_index": 31,
+          "rule_correct": true,
+          "rule_ms": 2,
+          "combined_index": 31,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 4311,
+          "total_ms": 4313,
+          "pss_kib": 1087569,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 31,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-start-exact",
+          "run": 3,
+          "rule_index": 31,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": 31,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "RULE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1688,
+          "total_ms": 1688,
+          "pss_kib": 1087740,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 31,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stopwatch-start-paraphrase",
+      "expected_index": 31,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-start-paraphrase",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1634,
+          "total_ms": 1635,
+          "pss_kib": 1090969,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-start-paraphrase",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1657,
+          "total_ms": 1658,
+          "pss_kib": 1088281,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-start-paraphrase",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1695,
+          "total_ms": 1696,
+          "pss_kib": 1088504,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stopwatch-ambiguous",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-ambiguous",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1635,
+          "total_ms": 1636,
+          "pss_kib": 1091325,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-ambiguous",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1609,
+          "total_ms": 1609,
+          "pss_kib": 1088637,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-ambiguous",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 1,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "AMBIGUOUS_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 2054,
+          "total_ms": 2055,
+          "pss_kib": 1089278,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 12,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 14,
+              "raw": "YES\n",
+              "relevant": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-label-missing",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-label-missing",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1640,
+          "total_ms": 1641,
+          "pss_kib": 1091609,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-label-missing",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1591,
+          "total_ms": 1592,
+          "pss_kib": 1088949,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-label-missing",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 2002,
+          "total_ms": 2002,
+          "pss_kib": 1089594,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contacts-target-disabled",
+      "expected_index": null,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-target-disabled",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1655,
+          "total_ms": 1656,
+          "pss_kib": 1091889,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-target-disabled",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1613,
+          "total_ms": 1613,
+          "pss_kib": 1089305,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "contacts-target-disabled",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": true,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": true,
+          "raw_model_correct": true,
+          "model_correct": true,
+          "model_outcome": "ABSTAINED",
+          "source": "NONE",
+          "rejection": null,
+          "fallback_attempted": true,
+          "generation_ms": 1935,
+          "total_ms": 1935,
+          "pss_kib": 1089934,
+          "expected_evaluated": true,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 21,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 22,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stopwatch-route-1",
+      "expected_index": 16,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-route-1",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1652,
+          "total_ms": 1653,
+          "pss_kib": 1090729,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-route-1",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1622,
+          "total_ms": 1623,
+          "pss_kib": 1088125,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-route-1",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1698,
+          "total_ms": 1699,
+          "pss_kib": 1088770,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "stopwatch-route-2",
+      "expected_index": 31,
+      "runs": [
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-route-2",
+          "run": 1,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1648,
+          "total_ms": 1649,
+          "pss_kib": 1091481,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-route-2",
+          "run": 2,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1638,
+          "total_ms": 1639,
+          "pss_kib": 1088897,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        },
+        {
+          "kind": "evaluation",
+          "fixture": "stopwatch-route-2",
+          "run": 3,
+          "rule_index": null,
+          "rule_correct": false,
+          "rule_ms": 0,
+          "combined_index": null,
+          "combined_correct": false,
+          "raw_model_correct": false,
+          "model_correct": false,
+          "model_outcome": "REJECTED_TARGET",
+          "source": "NONE",
+          "rejection": "UNSUPPORTED_TARGET",
+          "fallback_attempted": true,
+          "generation_ms": 1671,
+          "total_ms": 1672,
+          "pss_kib": 1089518,
+          "expected_evaluated": false,
+          "candidate_evaluations": [
+            {
+              "original_index": 10,
+              "raw": "NO\n",
+              "relevant": false
+            },
+            {
+              "original_index": 12,
+              "raw": "YES\n",
+              "relevant": true
+            },
+            {
+              "original_index": 14,
+              "raw": "NO\n",
+              "relevant": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

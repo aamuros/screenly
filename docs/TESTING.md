@@ -184,3 +184,10 @@ The `feat/local-ai` unit and instrumentation test suites are included in this in
 See [LOCAL_AI.md](LOCAL_AI.md) and [NAVIGATION_BACKEND.md](NAVIGATION_BACKEND.md) for
 model integrity verification, ADB provisioning, smoke-test commands and standalone navigation evaluation.
 A successful source merge is not a substitute for an APK build or real-device inference run.
+
+## Held-out navigation comparison
+
+See [navigation review and benchmark](NAVIGATION_BENCHMARK.md) for the frozen Clock/Contacts
+corpus, matched production-rule baseline, real offline Gemma results and opt-in service
+cleanup callback test. Production/model configuration was unchanged; phone and live binder
+reconnect stress remain unverified.
