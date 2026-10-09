@@ -2,18 +2,15 @@ package com.screenly.app
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
-<<<<<<< feat/backend-tests
-import android.graphics.drawable.GradientDrawable
-=======
 import android.os.Build
 import android.text.InputFilter
 import android.text.InputType
->>>>>>> local
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -23,11 +20,8 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-<<<<<<< feat/backend-tests
-=======
 import android.widget.EditText
 import android.widget.ImageView
->>>>>>> local
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -58,8 +52,6 @@ internal class ScreenlyOverlay(
     private var disposed = false
     private var bubble: View? = null
     private var picker: View? = null
-<<<<<<< feat/backend-tests
-=======
     private var assistantMenu: View? = null
     private var infoPanel: View? = null
     private var goalPanel: View? = null
@@ -82,15 +74,19 @@ internal class ScreenlyOverlay(
         BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
             BitmapFactory.Options().apply { inSampleSize = 4; inScaled = false })
     }
->>>>>>> local
     private var highlight: HighlightView? = null
     private var outsideDismissalDownTime: Long? = null
     private var bubbleClickClosesPicker = false
+
+    val isEnteringGoal: Boolean
+        get() = goalPanel != null
 
     fun updateObservation(next: ScreenObservation) {
         if (disposed) return
         if (state.update(next)) {
             closePicker()
+            closeMenu()
+            closeInfoPanel()
             clearHighlight()
             clearGuidancePanel()
         }
@@ -101,23 +97,28 @@ internal class ScreenlyOverlay(
     fun clearSelection() {
         state.invalidateSelection()
         closePicker()
+        closeMenu()
+        closeInfoPanel()
         clearHighlight()
         clearGuidancePanel()
         controller.observe(null)
     }
 
-    fun clearObservation() {
+    fun clearObservation(showWaiting: Boolean = false) {
         state.clear()
         closePicker()
-<<<<<<< feat/backend-tests
-=======
         closeMenu()
         closeInfoPanel()
         closeGoalPanel()
->>>>>>> local
         clearHighlight()
-        clearGuidancePanel()
+        // Keep one stable caption for an unavailable root; recreating it emits more window
+        // events. Locks, our activity and lifecycle cleanup still remove every overlay.
+        if (!showWaiting || controller.status != GuidanceStatus.WAITING_FOR_SCREEN) clearGuidancePanel()
         controller.observe(null)
+        if (!showWaiting) clearGuidancePanel()
+        else if (controller.status == GuidanceStatus.WAITING_FOR_SCREEN && guidancePanel == null) {
+            showGuidanceMessage(service.getString(R.string.guidance_waiting))
+        }
         val previousBubble = bubble
         bubble = null
         previousBubble?.let(::detach)
@@ -146,26 +147,13 @@ internal class ScreenlyOverlay(
             x = (area.right - size - dp(16)).coerceAtLeast(area.left)
             y = (area.bottom - size - dp(24)).coerceAtLeast(area.top)
         }
-        val view = TextView(service).apply {
-            text = service.getString(R.string.assistant_bubble)
+        val view = ImageView(service).apply {
+            setImageBitmap(bubbleBitmap)
+            scaleType = ImageView.ScaleType.FIT_CENTER
             contentDescription = service.getString(R.string.assistant_bubble_description)
-            gravity = Gravity.CENTER
-            textSize = 18f
-            setTextColor(Color.WHITE)
             elevation = dp(6).toFloat()
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.OVAL
-                setColor(Color.rgb(28, 63, 95))
-                setStroke(dp(2), Color.WHITE)
-            }
             setOnClickListener {
                 if (disposed || bubble !== it) return@setOnClickListener
-<<<<<<< feat/backend-tests
-                val closesPicker = picker != null || bubbleClickClosesPicker
-                bubbleClickClosesPicker = false
-                if (closesPicker) closePicker()
-                else if (refreshObservation()) showPicker()
-=======
                 val closesPanel = picker != null || assistantMenu != null ||
                     infoPanel != null || goalPanel != null || bubbleClickClosesPicker
                 bubbleClickClosesPicker = false
@@ -175,7 +163,6 @@ internal class ScreenlyOverlay(
                     closeInfoPanel()
                     closeGoalPanel()
                 } else showMenu()
->>>>>>> local
             }
         }
         enableDragging(view, params)
@@ -193,12 +180,8 @@ internal class ScreenlyOverlay(
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     // ACTION_OUTSIDE can dismiss the picker before this window receives DOWN.
-<<<<<<< feat/backend-tests
-                    bubbleClickClosesPicker = picker != null || outsideDismissalDownTime == event.downTime
-=======
                     bubbleClickClosesPicker = picker != null || assistantMenu != null ||
                         infoPanel != null || goalPanel != null || outsideDismissalDownTime == event.downTime
->>>>>>> local
                     downX = event.rawX
                     downY = event.rawY
                     startX = params.x
@@ -212,12 +195,9 @@ internal class ScreenlyOverlay(
                     if (dragging && bubble === touchedView) {
                         bubbleClickClosesPicker = false
                         closePicker()
-<<<<<<< feat/backend-tests
-=======
                         closeMenu()
                         closeInfoPanel()
                         closeGoalPanel()
->>>>>>> local
                         val area = usableScreenBounds()
                         params.x = (startX + deltaX.toInt()).coerceIn(
                             area.left, (area.right - params.width).coerceAtLeast(area.left)
@@ -243,8 +223,6 @@ internal class ScreenlyOverlay(
         }
     }
 
-<<<<<<< feat/backend-tests
-=======
 
     /** Compact native controls; the target app still receives touches outside the menu. */
     @SuppressLint("ClickableViewAccessibility")
@@ -418,6 +396,7 @@ internal class ScreenlyOverlay(
         if (disposed) return
         clearHighlight()
         clearGuidancePanel()
+        var instructionTarget: AccessibleUiElement? = null
         val message = when (update.status) {
             GuidanceStatus.IDLE -> return
             GuidanceStatus.WAITING_FOR_SCREEN -> service.getString(R.string.guidance_waiting)
@@ -437,6 +416,7 @@ internal class ScreenlyOverlay(
                         snapshot.planningElements, snapshot.candidateIndices, verifiedRoutes(request.goal, snapshot)) != null
                 ) return
                 showHighlight(element)
+                instructionTarget = element
                 val label = snapshot.planningElements[index].text ?: snapshot.planningElements[index].contentDescription
                     ?: service.getString(R.string.unlabelled_element)
                 if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance",
@@ -445,10 +425,10 @@ internal class ScreenlyOverlay(
                 service.getString(if (result.decision.failure != null) R.string.guidance_step_model_unavailable else R.string.guidance_step, label)
             }
         }
-        showGuidanceMessage(message)
+        showGuidanceMessage(message, instructionTarget)
     }
 
-    private fun showGuidanceMessage(message: String) {
+    private fun showGuidanceMessage(message: String, target: AccessibleUiElement? = null) {
         clearGuidancePanel()
         val area = usableScreenBounds()
         val view = TextView(service).apply {
@@ -464,6 +444,19 @@ internal class ScreenlyOverlay(
             y = area.top
             flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
         }
+        if (target != null) view.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            if (disposed || guidancePanel !== view || view.height <= 0) return@addOnLayoutChangeListener
+            val targetBounds = Rect(target.left, target.top, target.right, target.bottom)
+            val topPlacement = Rect(area.left, area.top, area.left + params.width, area.top + view.height)
+            val nextY = if (Rect.intersects(topPlacement, targetBounds)) {
+                (area.bottom - view.height).coerceAtLeast(area.top)
+            } else area.top
+            if (params.y != nextY) {
+                params.y = nextY
+                try { windowManager.updateViewLayout(view, params) }
+                catch (_: IllegalArgumentException) { clearGuidancePanel() }
+            }
+        }
         if (attach(view, params)) guidancePanel = view
     }
 
@@ -473,7 +466,6 @@ internal class ScreenlyOverlay(
         previous?.let(::detach)
     }
 
->>>>>>> local
     @SuppressLint("ClickableViewAccessibility") // Handles only ACTION_OUTSIDE; normal clicks use ScrollView.
     private fun showPicker() {
         if (disposed || picker != null) return

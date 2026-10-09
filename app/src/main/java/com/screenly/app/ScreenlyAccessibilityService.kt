@@ -52,6 +52,10 @@ class ScreenlyAccessibilityService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         // Never read event.text: text-change events may contain sensitive input.
         if (event == null) return
+        // The editor temporarily takes accessibility focus. Ignore transient
+        // window events until the user submits or closes it; a fresh capture
+        // runs when guidance begins.
+        if (overlay?.isEnteringGoal == true && lastObservation != null) return
         if (event.packageName?.toString() == packageName &&
             event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED &&
             event.eventType != AccessibilityEvent.TYPE_WINDOWS_CHANGED
@@ -91,6 +95,14 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         observationPending = false
         if (overlay == null || !canObserve()) {
             clearObservation()
+            return false
+        }
+        // Do not dismiss the goal editor when its keyboard steals focus from
+        // the previously observed app. The panel's submit path closes the
+        // editor and explicitly refreshes the current application snapshot.
+        // Lock-screen handling above and ACTION_SCREEN_OFF still clear it.
+        if (overlay?.isEnteringGoal == true && lastObservation != null) {
+            if (BuildConfig.DEBUG) Log.d(TAG, "Goal editor active; retaining prior app observation.")
             return false
         }
         lastCapture = SystemClock.uptimeMillis()
