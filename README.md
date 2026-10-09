@@ -78,6 +78,21 @@ touch-through highlights. Drag and release the bubble to dock it on either side 
 changing its vertical position. Screenly never taps the target app. If screenshot capability
 is not enabled after updating, re-enable Screenly in Android Accessibility Settings.
 
+## Persistent offline assistant sessions
+
+Ask AI retains up to 24 recent messages in app-private, no-backup storage and
+uses recent exchanges to answer follow-up questions. Guide Me retains the goal,
+active instruction and up to 12 recent steps when you close the panel, navigate
+between apps, lock/unlock or restart the AccessibilityService. Open the bubble
+and choose Guide Me to resume; use **Check my screen** to continue. A restored
+guide never reuses a previously highlighted element's screen coordinates.
+
+**Privacy:** This small text history stays on the device in private storage and
+is not automatically deleted when the service stops. Use **Privacy** →
+**Clear chat and guide history** to delete it, or uninstall Screenly.
+Screenshots and raw accessibility snapshots are never persisted.
+The on-screen panel also preserves scroll position during routine updates.
+
 ## Offline model setup
 
 Transfer the verified `gemma3-1b-it-int4.litertlm` file to the device and use
