@@ -3,11 +3,7 @@ package com.screenly.app
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Bitmap
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
-import android.view.Display
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -42,10 +38,8 @@ internal class ScreenlyFeaturePanel(
     private val manualPicker: () -> Unit,
     private val onClosed: () -> Unit
 ) {
-    private val handler = Handler(Looper.getMainLooper())
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var inferenceJob: Job? = null
-    private var inferenceRunning = false
     private val messages get() = session.messages
     private var guidance: AccessibleScreenAssistant.Guidance?
         get() = session.guidance
@@ -57,7 +51,6 @@ internal class ScreenlyFeaturePanel(
     private var busy = false
     private var captureRequest = 0L
     private var stopped = false
-    private var lastCaptureStatus = ""
 
     fun open(action: AssistantAction) {
         if (stopped) return
@@ -73,9 +66,7 @@ internal class ScreenlyFeaturePanel(
         captureRequest++
         inferenceJob?.cancel()
         scope.cancel()
-        inferenceRunning = false
         busy = false
-        handler.removeCallbacksAndMessages(null)
         val view = root
         root = null
         view?.animate()?.cancel()
@@ -160,7 +151,6 @@ internal class ScreenlyFeaturePanel(
                 clearScreenshots = {
                     captureRequest++
                     inferenceJob?.cancel()
-                    inferenceRunning = false
                     busy = false
                     feedback = service.getString(R.string.assistant_images_cleared)
                     session.captureStatus = service.getString(R.string.assistant_capture_idle)
@@ -266,175 +256,122 @@ internal class ScreenlyFeaturePanel(
         }
     }
 
-    /** Called only by explicit Send, Explain, Refresh, or Check my screen interactions. */
+    /**
+     * All current inference backends are text-only. A screenshot cannot improve their answer,
+     * and hiding the panel to take one makes the accessibility snapshot change underneath us.
+     * Read sanitized accessibility text once without re-checking the screen after a delay.
+     */
     private fun capture(action: AssistantAction, prompt: String?) {
         if (stopped || busy || feature != action) return
-        busy = true
-        feedback = service.getString(R.string.assistant_capture_starting)
-        session.captureStatus = service.getString(R.string.assistant_capture_running)
-        val available = refreshObservation()
-        val snapshot = currentObservation()?.takeIf { available && !stopped }
-        if (snapshot == null) {
-            busy = false
-            feedback = service.getString(R.string.assistant_screen_unavailable)
-            session.captureStatus = feedback
-            render()
-            return
-        }
-        render()
-        val requestId = ++captureRequest
-        val revision = currentRevision()
-        root?.let {
-            it.clearFocus()
-            service.getSystemService(InputMethodManager::class.java)
-                .hideSoftInputFromWindow(it.windowToken, 0)
-            it.visibility = View.INVISIBLE
-        }
-        bubble.visibility = View.INVISIBLE
-        handler.postDelayed({
-            if (stopped || requestId != captureRequest) return@postDelayed
-            try {
-                service.takeScreenshot(Display.DEFAULT_DISPLAY, service.mainExecutor,
-                    object : AccessibilityService.TakeScreenshotCallback {
-                        override fun onSuccess(result: AccessibilityService.ScreenshotResult) {
-                            val buffer = result.hardwareBuffer
-                            val decoded = try {
-                                // No vision backend is integrated: validate the transient buffer,
-                                // then immediately discard it without claiming image interpretation.
-                                val image = Bitmap.wrapHardwareBuffer(buffer, result.colorSpace)
-                                val valid = image != null && image.width > 0 && image.height > 0
-                                image?.recycle()
-                                valid
-                            } catch (_: RuntimeException) {
-                                false
-                            } finally {
-                                buffer.close()
-                            }
-                            completeCapture(requestId, revision, action, prompt, snapshot, decoded)
-                        }
-                        override fun onFailure(errorCode: Int) {
-                            completeCapture(requestId, revision, action, prompt, snapshot, false)
-                        }
-                    })
-            } catch (_: RuntimeException) {
-                completeCapture(requestId, revision, action, prompt, snapshot, false)
-            }
-        }, 360L)
-        handler.postDelayed({
-            if (!stopped && requestId == captureRequest && busy && !inferenceRunning) {
-                captureRequest++
-                busy = false
-                feedback = service.getString(R.string.assistant_capture_failed)
-                session.captureStatus = feedback
-                root?.visibility = View.VISIBLE
-                render()
-            }
-        }, 5000L)
-    }
 
-    private fun completeCapture(
-        requestId: Long,
-        revision: Long,
-        action: AssistantAction,
-        prompt: String?,
-        snapshot: ScreenObservation,
-        success: Boolean
-    ) {
-        if (stopped || requestId != captureRequest) return
-        lastCaptureStatus = if (success) service.getString(R.string.assistant_capture_success)
-            else "Screenshot unavailable. Using accessible text labels instead."
-        session.captureStatus = lastCaptureStatus
-        feedback = lastCaptureStatus
-        root?.visibility = View.VISIBLE
-        // A screenshot never enters text-only AI. Stale Android targets cannot be acted on.
-        if (!refreshObservation() || currentObservation() != snapshot ||
-            currentRevision() != revision || feature != action) {
-            busy = false
-            feedback = service.getString(R.string.assistant_capture_stale)
-            session.captureStatus = feedback
+        // A snapshot collected before the user opened the overlay is useful for questions.
+        // Guide Me deliberately requires a fresh snapshot before suggesting any target.
+        val snapshot = if (action == AssistantAction.GUIDE_ME) {
+            if (refreshObservation()) currentObservation() else null
+        } else {
+            currentObservation() ?: if (refreshObservation()) currentObservation() else null
+        }
+        if (snapshot == null && action != AssistantAction.ASK_AI) {
+            feedback = service.getString(R.string.assistant_screen_unavailable)
             render()
             return
         }
-        if (assistant.modelAvailable() && action != AssistantAction.PRIVACY) {
-            inferenceRunning = true
-            feedback = "Generating answer offline from accessible controls..."
+        val observed = snapshot ?: ScreenObservation("unavailable", -1, emptyList())
+        val revision = currentRevision()
+        val requestId = ++captureRequest
+        busy = true
+        feedback = service.getString(R.string.assistant_processing)
+        session.captureStatus = service.getString(R.string.assistant_capture_idle)
+        render()
+
+        if (!assistant.modelAvailable()) {
+            applyAccessibilityFallback(action, prompt, observed)
+            busy = false
+            feedback = service.getString(R.string.assistant_offline_rules_status)
             render()
-            inferenceJob?.cancel()
-            val guideBefore = if (prompt == null) session.previousForCheck() else null
-            inferenceJob = scope.launch {
-                try {
-                    when (action) {
-                        AssistantAction.ASK_AI -> {
-                            val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
-                            if (!question.isNullOrBlank()) {
-                                val answer = assistant.ask(question, snapshot, messages.dropLast(1).toList())
-                                if (requestIsCurrent(requestId, revision, snapshot)) {
-                                    messages += AssistantChatEntry(false, answer)
-                                    trimHistory()
-                                }
+            return
+        }
+
+        inferenceJob?.cancel()
+        val previousGuide = if (prompt == null) session.previousForCheck() else null
+        inferenceJob = scope.launch {
+            try {
+                when (action) {
+                    AssistantAction.ASK_AI -> {
+                        val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
+                        if (!question.isNullOrBlank()) {
+                            val answer = assistant.ask(question, observed, messages.dropLast(1).toList())
+                            // Answer the question about the snapshot captured when Send was tapped,
+                            // even if the user navigated before the model finished.
+                            if (requestStillActive(requestId)) {
+                                messages += AssistantChatEntry(false, answer)
+                                trimHistory()
                             }
                         }
-                        AssistantAction.EXPLAIN -> {
-                            val answer = assistant.explain(snapshot)
-                            if (requestIsCurrent(requestId, revision, snapshot)) {
-                                session.explanation = answer
-                                selectedItem = null
+                    }
+                    AssistantAction.EXPLAIN -> {
+                        val answer = assistant.explain(observed)
+                        if (requestStillActive(requestId)) {
+                            session.explanation = answer
+                            selectedItem = null
+                        }
+                    }
+                    AssistantAction.GUIDE_ME -> {
+                        val goal = prompt ?: guidance?.goal
+                        if (!goal.isNullOrBlank()) {
+                            val next = assistant.guide(goal, observed,
+                                if (prompt == null) previousGuide else null)
+                            if (requestIsCurrent(requestId, revision, observed)) {
+                                val resolved = if (prompt == null)
+                                    session.rebaseRestoredStep(next) else next
+                                if (prompt != null) session.startNewGuide()
+                                guidance = resolved
+                                resolved.targetIndex?.let { highlightTarget(observed, it, revision) }
+                            } else if (requestStillActive(requestId)) {
+                                feedback = service.getString(R.string.assistant_screen_changed_guide)
                             }
                         }
-                        AssistantAction.GUIDE_ME -> {
-                            // A restored guide has no trusted previous screen, but its goal survives.
-                            val goal = prompt ?: guidance?.goal
-                            if (!goal.isNullOrBlank()) {
-                                val next = assistant.guide(
-                                    goal, snapshot, if (prompt == null) guideBefore else null
-                                )
-                                if (requestIsCurrent(requestId, revision, snapshot)) {
-                                    val resolved = if (prompt == null)
-                                        session.rebaseRestoredStep(next) else next
-                                    if (prompt != null) session.startNewGuide()
-                                    guidance = resolved
-                                    resolved.targetIndex?.let { highlightTarget(snapshot, it, revision) }
-                                }
-                            }
-                        }
-                        AssistantAction.PRIVACY -> Unit
                     }
-                    if (requestIsCurrent(requestId, revision, snapshot)) {
-                        feedback = "Processed locally using accessible screen information."
+                    AssistantAction.PRIVACY -> Unit
+                }
+                if (requestStillActive(requestId) &&
+                    (action != AssistantAction.GUIDE_ME || requestIsCurrent(requestId, revision, observed))) {
+                    feedback = service.getString(R.string.assistant_ai_text_complete)
+                }
+            } catch (_: CancellationException) {
+                return@launch
+            } catch (_: Exception) {
+                if (requestStillActive(requestId)) {
+                    if (action != AssistantAction.GUIDE_ME ||
+                        requestIsCurrent(requestId, revision, observed)) {
+                        applyAccessibilityFallback(action, prompt, observed)
                     }
-                } catch (_: CancellationException) {
-                    return@launch
-                } catch (error: Exception) {
-                    if (requestIsCurrent(requestId, revision, snapshot)) {
-                        applyAccessibilityFallback(action, prompt, snapshot)
-                        feedback = "Local AI unavailable. Used offline accessibility rules."
+                    feedback = service.getString(R.string.assistant_offline_rules_status)
+                }
+            } catch (_: LinkageError) {
+                if (requestStillActive(requestId)) {
+                    if (action != AssistantAction.GUIDE_ME ||
+                        requestIsCurrent(requestId, revision, observed)) {
+                        applyAccessibilityFallback(action, prompt, observed)
                     }
-                } catch (error: LinkageError) {
-                    if (requestIsCurrent(requestId, revision, snapshot)) {
-                        applyAccessibilityFallback(action, prompt, snapshot)
-                        feedback = "Model runtime unsupported on this device. Using offline rules."
-                    }
-                } finally {
-                    if (!stopped && requestId == captureRequest) {
-                        inferenceRunning = false
-                        busy = false
-                        if (!requestIsCurrent(requestId, revision, snapshot)) {
-                            feedback = service.getString(R.string.assistant_capture_stale)
-                        }
-                        render()
-                    }
+                    feedback = service.getString(R.string.assistant_offline_rules_status)
+                }
+            } finally {
+                if (requestStillActive(requestId)) {
+                    busy = false
+                    render()
                 }
             }
-        } else {
-            applyAccessibilityFallback(action, prompt, snapshot)
-            busy = false
-            render()
         }
     }
 
+    private fun requestStillActive(requestId: Long): Boolean =
+        !stopped && requestId == captureRequest
+
+    /** Only the Guide Me target must match the current accessibility revision. */
     private fun requestIsCurrent(
         requestId: Long, revision: Long, snapshot: ScreenObservation
-    ): Boolean = !stopped && requestId == captureRequest &&
+    ): Boolean = requestStillActive(requestId) &&
         currentRevision() == revision && currentObservation() == snapshot
 
     private fun applyAccessibilityFallback(
