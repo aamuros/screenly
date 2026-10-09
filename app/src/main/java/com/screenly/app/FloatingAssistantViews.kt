@@ -28,7 +28,7 @@ internal object FloatingAssistantViews {
                 val item = LinearLayout(context).apply {
                     orientation = LinearLayout.VERTICAL
                     gravity = Gravity.CENTER
-                    minimumHeight = dp(context, 100)
+                    minimumHeight = dp(context, 80)
                     isClickable = true
                     isFocusable = true
                     contentDescription = context.getString(action.label())
@@ -44,23 +44,23 @@ internal object FloatingAssistantViews {
                 item.addView(ImageView(context).apply {
                     setImageResource(action.icon())
                     importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
-                }, LinearLayout.LayoutParams(dp(context, 42), dp(context, 42)))
+                }, LinearLayout.LayoutParams(dp(context, 30), dp(context, 30)))
                 item.addView(TextView(context).apply {
                     text = context.getString(action.label())
-                    textSize = 16f
+                    textSize = 13f
                     gravity = Gravity.CENTER
                     setTextColor(Color.WHITE)
                 }, LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { topMargin = dp(context, 10) })
+                ).apply { topMargin = dp(context, 7) })
                 row.addView(item, LinearLayout.LayoutParams(
                     0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
                 ))
             }
             panel.addView(row, LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply { if (rowIndex > 0) topMargin = dp(context, 6) })
+            ).apply { if (rowIndex > 0) topMargin = dp(context, 4) })
         }
         return scroll(context, panel)
     }
@@ -104,7 +104,7 @@ internal object FloatingAssistantViews {
 
     private fun panel(context: Context) = LinearLayout(context).apply {
         orientation = LinearLayout.VERTICAL
-        setPadding(dp(context, 16), dp(context, 14), dp(context, 16), dp(context, 14))
+        setPadding(dp(context, 12), dp(context, 10), dp(context, 12), dp(context, 10))
         background = GradientDrawable(GradientDrawable.Orientation.TL_BR,
             intArrayOf(Color.rgb(66, 66, 66), Color.rgb(31, 31, 31))).apply {
             cornerRadius = dp(context, 26).toFloat()

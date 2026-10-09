@@ -1,6 +1,7 @@
 package com.screenly.app
 
 import android.accessibilityservice.AccessibilityService
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -8,13 +9,16 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
+import android.view.animation.DecelerateInterpolator
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -32,6 +36,8 @@ internal class ScreenlyOverlay(
 ) {
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val state = ScreenObservationState()
+    private var dockCorner = BubbleCorner(right = true, bottom = true)
+    private var snapAnimator: ValueAnimator? = null
     private var disposed = false
     private var bubble: View? = null
     private var picker: View? = null
@@ -49,7 +55,7 @@ internal class ScreenlyOverlay(
         if (disposed) return
         if (state.update(next)) {
             closePicker()
-            closeMenu()
+            closeMenu(immediate = true)
             closeInfoPanel()
             clearHighlight()
         }
@@ -59,15 +65,17 @@ internal class ScreenlyOverlay(
     fun clearSelection() {
         state.invalidateSelection()
         closePicker()
-        closeMenu()
+        closeMenu(immediate = true)
         closeInfoPanel()
         clearHighlight()
     }
 
     fun clearObservation() {
         state.clear()
+        snapAnimator?.cancel()
+        snapAnimator = null
         closePicker()
-        closeMenu()
+        closeMenu(immediate = true)
         closeInfoPanel()
         clearHighlight()
         val previousBubble = bubble
@@ -82,19 +90,26 @@ internal class ScreenlyOverlay(
         clearObservation()
     }
 
+
     private fun showBubble() {
         if (bubble != null) return
-        val size = dp(56)
+        val size = dp(BUBBLE_SIZE_DP)
         val area = usableScreenBounds()
-        val params = overlayParams(size, size).apply {
-            x = (area.right - size - dp(16)).coerceAtLeast(area.left)
-            y = (area.bottom - size - dp(24)).coerceAtLeast(area.top)
-        }
-        val view = ImageView(service).apply {
-            setImageBitmap(bubbleBitmap)
-            scaleType = ImageView.ScaleType.FIT_CENTER
+        if (area.width() <= 0 || area.height() <= 0) return
+        val (cornerX, cornerY) = BubbleDocking.position(
+            area.left, area.top, area.right, area.bottom, size, dp(CORNER_MARGIN_DP), dockCorner
+        )
+        val params = overlayParams(size, size).apply { x = cornerX; y = cornerY }
+        val view = FrameLayout(service).apply {
             contentDescription = service.getString(R.string.assistant_bubble_description)
-            elevation = dp(6).toFloat()
+            elevation = dp(8).toFloat()
+            isClickable = true
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(Color.BLACK)
+                setStroke(dp(2), Color.WHITE)
+            }
+            clipToOutline = true
             setOnClickListener {
                 if (disposed || bubble !== it) return@setOnClickListener
                 val closesPanel = picker != null || assistantMenu != null ||
@@ -107,10 +122,23 @@ internal class ScreenlyOverlay(
                 } else showMenu()
             }
         }
+        view.addView(ImageView(service).apply {
+            setImageBitmap(bubbleBitmap)
+            scaleType = ImageView.ScaleType.CENTER_CROP
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(Color.BLACK)
+            }
+            clipToOutline = true
+        }, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
+        ).apply { setMargins(dp(4), dp(4), dp(4), dp(4)) })
         enableDragging(view, params)
         if (attach(view, params)) bubble = view
     }
 
+    @SuppressLint("ClickableViewAccessibility") // Tap/drag gestures call performClick for accessibility.
     private fun enableDragging(view: View, params: WindowManager.LayoutParams) {
         val slop = ViewConfiguration.get(service).scaledTouchSlop
         var downX = 0f
@@ -121,7 +149,8 @@ internal class ScreenlyOverlay(
         view.setOnTouchListener { touchedView, event ->
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
-                    // ACTION_OUTSIDE can dismiss the picker before this window receives DOWN.
+                    snapAnimator?.cancel()
+                    snapAnimator = null
                     bubbleClickClosesPicker = picker != null || assistantMenu != null ||
                         infoPanel != null || outsideDismissalDownTime == event.downTime
                     downX = event.rawX
@@ -137,7 +166,7 @@ internal class ScreenlyOverlay(
                     if (dragging && bubble === touchedView) {
                         bubbleClickClosesPicker = false
                         closePicker()
-                        closeMenu()
+                        closeMenu(immediate = true)
                         closeInfoPanel()
                         val area = usableScreenBounds()
                         params.x = (startX + deltaX.toInt()).coerceIn(
@@ -146,17 +175,15 @@ internal class ScreenlyOverlay(
                         params.y = (startY + deltaY.toInt()).coerceIn(
                             area.top, (area.bottom - params.height).coerceAtLeast(area.top)
                         )
-                        try {
-                            windowManager.updateViewLayout(touchedView, params)
-                        } catch (_: IllegalArgumentException) {
-                            // The system may remove the window when its service token is revoked.
-                            clearObservation()
-                        }
+                        updateBubbleLayout(touchedView, params)
                     }
                 }
-                MotionEvent.ACTION_UP -> if (!dragging) touchedView.performClick()
+                MotionEvent.ACTION_UP -> {
+                    if (dragging) snapToNearestCorner(touchedView, params)
+                    else touchedView.performClick()
+                }
                 MotionEvent.ACTION_CANCEL -> {
-                    dragging = false
+                    if (dragging) snapToNearestCorner(touchedView, params)
                     bubbleClickClosesPicker = false
                 }
             }
@@ -164,15 +191,57 @@ internal class ScreenlyOverlay(
         }
     }
 
+    private fun snapToNearestCorner(view: View, params: WindowManager.LayoutParams) {
+        if (disposed || bubble !== view) return
+        val area = usableScreenBounds()
+        dockCorner = BubbleDocking.nearestCorner(
+            params.x + params.width / 2, params.y + params.height / 2,
+            area.left, area.top, area.right, area.bottom
+        )
+        val target = BubbleDocking.position(
+            area.left, area.top, area.right, area.bottom,
+            params.width, dp(CORNER_MARGIN_DP), dockCorner
+        )
+        val initialX = params.x
+        val initialY = params.y
+        snapAnimator?.cancel()
+        snapAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = 190L
+            interpolator = DecelerateInterpolator()
+            addUpdateListener { animation ->
+                if (disposed || bubble !== view) {
+                    cancel()
+                } else {
+                    val fraction = animation.animatedValue as Float
+                    params.x = initialX + ((target.first - initialX) * fraction).toInt()
+                    params.y = initialY + ((target.second - initialY) * fraction).toInt()
+                    updateBubbleLayout(view, params)
+                }
+            }
+            start()
+        }
+    }
+
+    private fun updateBubbleLayout(view: View, params: WindowManager.LayoutParams) {
+        try {
+            windowManager.updateViewLayout(view, params)
+        } catch (_: IllegalArgumentException) {
+            clearObservation()
+        }
+    }
 
     /** Compact native controls; the target app still receives touches outside the menu. */
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility") // Only ACTION_OUTSIDE dismisses the panel.
     private fun showMenu() {
         if (disposed || assistantMenu != null) return
         closePicker()
         closeInfoPanel()
+        snapAnimator?.end()
+        snapAnimator = null
         val area = usableScreenBounds()
         if (area.width() <= 0 || area.height() <= 0) return
+        val width = min(dp(MENU_WIDTH_DP), area.width())
+        val height = min(dp(MENU_HEIGHT_DP), area.height())
         var expectedView: View? = null
         val view = FloatingAssistantViews.menu(service, onAction = actionClick@ { action ->
             if (disposed || assistantMenu !== expectedView) return@actionClick
@@ -201,12 +270,27 @@ internal class ScreenlyOverlay(
                 true
             } else false
         }
-        if (attach(view, anchoredPanelParams(
-            min(dp(272), area.width()), min(dp(244), area.height())
-        ))) assistantMenu = view
+        val size = dp(BUBBLE_SIZE_DP).toFloat()
+        view.pivotX = if (dockCorner.right) width - size / 2 else size / 2
+        view.pivotY = if (dockCorner.bottom) height - size / 2 else size / 2
+        view.alpha = 0f
+        view.scaleX = size / width
+        view.scaleY = size / height
+        if (attach(view, cornerPanelParams(width, height))) {
+            assistantMenu = view
+            bubble?.let { bubbleView ->
+                bubbleView.animate().cancel()
+                bubbleView.animate().alpha(0f).scaleX(0.76f).scaleY(0.76f)
+                    .setDuration(170L).withEndAction {
+                        if (assistantMenu === view) bubbleView.visibility = View.INVISIBLE
+                    }.start()
+            }
+            view.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                .setDuration(220L).setInterpolator(DecelerateInterpolator()).start()
+        }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint("ClickableViewAccessibility") // Only ACTION_OUTSIDE dismisses the panel.
     private fun showInfoPanel(title: Int, message: Int) {
         if (disposed) return
         closeInfoPanel()
@@ -222,33 +306,52 @@ internal class ScreenlyOverlay(
                 true
             } else false
         }
-        if (attach(view, anchoredPanelParams(
+        if (attach(view, cornerPanelParams(
             min(dp(288), area.width()), min(dp(228), area.height())
         ))) infoPanel = view
     }
 
-    private fun anchoredPanelParams(width: Int, height: Int): WindowManager.LayoutParams {
+    private fun cornerPanelParams(width: Int, height: Int): WindowManager.LayoutParams {
         val area = usableScreenBounds()
-        val bubbleParams = bubble?.layoutParams as? WindowManager.LayoutParams
-        val bubbleX = bubbleParams?.x ?: (area.right - dp(56))
-        val bubbleY = bubbleParams?.y ?: (area.bottom - dp(56))
-        val above = bubbleY - height - dp(8)
+        val (cornerX, cornerY) = BubbleDocking.position(
+            area.left, area.top, area.right, area.bottom,
+            width, dp(CORNER_MARGIN_DP), dockCorner
+        )
         return overlayParams(width, height).apply {
-            x = (bubbleX + dp(56) - width).coerceIn(
-                area.left, (area.right - width).coerceAtLeast(area.left)
-            )
-            y = if (above >= area.top) above else {
-                (bubbleY + dp(56) + dp(8)).coerceAtMost(area.bottom - height)
-                    .coerceAtLeast(area.top)
-            }
+            x = cornerX
+            y = cornerY
             flags = flags or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
         }
     }
 
-    private fun closeMenu() {
-        val previous = assistantMenu
+    private fun closeMenu(immediate: Boolean = false) {
+        val previous = assistantMenu ?: return
         assistantMenu = null
-        previous?.let(::detach)
+        previous.animate().cancel()
+        if (immediate || disposed) {
+            detach(previous)
+        } else {
+            val size = dp(BUBBLE_SIZE_DP).toFloat()
+            val width = previous.layoutParams.width
+            val height = previous.layoutParams.height
+            previous.animate().alpha(0f).scaleX(size / width).scaleY(size / height)
+                .setDuration(170L).withEndAction { detach(previous) }.start()
+        }
+        bubble?.let { bubbleView ->
+            bubbleView.animate().cancel()
+            bubbleView.visibility = View.VISIBLE
+            if (immediate || disposed) {
+                bubbleView.alpha = 1f
+                bubbleView.scaleX = 1f
+                bubbleView.scaleY = 1f
+            } else {
+                bubbleView.alpha = 0f
+                bubbleView.scaleX = 0.76f
+                bubbleView.scaleY = 0.76f
+                bubbleView.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                    .setDuration(180L).start()
+            }
+        }
     }
 
     private fun closeInfoPanel() {
@@ -413,6 +516,13 @@ internal class ScreenlyOverlay(
     }
 
     private fun dp(value: Int) = (value * service.resources.displayMetrics.density).toInt()
+
+    private companion object {
+        const val BUBBLE_SIZE_DP = 72
+        const val CORNER_MARGIN_DP = 12
+        const val MENU_WIDTH_DP = 220
+        const val MENU_HEIGHT_DP = 198
+    }
 }
 
 /** Converts absolute accessibility bounds to the overlay's actual on-screen origin. */
