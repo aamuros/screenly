@@ -16,7 +16,8 @@ class AccessibleScreenAssistantTest {
     }
 
     @Test fun doesNotMarkUnchangedScreenComplete() {
-        val view = ScreenObservation("com.android.settings", 1, listOf(element("Dark theme")))
+        val view = ScreenObservation("com.android.settings", 1,
+            listOf(element("Dark theme", false, "android.widget.Switch")))
         val start = AccessibleScreenAssistant.begin("Enable dark mode", view)
         val checked = AccessibleScreenAssistant.check(start, view)
         assertEquals(AccessibleScreenAssistant.GuidancePhase.NEEDS_ACTION, checked.phase)

@@ -67,7 +67,7 @@ internal object UiExtractionDiagnostics {
         // Only inherit labels whose closest clickable ancestor is this row.
         // A nested switch belongs to itself rather than to a containing row.
         val labeledChildren = elements.indices.filter { index ->
-            labelOf(elements[index]) != null &&
+            !elements[index].clickable && labelOf(elements[index]) != null &&
                 nearestClickableAncestor(elements, index) == rowIndex
         }
         val titleIndex = labeledChildren.firstOrNull { isId(elements[it], "title") }

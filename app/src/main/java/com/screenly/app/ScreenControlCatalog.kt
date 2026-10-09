@@ -20,7 +20,8 @@ internal object ScreenControlCatalog {
             if (!node.clickable || !node.enabled || node.right <= node.left ||
                 node.bottom <= node.top) return@mapNotNull null
             val labels = nodes.indices.filter {
-                it != index && ownLabel(nodes[it]) != null && clickableAncestor(nodes, it) == index
+                it != index && !nodes[it].clickable && ownLabel(nodes[it]) != null &&
+                    clickableAncestor(nodes, it) == index
             }
             val titleIndex = labels.firstOrNull { nodes[it].viewId?.endsWith("/title") == true }
                 ?: labels.firstOrNull { nodes[it].viewId?.endsWith("/summary") != true }
