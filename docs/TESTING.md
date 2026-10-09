@@ -1,5 +1,12 @@
 # Screenly testing
 
+## Integration branch checks
+
+[INTEGRATION.md](INTEGRATION.md) contains the current build/unit/lint commands, opt-in real
+overlay test and per-candidate Gemma evaluator. Results in its linked verification directory
+distinguish synthetic policies, actual emulator rule fallback and untested model/phone behavior.
+The standalone and historical milestone procedures below remain useful comparison baselines.
+
 ## Current standalone backend checks — 2026-10-10
 
 The [backend report](NAVIGATION_BACKEND.md) records the latest focused build/unit results,

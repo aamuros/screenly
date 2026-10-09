@@ -8,13 +8,19 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.Rect
+import android.os.Build
+import android.text.InputFilter
+import android.text.InputType
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -22,6 +28,17 @@ import android.widget.TextView
 import android.widget.Toast
 import android.util.Log
 import androidx.core.graphics.withTranslation
+import com.screenly.app.ai.LocalInference
+import com.screenly.app.ai.LocalInferenceException
+import com.screenly.app.ai.navigation.NavigationEngine
+import com.screenly.app.ai.navigation.NavigationRules
+import com.screenly.app.ai.navigation.SettingsWorkflow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -37,6 +54,22 @@ internal class ScreenlyOverlay(
     private var picker: View? = null
     private var assistantMenu: View? = null
     private var infoPanel: View? = null
+    private var goalPanel: View? = null
+    private var guidancePanel: View? = null
+    private var lastGoal = ""
+    private val sessionId = nextSession.incrementAndGet()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val inference = LocalInference(service)
+    private val engine = NavigationEngine { prompt -> inference.initialize(); inference.generate(prompt) }
+    private val controller = GuidanceController(
+        scope,
+        plan = { goal, snapshot, history ->
+            engine.decideCandidates(goal, snapshot.planningElements, snapshot.candidateIndices,
+                snapshot.observation.packageName, verifiedRoutes(goal, snapshot), history)
+        },
+        refresh = { refreshObservation(); currentGuidanceSnapshot() },
+        render = ::renderGuidance
+    )
     private val bubbleBitmap by lazy {
         BitmapFactory.decodeResource(service.resources, R.drawable.screenly_bubble,
             BitmapFactory.Options().apply { inSampleSize = 4; inScaled = false })
@@ -45,6 +78,9 @@ internal class ScreenlyOverlay(
     private var outsideDismissalDownTime: Long? = null
     private var bubbleClickClosesPicker = false
 
+    val isEnteringGoal: Boolean
+        get() = goalPanel != null
+
     fun updateObservation(next: ScreenObservation) {
         if (disposed) return
         if (state.update(next)) {
@@ -52,8 +88,10 @@ internal class ScreenlyOverlay(
             closeMenu()
             closeInfoPanel()
             clearHighlight()
+            clearGuidancePanel()
         }
         showBubble()
+        controller.observe(currentGuidanceSnapshot())
     }
 
     fun clearSelection() {
@@ -62,14 +100,25 @@ internal class ScreenlyOverlay(
         closeMenu()
         closeInfoPanel()
         clearHighlight()
+        clearGuidancePanel()
+        controller.observe(null)
     }
 
-    fun clearObservation() {
+    fun clearObservation(showWaiting: Boolean = false) {
         state.clear()
         closePicker()
         closeMenu()
         closeInfoPanel()
+        closeGoalPanel()
         clearHighlight()
+        // Keep one stable caption for an unavailable root; recreating it emits more window
+        // events. Locks, our activity and lifecycle cleanup still remove every overlay.
+        if (!showWaiting || controller.status != GuidanceStatus.WAITING_FOR_SCREEN) clearGuidancePanel()
+        controller.observe(null)
+        if (!showWaiting) clearGuidancePanel()
+        else if (controller.status == GuidanceStatus.WAITING_FOR_SCREEN && guidancePanel == null) {
+            showGuidanceMessage(service.getString(R.string.guidance_waiting))
+        }
         val previousBubble = bubble
         bubble = null
         previousBubble?.let(::detach)
@@ -78,8 +127,16 @@ internal class ScreenlyOverlay(
     }
 
     fun dispose() {
+        if (disposed) return
         disposed = true
+        controller.close()
         clearObservation()
+        // Main.immediate enters close's NonCancellable block before the owner scope is cancelled.
+        scope.launch {
+            try { inference.close() }
+            catch (_: LocalInferenceException) { Log.w("ScreenlyGuidance", "Local engine cleanup failed.") }
+        }
+        scope.cancel()
     }
 
     private fun showBubble() {
@@ -98,12 +155,13 @@ internal class ScreenlyOverlay(
             setOnClickListener {
                 if (disposed || bubble !== it) return@setOnClickListener
                 val closesPanel = picker != null || assistantMenu != null ||
-                    infoPanel != null || bubbleClickClosesPicker
+                    infoPanel != null || goalPanel != null || bubbleClickClosesPicker
                 bubbleClickClosesPicker = false
                 if (closesPanel) {
                     closePicker()
                     closeMenu()
                     closeInfoPanel()
+                    closeGoalPanel()
                 } else showMenu()
             }
         }
@@ -123,7 +181,7 @@ internal class ScreenlyOverlay(
                 MotionEvent.ACTION_DOWN -> {
                     // ACTION_OUTSIDE can dismiss the picker before this window receives DOWN.
                     bubbleClickClosesPicker = picker != null || assistantMenu != null ||
-                        infoPanel != null || outsideDismissalDownTime == event.downTime
+                        infoPanel != null || goalPanel != null || outsideDismissalDownTime == event.downTime
                     downX = event.rawX
                     downY = event.rawY
                     startX = params.x
@@ -139,6 +197,7 @@ internal class ScreenlyOverlay(
                         closePicker()
                         closeMenu()
                         closeInfoPanel()
+                        closeGoalPanel()
                         val area = usableScreenBounds()
                         params.x = (startX + deltaX.toInt()).coerceIn(
                             area.left, (area.right - params.width).coerceAtLeast(area.left)
@@ -178,13 +237,7 @@ internal class ScreenlyOverlay(
             if (disposed || assistantMenu !== expectedView) return@actionClick
             closeMenu()
             when (action) {
-                AssistantAction.GUIDE_ME -> {
-                    if (refreshObservation()) showPicker()
-                    else Toast.makeText(service, R.string.screen_changed, Toast.LENGTH_SHORT).show()
-                }
-                AssistantAction.ASK_AI -> showInfoPanel(
-                    R.string.assistant_action_ask, R.string.assistant_ask_unavailable
-                )
+                AssistantAction.GUIDE_ME, AssistantAction.ASK_AI -> showGoalPanel()
                 AssistantAction.EXPLAIN -> showInfoPanel(
                     R.string.assistant_action_explain, R.string.assistant_explain_unavailable
                 )
@@ -254,6 +307,147 @@ internal class ScreenlyOverlay(
     private fun closeInfoPanel() {
         val previous = infoPanel
         infoPanel = null
+        previous?.let(::detach)
+    }
+
+    private fun currentGuidanceSnapshot(): GuidanceSnapshot? {
+        if (disposed) return null
+        val observation = state.snapshot ?: return null
+        val display = windowManager.currentWindowMetrics.bounds
+        return guidanceSnapshot(SnapshotKey(sessionId, state.revision), observation, display.width(), display.height())
+    }
+
+    private fun verifiedRoutes(goal: String, snapshot: GuidanceSnapshot): Set<Int> = SettingsWorkflow.verifiedRoutes(
+        goal, snapshot.observation.packageName,
+        Build.MANUFACTURER.equals("Google", ignoreCase = true) || Build.MANUFACTURER.equals("Android", ignoreCase = true),
+        snapshot.planningElements, snapshot.candidateIndices, Build.VERSION.SDK_INT
+    )
+
+    private fun showGoalPanel() {
+        if (disposed || goalPanel != null) return
+        closePicker()
+        closeInfoPanel()
+        val area = usableScreenBounds()
+        val content = LinearLayout(service).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(16), dp(12), dp(16), dp(12))
+            setBackgroundColor(Color.WHITE)
+        }
+        content.addView(TextView(service).apply {
+            setText(R.string.guidance_goal_title)
+            setTextColor(Color.BLACK)
+            textSize = 18f
+        })
+        val input = EditText(service).apply {
+            hint = service.getString(R.string.guidance_goal_hint)
+            setText(lastGoal)
+            setTextColor(Color.BLACK)
+            setHintTextColor(Color.DKGRAY)
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
+            filters = arrayOf(InputFilter.LengthFilter(160))
+            imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_EXTRACT_UI
+            maxLines = 3
+        }
+        content.addView(input)
+        fun submit() {
+            val goal = input.text.toString().trim()
+            if (goal.isBlank()) { input.error = service.getString(R.string.guidance_goal_required); return }
+            lastGoal = goal
+            closeGoalPanel()
+            refreshObservation()
+            controller.start(goal)
+        }
+        input.setOnEditorActionListener { _, action, _ ->
+            if (action == EditorInfo.IME_ACTION_DONE) { submit(); true } else false
+        }
+        fun button(label: Int, action: () -> Unit) {
+            content.addView(Button(service).apply { setText(label); isAllCaps = false; setOnClickListener { action() } })
+        }
+        button(R.string.guidance_start, ::submit)
+        button(R.string.guidance_retry) { closeGoalPanel(); controller.retry() }
+        button(R.string.guidance_stop) { closeGoalPanel(); controller.stop() }
+        button(R.string.guidance_confirm) {
+            closeGoalPanel(); controller.stop()
+            showGuidanceMessage(service.getString(R.string.guidance_user_confirmed))
+        }
+        button(R.string.guidance_manual_picker) {
+            closeGoalPanel(); controller.stop()
+            if (refreshObservation()) showPicker()
+        }
+        button(R.string.assistant_close) { closeGoalPanel() }
+        val view = ScrollView(service).apply { addView(content) }
+        val params = anchoredPanelParams(min(dp(320), area.width()), min(dp(420), area.height() * 2 / 3)).apply {
+            flags = flags and WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE.inv()
+            softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+        }
+        if (attach(view, params)) goalPanel = view
+    }
+
+    private fun closeGoalPanel() {
+        val previous = goalPanel
+        goalPanel = null
+        if (previous != null) {
+            service.getSystemService(InputMethodManager::class.java).hideSoftInputFromWindow(previous.windowToken, 0)
+            detach(previous)
+        }
+    }
+
+    private fun renderGuidance(update: GuidanceUpdate) {
+        if (disposed) return
+        clearHighlight()
+        clearGuidancePanel()
+        val message = when (update.status) {
+            GuidanceStatus.IDLE -> return
+            GuidanceStatus.WAITING_FOR_SCREEN -> service.getString(R.string.guidance_waiting)
+            GuidanceStatus.PLANNING -> service.getString(R.string.guidance_planning)
+            GuidanceStatus.UNCERTAIN -> service.getString(
+                if (update.result?.decision?.failure != null) R.string.guidance_uncertain_model_unavailable else R.string.guidance_uncertain
+            )
+            GuidanceStatus.NEXT -> {
+                val request = update.request ?: return
+                val result = update.result ?: return
+                val snapshot = request.snapshot
+                val index = result.decision.elementIndex ?: return
+                val element = snapshot.observation.elements.getOrNull(index) ?: return
+                if (!controller.canPresent(request) || index !in snapshot.candidateIndices ||
+                    !state.canSelect(snapshot.observation, snapshot.key.revision, element) ||
+                    NavigationRules.rejection(SettingsWorkflow.canonicalGoal(request.goal), index,
+                        snapshot.planningElements, snapshot.candidateIndices, verifiedRoutes(request.goal, snapshot)) != null
+                ) return
+                showHighlight(element)
+                val label = snapshot.planningElements[index].text ?: snapshot.planningElements[index].contentDescription
+                    ?: service.getString(R.string.unlabelled_element)
+                if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance",
+                    "next session=$sessionId revision=${snapshot.key.revision} index=$index source=${result.decision.source} " +
+                        "outcome=${result.decision.modelOutcome} ms=${result.decision.totalMillis}")
+                service.getString(if (result.decision.failure != null) R.string.guidance_step_model_unavailable else R.string.guidance_step, label)
+            }
+        }
+        showGuidanceMessage(message)
+    }
+
+    private fun showGuidanceMessage(message: String) {
+        clearGuidancePanel()
+        val area = usableScreenBounds()
+        val view = TextView(service).apply {
+            text = message
+            textSize = 15f
+            setTextColor(Color.WHITE)
+            setBackgroundColor(Color.argb(230, 28, 63, 95))
+            setPadding(dp(12), dp(8), dp(12), dp(8))
+            importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_YES
+        }
+        val params = overlayParams(min(dp(320), area.width()), WindowManager.LayoutParams.WRAP_CONTENT).apply {
+            x = area.left
+            y = area.top
+            flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        }
+        if (attach(view, params)) guidancePanel = view
+    }
+
+    private fun clearGuidancePanel() {
+        val previous = guidancePanel
+        guidancePanel = null
         previous?.let(::detach)
     }
 
@@ -413,6 +607,10 @@ internal class ScreenlyOverlay(
     }
 
     private fun dp(value: Int) = (value * service.resources.displayMetrics.density).toInt()
+
+    private companion object {
+        val nextSession = AtomicLong()
+    }
 }
 
 /** Converts absolute accessibility bounds to the overlay's actual on-screen origin. */

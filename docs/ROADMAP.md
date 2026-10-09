@@ -144,21 +144,23 @@ Jointly agree the demo quality threshold.
 TAP/NONE parsing, original-index/ambiguity/state/limited-route validation and explicit fallback.
 [Current report](NAVIGATION_BACKEND.md) records shared synthetic fixtures, focused host checks,
 real offline API 30 model/rule/fallback comparisons, measurements and retained semantic failures.
-No shared Planner/LlmPlanner/RulePlanner implementation or session/request validation exists.
+No shared Planner/LlmPlanner/RulePlanner adapter exists. The integration branch adds local
+session/request/goal validation and per-candidate evaluation; [current evidence](INTEGRATION.md).
 Recorded live snapshots, agreed quality budgets, broader language coverage and physical testing
-remain outstanding. C0 gates integration; M5 is unchanged.
+remain outstanding. The explicit integration request authorizes local contracts on the new
+integration branch; agreement and merge into main remain outstanding.
 
 ## M5 — End-to-End Guidance
 
 **Objective:** Guide a goal across manual actions with deterministic state handling.
-**Owner:** Developer 1; both integrate/test the real planner. **Status: NOT STARTED.**
+**Owner:** Developer 1; both integrate/test the real planner. **Status: IN PROGRESS.**
 
-- [ ] Add goal input and deterministic GuidanceController with observable state.
+- [x] Add goal input and deterministic GuidanceController with observable state.
 - [ ] Integrate MockPlanner first, independently of M3/M4.
-- [ ] Connect real planner results to validated overlay targets.
-- [ ] Detect changes, cancel old work and reject stale snapshot/goal/session results.
-- [ ] Guide multistep navigation with stop/error/recovery behavior.
-- [ ] Verify completion using observed target state or explicit user confirmation.
+- [x] Connect local backend results to validated overlay targets (real Gemma/device acceptance pending).
+- [x] Detect changes, cancel old work and reject stale snapshot/goal/session results in source and focused controller tests.
+- [x] Implement multistep navigation with stop/error/recovery behavior (device scope in integration report).
+- [x] Require explicit user confirmation for completion; no automatic completion inference.
 
 **Dependencies:** M0 + M1/M2 for mock flow; M3/M4 for real AI acceptance.
 **Deliverable:** Goal → plan → highlight → manual action → fresh observation loop.
@@ -167,8 +169,8 @@ navigation, goal replacement, lock and reconnect cannot revive old results. Comp
 corroborated, not inferred solely from model prose.
 **Verification:** TESTING M5; delayed MockPlanner/state tests, physical real-model tasks and
 deliberate navigation during inference.
-**Evidence/gaps:** Existing change/revision handling protects the manual picker only, not AI
-requests; there is no guidance controller or goal UI.
+**Evidence/gaps:** [Integration report](INTEGRATION.md) records source, commands, results and
+remaining device/model checks. Main and physical acceptance are not promoted from these checks.
 
 ## M6 — Hackathon Testing & Demo
 

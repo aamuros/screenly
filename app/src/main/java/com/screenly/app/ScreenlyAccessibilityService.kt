@@ -96,7 +96,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         lastCapture = SystemClock.uptimeMillis()
         val root = activeApplicationRoot()
         if (root == null) {
-            clearObservation()
+            clearObservation(showWaiting = true)
             if (BuildConfig.DEBUG) Log.d(TAG, "Active window unavailable; observation skipped.")
             return false
         }
@@ -133,6 +133,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
                 it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isActive
             } ?: appWindows.firstOrNull {
                 it.type == AccessibilityWindowInfo.TYPE_APPLICATION && it.isFocused
+            } ?: appWindows.firstOrNull {
+                // Our focusable goal editor temporarily owns focus. Keep observing only the
+                // same still-present application window, under the existing unlock/privacy guards.
+                overlay?.isEnteringGoal == true && it.type == AccessibilityWindowInfo.TYPE_APPLICATION &&
+                    it.id == lastObservation?.windowId
             }
             return active?.root
         } finally {
@@ -144,7 +149,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         val elements = mutableListOf<AccessibleUiElement>()
         var visitedNodes = 0
 
-        fun visit(node: AccessibilityNodeInfo, depth: Int) {
+        fun visit(node: AccessibilityNodeInfo, depth: Int, parentIndex: Int?) {
             if (visitedNodes >= MAX_NODES || depth > MAX_DEPTH) return
             visitedNodes++
 
@@ -154,9 +159,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             ) return
 
             val editable = node.isEditable
+            var capturedIndex = parentIndex
             if (node.isVisibleToUser) {
                 val bounds = Rect()
                 node.getBoundsInScreen(bounds)
+                capturedIndex = elements.size
                 elements += AccessibleUiElement(
                     text = if (editable) null else sanitizeObservationText(node.text),
                     contentDescription = if (editable) null else sanitizeObservationText(node.contentDescription),
@@ -169,7 +176,8 @@ class ScreenlyAccessibilityService : AccessibilityService() {
                     left = bounds.left,
                     top = bounds.top,
                     right = bounds.right,
-                    bottom = bounds.bottom
+                    bottom = bounds.bottom,
+                    parentIndex = parentIndex
                 )
             }
 
@@ -183,14 +191,14 @@ class ScreenlyAccessibilityService : AccessibilityService() {
                     continue
                 }
                 try {
-                    visit(child, depth + 1)
+                    visit(child, depth + 1, capturedIndex)
                 } finally {
                     recycleIfNeeded(child)
                 }
             }
         }
 
-        visit(root, 0)
+        visit(root, 0, null)
         if (BuildConfig.DEBUG && visitedNodes >= MAX_NODES) {
             Log.d(TAG, "Observation reached the $MAX_NODES-node traversal limit.")
         }
@@ -217,11 +225,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         super.onDestroy()
     }
 
-    private fun clearObservation() {
+    private fun clearObservation(showWaiting: Boolean = false) {
         handler.removeCallbacks(capture)
         observationPending = false
         lastObservation = null
-        overlay?.clearObservation()
+        overlay?.clearObservation(showWaiting)
     }
 
     private fun registerScreenReceiver() {

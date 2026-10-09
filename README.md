@@ -7,15 +7,17 @@ performs the action, and Screenly observes the next screen. Inference must work 
 
 ## Current status
 
-The current app is a **manual accessibility prototype**: sanitized screen observations, a
-draggable floating assistant icon, a four-action menu, an element picker, and touch-through highlighting. An isolated local
-inference component and opt-in instrumented smoke test exist; real phone inference is unverified
-and is not connected to the UI. Goal input and multistep guidance are not implemented.
+The integration branch connects sanitized observations, the floating assistant's **Guide Me**
+goal input, local inference, deterministic validation, and touch-through highlighting.
+Gemma evaluates controls individually with YES/NO answers; Android supplies original indices
+and bounds. Unsupported or ambiguous decisions abstain. Verified rules can provide a step when
+AI is unavailable, with separate test diagnostics. The manual picker is still available.
+See [running and verifying the integration](docs/INTEGRATION.md) for supported scope and evidence.
 
 M1 (accessibility) and M2 (overlays) are **IMPLEMENTED — UNVERIFIED** against full acceptance:
 automated and API 35 Pixel Tablet emulator evidence exists, but physical-device verification
 is outstanding. M0 contract setup is **IN PROGRESS**; M3 is **IMPLEMENTED — UNVERIFIED**;
-M4–M6 are **NOT STARTED**. See the
+M4 and M5 are **IN PROGRESS**; M6 is **NOT STARTED**. See the
 [roadmap](docs/ROADMAP.md) and preserved [verification report](VERIFICATION.md).
 
 ## Stack and scope
@@ -24,7 +26,8 @@ M4–M6 are **NOT STARTED**. See the
   AccessibilityNodeInfo, WindowManager accessibility overlays, one Gradle `app` module.
 - Isolated M3: Google LiteRT-LM **0.10.2**, coroutines, CPU text inference; INT4 Gemma 3 1B
   candidate pending exact artifact/phone compatibility and offline benchmarking.
-- Planned: StateFlow, deterministic guidance, LlmPlanner and RulePlanner.
+- Implemented integration: a coroutine GuidanceController with session/revision/request/goal
+  checks. Shared Planner adapters and StateFlow remain unimplemented.
 - No authentication, backend, cloud inference, database, or automatic taps. No network
   permission is requested. The APK contains no model; [ADB provisioning and M3 evidence](docs/LOCAL_AI.md)
   are documented separately.
@@ -39,7 +42,9 @@ app/src/main/java/com/screenly/app/
   ScreenObservation.kt             Snapshot equality and selection revisions
   ScreenlyOverlay.kt               Native bubble, menu, picker, and highlight windows
   FloatingAssistantViews.kt        Live four-action menu and information panels
-  ai/                             Isolated local model verification and inference
+  GuidanceSnapshot.kt              Copied snapshots, original indices and derived row labels
+  GuidanceController.kt            Goal, asynchronous requests and stale-result rejection
+  ai/                             Local inference, candidate judgments and validation
 app/src/main/res/xml/              Accessibility service configuration
 app/src/test/                     Observation-policy and sanitizer tests
 app/src/androidTest/              App-context test and opt-in local inference smoke test
@@ -68,9 +73,10 @@ Open Screenly → **Open Accessibility Settings** → **Screenly** under downloa
 services → enable **Use Screenly**. If sideloading is restricted, use system **App info** →
 **Allow restricted settings**, then retry. No “Display over other apps” permission is needed.
 
-Open Android Settings, tap the assistant icon, choose **Guide Me**, select an enabled clickable row, then manually tap the
-highlighted control. Selection does not activate it. Scroll/navigation should clear the
-selection; Screenly's own activity hides overlays.
+Open Android Settings, tap the assistant icon, choose **Guide Me**, and enter a goal.
+Manually tap each verified highlighted control. Screen changes discard old selections and
+trigger a fresh check. Guide Me also offers the original manual picker. Screenly's own
+activity and the lock screen hide overlays; unavailable roots clear highlights and show waiting.
 
 ## Shared documentation
 

@@ -7,8 +7,9 @@ One Kotlin application module (`com.screenly.app`); no backend, database or netw
 An isolated `ai/LocalInference` component now verifies a private `.litertlm` file and uses
 LiteRT-LM 0.10.2 on CPU. Its suspend initialization/generation/close calls run on IO with a
 mutex; it reuses the engine and closes per-prompt conversations. Opt-in instrumented smoke
-and navigation tests consume it. No activity/service/overlay or shared planner integration exists, and real
-phone inference remains unverified. See [M3 implementation and evidence](LOCAL_AI.md).
+and navigation tests consume it. The integration branch also calls it from the floating
+overlay's session; shared Planner adapters and real phone inference remain unverified.
+See [integration behavior/evidence](INTEGRATION.md) and [M3 evidence](LOCAL_AI.md).
 
 M4 adds isolated `ai/navigation/NavigationProtocol`, `NavigationRules` and `NavigationEngine`.
 They consume copied element values and caller-supplied allowed original indices; they do not
@@ -19,12 +20,35 @@ checks. NONE is abstention, never completion. Diagnostics distinguish model outc
 [Standalone backend evaluation and integration](NAVIGATION_BACKEND.md) records current evidence
 and semantic limitations. Shared RulePlanner/LlmPlanner adapters still require M0 approval.
 
+The integration adds `GuidanceController` and `GuidanceSnapshot`, without implementing the
+generic Planner proposal below. The overlay remains the authoritative revision owner and
+allocates a new process-local session ID for each instance. Requests also carry trusted goal
+and request generations. Before rendering, the controller refreshes Android observations;
+the overlay rechecks identity, membership, state, viewport and semantic policy. Unchanged
+snapshots do not rerun inference unless the user explicitly rechecks. Disposal cancels work
+and closes the retained native engine through its serialized, non-cancellable cleanup.
+
+`AccessibleUiElement` adds an optional `parentIndex` for the nearest captured ancestor.
+Existing fields, ordering and screen-pixel bounds retain their semantics. Extraction still
+skips protected/editable subtrees. Planning copies may borrow a control's actual descendant
+title/summary, following those copied relationships; the original observation is unchanged.
+No live accessibility nodes or model-supplied coordinates cross the planning boundary.
+
+`NavigationEngine.decideCandidates` uses independent YES/NO judgments, attaches original
+indices in code, requires one model match, and applies full-set validation. A separately
+recorded deterministic fallback selects only one approved target. Live intermediate routes
+require a stock Settings profile and a current menu summary advertising the requested
+destination, or the explicitly observed API 37 Internet-to-Wi-Fi route. Other APIs and OEMs
+do not inherit that route. The legacy TAP/NONE path remains for existing tests and paired comparisons.
+Neither path treats an abstention as completion. Completion is explicitly user-confirmed.
+
 ```text
 MainActivity (Compose) → Android accessibility settings / enabled-service status
 Accessibility events → ScreenlyAccessibilityService → ScreenObservation
                                                      ↓
                                               ScreenlyOverlay
-                                          bubble → manual picker
+                                          bubble → goal / manual picker
+                                          goal → GuidanceController → local candidate evaluation
                                           validated element → highlight
                                                      ↓
                                          user touches the target app
@@ -71,7 +95,10 @@ Revision counters are per-state-instance; reconnect does **not** supply a global
 Disposal/instance guards currently protect manual callbacks only. See
 [VERIFICATION.md](../VERIFICATION.md) for emulator evidence and untested phone behavior.
 
-## Planned responsibilities (not implemented)
+## Shared planner responsibilities (proposal)
+
+The local integration controller described above exists. Generic shared Planner/MockPlanner
+adapters and the publication/StateFlow proposal below remain unimplemented.
 
 | Component role | Owner | Minimal responsibility |
 | --- | --- | --- |

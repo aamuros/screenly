@@ -31,6 +31,18 @@ internal data class NavigationDecision(
  * The caller owns request identity and must reject stale results independently of cancellation.
  */
 internal class NavigationEngine(private val generate: suspend (String) -> String) {
+    /** Live integration uses independent candidate judgments and explicit, observed route hints. */
+    suspend fun decideCandidates(
+        goal: String,
+        elements: List<AccessibleUiElement>,
+        candidateIndices: List<Int>,
+        packageName: String,
+        verifiedRouteIndices: Set<Int> = emptySet(),
+        previousSuggestions: List<String> = emptyList()
+    ): CandidateDecision = evaluateCandidates(
+        generate, goal, elements, candidateIndices, packageName, verifiedRouteIndices, previousSuggestions
+    )
+
     suspend fun decide(
         goal: String,
         elements: List<AccessibleUiElement>,
