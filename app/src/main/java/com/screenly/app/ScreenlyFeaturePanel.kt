@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ScrollView
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import kotlinx.coroutines.CancellationException
@@ -191,6 +192,12 @@ internal class ScreenlyFeaturePanel(
             if (bottom != previousBottom) handler.post { reposition() }
         }
         val previous = root
+        val oldScroll = previous as? ScrollView
+        val oldScrollY = oldScroll?.scrollY ?: 0
+        val oldMaxScroll = oldScroll?.let {
+            (it.getChildAt(0)?.height ?: 0) - it.height
+        }?.coerceAtLeast(0) ?: 0
+        val wasNearBottom = oldScroll == null || oldMaxScroll - oldScrollY <= dp(18)
         previous?.animate()?.cancel()
         previous?.let(::detach)
         val targetWidth = dp(280)
@@ -201,6 +208,15 @@ internal class ScreenlyFeaturePanel(
         try {
             windowManager.addView(panel, params)
             root = panel
+            // Re-rendering a processing state should not jump chat/guide history to the top.
+            (panel as? ScrollView)?.let { scroller ->
+                scroller.post {
+                    if (root !== scroller) return@post
+                    val maxScroll = ((scroller.getChildAt(0)?.height ?: 0) - scroller.height)
+                        .coerceAtLeast(0)
+                    scroller.scrollTo(0, if (wasNearBottom) maxScroll else oldScrollY.coerceAtMost(maxScroll))
+                }
+            }
             bubble.visibility = View.INVISIBLE
         } catch (_: WindowManager.BadTokenException) {
             dismiss(immediate = true)
