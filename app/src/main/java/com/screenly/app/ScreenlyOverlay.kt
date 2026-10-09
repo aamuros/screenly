@@ -601,7 +601,7 @@ internal class ScreenlyOverlay(
         })
         val input = EditText(service).apply {
             hint = service.getString(R.string.guidance_goal_hint)
-            setText(lastGoal)
+            setText(if (assistantAction == AssistantAction.GUIDE_ME) lastGoal else "")
             setTextColor(Color.BLACK)
             setHintTextColor(Color.DKGRAY)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
@@ -623,8 +623,10 @@ internal class ScreenlyOverlay(
         fun submit() {
             val goal = input.text.toString().trim()
             if (goal.isBlank()) { input.error = service.getString(R.string.guidance_goal_required); return }
-            lastGoal = goal
-            if (assistantAction == AssistantAction.GUIDE_ME) history.rememberGoal(goal)
+            if (assistantAction == AssistantAction.GUIDE_ME) {
+                lastGoal = goal
+                history.rememberGoal(goal)
+            }
             closeGoalPanel()
             refreshObservation()
             invalidateQuestion()
