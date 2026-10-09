@@ -34,7 +34,7 @@ jobs:
       - name: Compile debug APK and run JVM tests
         run: |
           chmod +x gradlew
-          ./gradlew :app:assembleDebug :app:testDebugUnitTest --no-daemon --stacktrace
+          ./gradlew :app:assembleDebug :app:testDebugUnitTest :app:assembleDebugAndroidTest --no-daemon --stacktrace
       - name: Save reports on failure
         if: failure()
         uses: actions/upload-artifact@v4
