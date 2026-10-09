@@ -2,10 +2,12 @@ package com.screenly.app.ai
 
 import android.content.Context
 import com.google.ai.edge.litertlm.Backend
+import com.google.ai.edge.litertlm.BenchmarkInfo
 import com.google.ai.edge.litertlm.Content
 import com.google.ai.edge.litertlm.ConversationConfig
 import com.google.ai.edge.litertlm.Engine
 import com.google.ai.edge.litertlm.EngineConfig
+import com.google.ai.edge.litertlm.ExperimentalApi
 import com.google.ai.edge.litertlm.Message
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
@@ -71,16 +73,25 @@ internal class LocalInference(
         }
     }
 
-    /** Each prompt gets a fresh conversation, while retaining the loaded engine. */
-    suspend fun generate(prompt: String): String = withContext(Dispatchers.IO) {
+    /**
+     * Each prompt gets a fresh conversation, while retaining the loaded engine.
+     * Diagnostic callers must enable LiteRT-LM benchmarks before initialization to inspect tokens.
+     */
+    @OptIn(ExperimentalApi::class)
+    suspend fun generate(
+        prompt: String,
+        inspectResponse: ((Message, BenchmarkInfo) -> Unit)? = null
+    ): String = withContext(Dispatchers.IO) {
         mutex.withLock {
             check(!closed) { "Local inference is closed." }
             require(prompt.isNotBlank()) { "Prompt must not be blank." }
-            require(prompt.length <= 1000) { "Smoke-test prompts must be at most 1000 characters." }
+            require(prompt.length <= 1000) { "Local inference prompts must be at most 1000 characters." }
             val readyEngine = checkNotNull(engine) { "Initialize the local model before generating text." }
             try {
                 readyEngine.createConversation(ConversationConfig(automaticToolCalling = false)).use { conversation ->
-                    val response = modelResponseText(conversation.sendMessage(prompt))
+                    val message = conversation.sendMessage(prompt)
+                    inspectResponse?.invoke(message, conversation.getBenchmarkInfo())
+                    val response = modelResponseText(message)
                     currentCoroutineContext().ensureActive()
                     response
                 }

@@ -19,6 +19,8 @@ class NavigationProtocolTest {
         assertFalse(prompt.contains("android.widget"))
         assertFalse(prompt.contains("1080"))
         assertFalse(prompt.contains("viewId"))
+        assertTrue(prompt.contains("Reply with exactly one of: TAP:1, TAP:2, NONE."))
+        assertTrue(prompt.contains("Candidates are enabled and clickable"))
     }
 
     @Test
@@ -69,7 +71,7 @@ class NavigationProtocolTest {
     @Test
     fun malformedOutputCannotBeRepairedIntoASelection() {
         listOf(
-            "", " ", "tap:1", "none", "TAP:-1", "TAP:+1", "TAP:01", "TAP:1.0", "TAP:1e0",
+            "", " ", "tap:1", "none", "None", "None\n", "1\n", "TAP:-1", "TAP:+1", "TAP:01", "TAP:1.0", "TAP:1e0",
             "TAP: 1", "TAP:١", "TAP:2147483648", "TAP:", "TAP:1\nNONE", "TAP:1\nTAP:2",
             "TAP:1 because it matches", "Choose TAP:1", "```TAP:1```", "NONE:done", "COMPLETE",
             "{\"type\":\"next\",\"elementIndex\":1}", "TAP:1,x:100,y:200", " ".repeat(33) + "NONE"

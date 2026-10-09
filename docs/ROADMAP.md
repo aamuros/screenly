@@ -148,6 +148,19 @@ session/request validation or real model navigation accuracy/latency exists. [M4
 records required Developer 1 approval, thin adapters and offline fixture evaluation. C0 approval
 remains the integration gate; phone absence is not a development gate. M5 is unchanged.
 
+On the separate `test/m4-fixture-ui` branch, the user additionally authorized a debug-only
+manual fixture UI independent of Developer 1. Builds and 21 navigation unit tests pass;
+one offline API 30 font-size evaluation executed, returning `None` (invalid canonical output),
+while rules chose index 1. [Lab verification](TESTING.md#debug-fixture-lab--2026-10-09)
+records the 1,927 ms loading+generation call and raw evidence. This does not implement shared
+planners, satisfy M4 quality acceptance or advance M5.
+
+Response investigation follow-up: [exact prompts and repeated API 30 evidence](verification/m4-response-investigation-api30-2026-10-09.md)
+confirms literal `None`/strict syntax rejection. Explicit allowed replies fix `display-font`
+in 5/5 final runs, but missing/ambiguous/disabled-target cases still produce 15/15 wrong legal
+selections. 31 targeted units and execution/validation instrumentation pass; no AI quality
+acceptance, shared Planner integration or physical verification is claimed. M4 stays IN PROGRESS.
+
 ## M5 — End-to-End Guidance
 
 **Objective:** Guide a goal across manual actions with deterministic state handling.

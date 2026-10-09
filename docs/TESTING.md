@@ -256,3 +256,112 @@ merged shared contracts, thin RulePlanner/LlmPlanner adapters and actual offline
 fixture evaluation on the same API 30 AVD. Developer 1 supplies immutable observations,
 allowed original indices, authoritative keys and independent freshness/request/goal validation.
 No shared contracts implemented/merged, no M5 work, no physical acceptance claimed.
+
+## Debug fixture lab — 2026-10-09
+
+Date / tester / commit / scope: 2026-10-09, Codex for Developer 2; preparation committed as
+`f7442d6`, then `test/m4-fixture-ui` created from it. Lab changes are uncommitted on that
+branch. User-authorized debug-only manual fixture/model testing is independent of M0;
+no shared Planner APIs, Developer 1 source, main manifest, Gradle or runtime changes.
+Environment: same macOS/JDK/SDK and `Screenly_M3_API30`, API 30 ARM64. Existing private
+Gemma INT4 model and LiteRT-LM 0.10.2 CPU/four-thread configuration reused unchanged.
+
+Files: debug manifest, `NavigationLabActivity.kt`, `NavigationLabRunner.kt`, lab string
+resources, `NavigationLabRunnerTest.kt`, opt-in `NavigationLabInferenceTest.kt`; existing
+fixtures moved into `src/debug` and protocol/rule tests into `src/testDebug` for shared
+debug data without packaging the lab in release builds. Architecture, roadmap, Local AI,
+M4 plan and this testing document updated; raw evidence added below.
+
+Build/test command (exit 0):
+
+```sh
+./gradlew :app:assembleDebug :app:testDebugUnitTest --tests 'com.screenly.app.ai.navigation.*' :app:assembleDebugAndroidTest --console=plain --quiet
+```
+
+After source relocation, incremental Kotlin outputs initially omitted the two moved test
+classes and reported only six runner tests. Generated-class inspection confirmed the
+omission. A `:app:sourceSets` diagnostic task was unavailable with this AGP version.
+Forced targeted compilation with incremental compilation disabled corrected test discovery:
+
+```sh
+./gradlew :app:compileDebugUnitTestKotlin --rerun -Pkotlin.incremental=false :app:testDebugUnitTest --rerun --tests 'com.screenly.app.ai.navigation.*' --console=plain --quiet
+```
+
+Final result: **21 tests, zero failures/errors/skips**: NavigationProtocolTest 9,
+NavigationRulesTest 6, NavigationLabRunnerTest 6. Tests establish that valid wrong selections
+remain distinct from the rule answer; invalid/noncandidate outputs, NONE and runtime failures
+cannot display rule success as a model target; rejected prompts skip generation and cancellation
+propagates. No JNI in these host tests. No full suite, release build or lint run.
+
+Fresh instrumented command:
+
+```sh
+adb -s emulator-5554 shell am instrument -w -r \
+  -e class com.screenly.app.ai.navigation.NavigationLabInferenceTest \
+  -e navigationLab true \
+  com.screenly.app.test/androidx.test.runner.AndroidJUnitRunner
+```
+
+| Check | Actual / limitation |
+| --- | --- |
+| Debug and test APK builds | PASS |
+| Host navigation checks | PASS: 21 tests |
+| Real offline fixture harness | PASS: `OK (1 test)`; passing means execution/validation, not accuracy |
+| Model fixture result | `display-font`, expected index 1; raw `None`; INVALID; no target selected |
+| Rule baseline | Index 1, independently matching this fixture; not counted as AI success |
+| Model call time | 1,927 ms including integrity/load and generation; one sample, not isolated generation latency |
+| Offline state | Global 1/0/0, no active default network before/after; guarded in test |
+| Lab launch | PASS: ActivityManager reports NavigationLabActivity resumed with its window |
+| Manual UI taps, visual/layout checks, rotation/cancellation on device | NOT RUN; user can now test the open lab; source and host cancellation checks only |
+| Full fixture accuracy, multiple-run latency/memory, physical device | NOT MEASURED / NOT RUN |
+
+This one model call produced no correct target, one invalid response and zero canonical
+abstentions. It is not an overall navigation accuracy benchmark. Protocol/prompt quality
+still needs investigation; parser strictness was preserved rather than repairing the answer.
+No deterministic fallback was presented as model output.
+
+Installed APK identities:
+
+| Artifact | Bytes / SHA-256 |
+| --- | --- |
+| app-debug.apk | 79,640,138 / `eec30500f91b1f694f47fe098d6b6df3c63624c2c82f8287cccdc90c5677c4bd` |
+| app-debug-androidTest.apk | 1,466,463 / `293f80b1e34ee43af3dfd736a93736b311169266c1466a5ef57aef77fe5d6591` |
+
+Original connectivity 0/1/1 and service enablement/binding restored; no crashed-service
+entries. Lab then launched for manual testing. This is not full Developer 1 UI regression
+verification. No model bytes committed, no push/merge or M5 implementation.
+Evidence: [complete offline lab execution](verification/m4-lab-api30-2026-10-09.txt).
+Next: manually exercise the [lab](M4_PLAN.md#debug-only-manual-fixture-lab), collect real
+responses across fixtures, then review protocol/prompt changes. Shared integration still
+requires Developer 1's C0 approval and freshness/eligibility publication.
+
+
+## M4 response investigation — 2026-10-09
+
+Date / tester / commit / milestone: 2026-10-09, Codex for Developer 2, `f7442d6` plus the
+existing lab and response investigation on `test/m4-fixture-ui`; M4 remains IN PROGRESS.
+Environment: `Screenly_M3_API30`, API 30 ARM64; unchanged Gemma 3 1B INT4 / LiteRT-LM 0.10.2
+CPU/four-thread/1,024-token configuration. Original private model reused and device hash checked.
+
+Expected / actual: application and test APK builds PASS; 31 targeted AI/navigation unit tests
+PASS (0 failures/errors/skips). Final offline instrumentation PASS for execution/strict
+validation, `OK (1 test)`; 20 real model calls plus 5 input rejections. Font-size original
+prompt returned literal `None`, invalid, 5/5; final explicit-reply prompt selected index 1,
+correct, 5/5. Missing, ambiguous and disabled-target expectations FAIL: 15/15 valid but wrong
+AI selections, no canonical NONE. The rule baseline remains separate; no fallback used.
+The all-blocked fixture skips inference in all five runs. No invalid output is repaired.
+
+Evidence: [root cause, exact prompts, changes, identities, commands and timing tables](verification/m4-response-investigation-api30-2026-10-09.md),
+[105 per-run raw records across original, experiments and final](verification/m4-response-investigation-api30-2026-10-09.jsonl).
+Final font generation: median 875 ms, range 353–1,333; combined load/generation median 2,163 ms,
+range 746–2,778; virtual-device/cached wall times with diagnostics, not controlled phone budgets.
+Offline settings/network verified before/after and restored to 0/1/1; original Screenly service
+rebound and final lab launched. No accessibility/overlay source, shared contracts, Gradle,
+model bytes/version or runtime version changed.
+
+Limitations / remaining failure / owner / next check: model semantic abstention is unreliable
+on these fixtures; Developer 2 needs an evidence-based quality/configuration decision before
+production planner integration. M0 approval remains pending. No physical tests, live screen
+capture, broad fixture benchmark or Developer 1 UI regressions ran. Instrumentation success
+is not model quality acceptance. Failed prompt experiments and corrected diagnostic setup
+errors are explicitly retained in the report; no milestone is promoted from this result.

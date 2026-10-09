@@ -611,3 +611,29 @@ enable the real fixture evaluator. Physical tests remain NOT RUN and do not bloc
 development. API 35 remains untouched. Next: jointly approve C0, merge contracts in a separately
 authorized change, then implement the small adapters and run offline fixture evaluation as
 specified in [M4_PLAN.md](M4_PLAN.md). M5 remains not started.
+
+### Separate debug fixture lab
+
+The user subsequently authorized `test/m4-fixture-ui`, branched from preparation commit
+`f7442d6`, to enable manual testing without Developer 1. Its debug-only launcher directly
+uses LocalInference and the isolated helpers on synthetic data; shared planners remain
+unimplemented. It runs locally with no new dependencies or network permissions.
+The first real offline lab evaluation returned `None`, rejected by the canonical NONE parser,
+after 1,927 ms including initialization/generation. Rules separately selected expected index 1.
+This is one failed model-format/selection case, not fallback success or overall navigation
+accuracy. [Usage](M4_PLAN.md#debug-only-manual-fixture-lab) and
+[fresh verification](TESTING.md#debug-fixture-lab--2026-10-09) include limitations.
+
+
+### M4 response investigation follow-up
+
+[Fresh investigation](verification/m4-response-investigation-api30-2026-10-09.md) confirms that
+`None` was literal generated text, not a placeholder or empty extraction. The original font
+prompt used 94 prefill / 2 decode tokens against the unchanged 1,024-token budget. No extraction,
+parser or data-transport defect was found. Enumerating exact allowed replies fixes font-size
+selection in 5/5 final API 30 runs, but missing, ambiguous and disabled-target fixtures produce
+15/15 legal yet wrong selections. No rule result is credited to AI. Strict parsing/membership
+checks and the model/runtime configuration are preserved; the model is not navigation-ready
+from this sample. Build/instrumentation and 31 targeted units pass; physical acceptance and
+shared Planner integration remain unverified/unimplemented. The report retains every raw
+response and measured latency across unsuccessful prompt experiments as well.

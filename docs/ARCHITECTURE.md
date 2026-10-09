@@ -6,8 +6,8 @@ One Kotlin application module (`com.screenly.app`); no backend, database or netw
 
 An isolated `ai/LocalInference` component now verifies a private `.litertlm` file and uses
 LiteRT-LM 0.10.2 on CPU. Its suspend initialization/generation/close calls run on IO with a
-mutex; it reuses the engine and closes per-prompt conversations. Only an opt-in instrumented
-smoke test consumes it. No activity/service/overlay or planner integration exists, and real
+mutex; it reuses the engine and closes per-prompt conversations. Only the debug fixture lab and opt-in instrumented
+tests consume it. No production service/overlay or shared planner integration exists, and real
 phone inference remains unverified. See [M3 implementation and evidence](LOCAL_AI.md).
 
 M4 preparation now adds isolated `ai/navigation/NavigationProtocol` and `NavigationRules`
@@ -16,7 +16,12 @@ allowed original indices; they do not publish snapshots or implement a shared Pl
 `NavigationResponse` represents wire parsing only; NONE is abstention, never completion.
 The [M4 plan](M4_PLAN.md) recommends TAP:<index>/NONE for joint review and defines the thin
 RulePlanner/LlmPlanner adapters to implement after M0 approval. API 30 emulator development
-can proceed without a phone; no actual model navigation evaluation has run yet.
+can proceed without a phone. On the separate `test/m4-fixture-ui` branch, a debug-only
+`NavigationLabActivity` launcher directly evaluates synthetic fixtures with LocalInference,
+without shared planner integration or observing other apps. It shows raw model output,
+validated fixture selection, rules and timing separately. Repeated API 30 fixture results and prompt/token diagnostics are recorded in the
+[response investigation](verification/m4-response-investigation-api30-2026-10-09.md); font-size selection passes 5/5, while missing,
+ambiguous and disabled-target abstention still fail. This is not production guidance.
 
 ```text
 MainActivity (Compose) → Android accessibility settings / enabled-service status

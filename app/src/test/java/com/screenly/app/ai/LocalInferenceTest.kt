@@ -29,6 +29,11 @@ class LocalInferenceTest {
     }
 
     @Test
+    fun noneIsLiteralModelTextRatherThanAnEmptyResponsePlaceholder() {
+        assertEquals("None", modelResponseText(Message.model(Contents.of("None"))))
+    }
+
+    @Test
     fun nonTextResponseDoesNotPassAsGeneratedText() {
         val message = Message.model(Contents.of(Content.ImageFile("/unused/image")))
         assertThrows(IOException::class.java) { modelResponseText(message) }

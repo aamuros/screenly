@@ -1,0 +1,35 @@
+<resources>
+    <string name="navigation_lab_title">Screenly AI Lab</string>
+    <string name="navigation_lab_scope">Synthetic screens · Offline model · Manual testing</string>
+    <string name="navigation_lab_fixture">Screen: %1$s</string>
+    <string name="navigation_lab_goal">Goal</string>
+    <string name="navigation_lab_run">Run local model</string>
+    <string name="navigation_lab_running">Loading model and generating…</string>
+    <string name="navigation_lab_elements">Screen elements</string>
+    <string name="navigation_lab_row">%1$d · %2$s</string>
+    <string name="navigation_lab_unlabelled">Unlabelled control</string>
+    <string name="navigation_lab_candidate">Allowed target</string>
+    <string name="navigation_lab_context">Context only</string>
+    <string name="navigation_lab_checked">Allowed target · Checked</string>
+    <string name="navigation_lab_selected">Model selection</string>
+    <string name="navigation_lab_result">Model result</string>
+    <string name="navigation_lab_target">Selected index %1$d: %2$s</string>
+    <string name="navigation_lab_none">NONE — the model abstained</string>
+    <string name="navigation_lab_invalid">Invalid response — no target selected</string>
+    <string name="navigation_lab_rejected">Input exceeds prompt limits or lacks usable candidates — model not called</string>
+    <string name="navigation_lab_failure">Local model failed — no target selected</string>
+    <string name="navigation_lab_model_time">Model call: %1$d ms (includes loading and generation)</string>
+    <string name="navigation_lab_raw">Raw model response</string>
+    <string name="navigation_lab_prompt">Exact prompt sent to the model</string>
+    <string name="navigation_lab_invalid_syntax">Expected exactly uppercase NONE or TAP:index. The raw response does not match this format.</string>
+    <string name="navigation_lab_disallowed_target">The returned index is outside the allowed candidate set.</string>
+    <string name="navigation_lab_rules">Rule baseline: %1$s · %2$d ms</string>
+    <string name="navigation_lab_rule_none">Abstained</string>
+    <string name="navigation_lab_rule_index">Index %1$d</string>
+    <string name="navigation_lab_expected_target">Fixture expectation: index %1$d</string>
+    <string name="navigation_lab_expected_none">Fixture expectation: abstention</string>
+    <string name="navigation_lab_no_expectation">Edited goal: no labelled expectation</string>
+    <string name="navigation_lab_match">Matches the synthetic fixture expectation</string>
+    <string name="navigation_lab_mismatch">Does not match the synthetic fixture expectation</string>
+    <string name="navigation_lab_footer">This lab selects fixture rows only. It does not observe other apps, tap controls, or declare a goal complete. Rule results are not model results.</string>
+</resources>
