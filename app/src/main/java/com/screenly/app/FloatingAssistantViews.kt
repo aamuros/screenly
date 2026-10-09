@@ -25,6 +25,7 @@ internal data class AssistantPanelState(
     val items: List<AccessibleScreenAssistant.VisibleItem> = emptyList(),
     val selectedItemIndex: Int? = null,
     val guidance: AccessibleScreenAssistant.Guidance? = null,
+    val guideSteps: List<AssistantGuideStep> = emptyList(),
     val processing: Boolean = false,
     val captureStatus: String = "",
     val processingStatus: String = "",
@@ -222,6 +223,21 @@ internal object FloatingAssistantViews {
             root.addView(actionText(context,
                 R.string.assistant_manual_picker, state.processing, actions.manualPicker), gap(context, 6))
         } else {
+            root.addView(TextView(context).apply {
+                text = "Goal: " + guide.goal
+                textSize = 12f
+                setTextColor(Color.rgb(176, 176, 176))
+            }, gap(context, 6))
+            // The active instruction stays visible while previous steps remain reviewable.
+            for (prior in state.guideSteps.dropLast(1).takeLast(5)) {
+                root.addView(TextView(context).apply {
+                    text = "Step " + prior.step + ": " + prior.instruction
+                    textSize = 12f
+                    setTextColor(Color.rgb(176, 176, 176))
+                    setPadding(dp(context, 9), dp(context, 7), dp(context, 9), dp(context, 7))
+                    background = rounded(context, 49, 9)
+                }, gap(context, 4))
+            }
             root.addView(TextView(context).apply {
                 text = context.getString(R.string.assistant_guide_step, guide.step)
                 textSize = 13f
