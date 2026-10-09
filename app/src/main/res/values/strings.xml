@@ -59,4 +59,5 @@
     <string name="assistant_capture_not_permitted">Screenshot permission unavailable. Check Screenly in Accessibility Settings.</string>
     <string name="assistant_capture_idle">No active capture session. Screenshots are never saved.</string>
     <string name="assistant_capture_running">One requested screenshot is being captured.</string>
+    <string name="assistant_capture_stale">The screen changed while capturing. Please try again.</string>
 </resources>

@@ -93,44 +93,6 @@ internal object FloatingAssistantViews {
         return scroll(context, panel)
     }
 
-    fun infoPanel(context: Context, title: String, message: String, onDismiss: () -> Unit): View {
-        val panel = panel(context).apply {
-            setPadding(dp(context, 20), dp(context, 20), dp(context, 20), dp(context, 16))
-        }
-        panel.addView(TextView(context).apply {
-            text = title
-            textSize = 19f
-            typeface = Typeface.DEFAULT_BOLD
-            setTextColor(Color.WHITE)
-        })
-        panel.addView(TextView(context).apply {
-            text = message
-            textSize = 14f
-            setTextColor(Color.rgb(235, 235, 235))
-            setLineSpacing(dp(context, 3).toFloat(), 1f)
-        }, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { topMargin = dp(context, 14) })
-        panel.addView(TextView(context).apply {
-            setText(R.string.assistant_close)
-            textSize = 16f
-            gravity = Gravity.CENTER
-            setTextColor(Color.WHITE)
-            isClickable = true
-            isFocusable = true
-            minimumHeight = dp(context, 48)
-            background = GradientDrawable().apply {
-                cornerRadius = dp(context, 12).toFloat()
-                setColor(Color.rgb(81, 81, 81))
-            }
-            setOnClickListener { onDismiss() }
-        }, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { topMargin = dp(context, 18) })
-        return scroll(context, panel)
-    }
-
-
     /** Feature cards keep the target app visible, with scrolling capped to a phone-sized overlay. */
     fun feature(context: Context, state: AssistantPanelState, actions: AssistantPanelActions): View {
         val container = panel(context).apply {

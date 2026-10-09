@@ -317,6 +317,13 @@ internal class ScreenlyFeaturePanel(
         session.captureStatus = lastCaptureStatus
         root?.visibility = View.VISIBLE
         if (success && feature == action) {
+            // Reject a stale text snapshot if the user navigated during screenshot capture.
+            if (!refreshObservation() || currentObservation() != snapshot) {
+                feedback = service.getString(R.string.assistant_capture_stale)
+                session.captureStatus = feedback
+                render()
+                return
+            }
             // The fallback uses only sanitized accessibility data, not the screenshot.
             when (action) {
                 AssistantAction.ASK_AI -> {

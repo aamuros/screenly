@@ -45,6 +45,16 @@ class AccessibleScreenAssistantTest {
         assertEquals(AccessibleScreenAssistant.GuidancePhase.NEEDS_ACTION, second.phase)
     }
 
+    @Test fun navigationDoesNotClaimCompletionWithoutSwitchEvidence() {
+        val startScreen = ScreenObservation("com.android.settings", 1,
+            listOf(element("Display & touch")))
+        val nextScreen = ScreenObservation("com.android.settings", 2,
+            listOf(element("Colors")))
+        val result = AccessibleScreenAssistant.check(
+            AccessibleScreenAssistant.begin("Enable dark mode", startScreen), nextScreen)
+        assertEquals(AccessibleScreenAssistant.GuidancePhase.NEEDS_REVIEW, result.phase)
+    }
+
     @Test fun ambiguousTargetsAbstain() {
         val view = ScreenObservation("com.android.settings", 1,
             listOf(element("Dark mode"), element("Dark theme")))
