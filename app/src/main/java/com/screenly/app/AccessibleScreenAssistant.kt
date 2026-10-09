@@ -18,12 +18,12 @@ internal object AccessibleScreenAssistant {
     )
 
     fun visibleItems(observation: ScreenObservation): List<VisibleItem> =
-        observation.elements.mapIndexedNotNull { index, element ->
-            if (!element.enabled || !element.clickable || element.right <= element.left ||
-                element.bottom <= element.top) return@mapIndexedNotNull null
-            val label = label(element) ?: return@mapIndexedNotNull null
-            VisibleItem(index, label, describe(label))
-        }.distinctBy { normalize(it.title) }.take(12)
+        ScreenControlCatalog.controls(observation).take(30).map { control ->
+            VisibleItem(control.index, control.label,
+                if (control.type == ScreenControl.Type.TOGGLE)
+                    "Switch: ${if (control.checked) "ON" else "OFF"}"
+                else control.subtitle ?: describe(control.label))
+        }
 
     fun describeScreen(observation: ScreenObservation): String =
         "Accessible controls in ${friendlyApp(observation.packageName)}. " +
@@ -121,9 +121,24 @@ internal object AccessibleScreenAssistant {
             q.contains("privacy") -> listOf("privacy")
             else -> items.map { normalize(it.title) }.filter { q.contains(it) }
         }
-        val direct = items.filter { normalize(it.title) in targets }.distinctBy { it.index }
-        if (direct.size == 1) return direct.single()
-        if (direct.isNotEmpty()) return null
+        val controls = ScreenControlCatalog.controls(observation)
+        val enabling = Regex("\\b(enable|turn on|activate|switch on)\\b").containsMatchIn(q)
+        val disabling = Regex("\\b(disable|turn off|deactivate|switch off)\\b").containsMatchIn(q)
+        val opening = !enabling && !disabling &&
+            Regex("\\b(open|find|go to|navigate|settings)\\b").containsMatchIn(q)
+        val exact = controls.filter { normalize(it.label) in targets }
+        // A row and a switch may share their visible label. The verb chooses a
+        // type; multiple matching controls always cause a safe abstention.
+        val direct = exact.filter {
+            when {
+                enabling -> it.type == ScreenControl.Type.TOGGLE && !it.checked
+                disabling -> it.type == ScreenControl.Type.TOGGLE && it.checked
+                opening -> it.type != ScreenControl.Type.TOGGLE
+                else -> true
+            }
+        }
+        if (direct.size == 1) return items.singleOrNull { it.index == direct.single().index }
+        if (exact.isNotEmpty()) return null
         val routes = when {
             q.contains("dark") || q.contains("font") -> listOf("display & touch", "display")
             q.contains("wifi") || q.contains("wi-fi") -> listOf("network & internet", "network")
