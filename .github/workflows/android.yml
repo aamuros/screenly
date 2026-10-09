@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feat/on-device-ai-integration
+      - fix/persistent-assistant-sessions
   pull_request:
 
 jobs:
