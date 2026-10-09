@@ -42,7 +42,9 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         overlay?.dispose()
         overlay = null
-        if (ensureConsent()) registerScreenReceiver()
+        // Register lifecycle broadcasts even when in-app consent is not yet granted.
+        registerScreenReceiver()
+        ensureConsent()
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "Service connected. Open Android Settings to inspect its interface.")
         }
