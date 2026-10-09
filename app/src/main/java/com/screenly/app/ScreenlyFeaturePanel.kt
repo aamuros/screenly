@@ -63,8 +63,15 @@ internal class ScreenlyFeaturePanel(
         if (action == AssistantAction.EXPLAIN) {
             if (!refreshObservation()) feedback = service.getString(R.string.assistant_screen_unavailable)
         }
-        if (action == AssistantAction.GUIDE_ME && guidance == null) {
-            currentObservation()?.let(session::resumeFrom)
+        if (action == AssistantAction.GUIDE_ME) {
+            // A reopened panel must not reuse a target from a different screen.
+            val current = currentObservation()
+            val previous = guidance
+            if (previous != null && current != null && current != previous.observed) {
+                guidance = AccessibleScreenAssistant.check(previous, current)
+            } else if (previous == null && current != null) {
+                session.resumeFrom(current)
+            }
         }
         if (action == AssistantAction.GUIDE_ME) {
             val verified = guidance
