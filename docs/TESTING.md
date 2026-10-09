@@ -14,6 +14,7 @@ From the repository root with README's SDK/JDK requirements configured:
 ./gradlew :app:lintDebug
 ```
 
+The helper's targeted host checks are `./gradlew :app:testDebugUnitTest --tests com.screenly.app.AccessibleScreenAssistantTest --tests com.screenly.app.BubbleDockingTest`.
 Use targeted tests for observation-policy/sanitizer changes; use
 `./gradlew :app:testDebugUnitTest` when broader coverage is justified. Select future planner/
 controller tests by their actual class names after implementation.
@@ -27,6 +28,26 @@ observation, overlays or guidance. Run only when instrumentation testing is requ
 
 Meaningful current unit coverage: 8 revision/selection/bounds/scheduling tests and 6 sanitizer
 tests. The extra arithmetic template test provides no Screenly feature evidence.
+
+### Four-panel manual regression checks (not yet device-verified)
+
+1. Re-enable the Screenly accessibility service after installing, if prompted for the
+   screenshot capability. Verify the black outlined bubble can slide vertically and snap
+   to either screen edge without forcing a top or bottom corner.
+2. Open each of the four compact panels. Verify their animation, close button, Android
+   Back, keyboard resizing, internal scrolling, rotation and underlying touch behavior.
+3. Ask AI: type, Send, follow up and Recapture. Inspect actual capture status. Text must
+   be labeled as accessibility-derived, not screenshot vision.
+4. Explain: enter, Refresh, and expand a detected control. It should only list currently
+   accessible labels and should not claim to recognize unseen pixels.
+5. Guide Me: enter Enable dark mode, follow its current instruction, manually tap in the
+   app, then Check my screen. Unchanged screens should not advance; ambiguous results
+   must not report completion. Try Cancel and Select a control manually.
+6. Privacy: inspect offline/model/capture status, clear the chat and temporary data,
+   and test the accessibility settings shortcut. No capture should continue silently.
+7. Repeat on a protected/secure app screen and after lock, rotation, service disable
+   and a rapid sequence of capture requests. Confirm no fabricated answer or orphaned
+   overlays, and record results and limitations with the device model and commit.
 
 ## Physical-device setup (manual)
 
@@ -63,10 +84,10 @@ Logcat contains ordinary non-editable app labels.
 
 ### M1/M2 phone checklist
 
-1. Open Settings; confirm one **S** bubble and current observations in Logcat. Missing labels/
+1. Open Settings; confirm one outlined floating bubble and current observations in Logcat. Missing labels/
    IDs must not crash. See [preserved physical checklist](../VERIFICATION.md#f-remaining-risks-and-physical-checklist)
    for additional diagnostics and known limitations.
-2. Select an enabled row/button in the picker; compare outline with actual edges. Tap inside:
+2. Choose Guide Me, then Select a control manually; select an enabled row/button in the picker and compare the outline with actual edges. Tap inside:
    underlying app receives the touch. Test near status bar/cutout and in landscape. Partially
    visible controls must not produce an unrelated highlight.
 3. Open/close picker at least five times, drag bubble, use **Clear highlight**, touch outside

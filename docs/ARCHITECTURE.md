@@ -9,13 +9,17 @@ MainActivity (Compose) → Android accessibility settings / enabled-service stat
 Accessibility events → ScreenlyAccessibilityService → ScreenObservation
                                                      ↓
                                               ScreenlyOverlay
-                                          bubble → manual picker
-                                          validated element → highlight
-                                                     ↓
-                                         user touches the target app
+                                      bubble → four-action floating menu
+                                         │                 │
+                                    manual picker    ScreenlyFeaturePanel
+                                         │                 │
+                                   pass-through       explicit screenshot
+                                     highlight        and accessible labels
+                                         ↓                 ↓
+                                   user interacts    local offline fallback
 ```
 
-The service observes the active, otherwise focused, **application** window; overlay windows
+The service observes the active, otherwise focused, **application** window, with a fallback to the previously observed app if the floating input panel takes focus; overlay windows
 and Screenly's activity are excluded. It copies values and recycles nodes on API 30–32; no
 live nodes/events survive capture. Traversal is limited to 500 node/child slots and depth 40.
 Password subtrees and, on API 34+, accessibility-data-sensitive subtrees are skipped;
@@ -34,6 +38,29 @@ non-touchable. Candidates must be enabled/clickable with positive bounds interse
 display. Bounds are absolute screen pixels; drawing subtracts the overlay's actual screen
 origin. Picker labels may come from a contained element; selection uses the candidate's own
 bounds. No code activates a target-app control.
+
+### Compact panels and screenshot boundary
+
+The outlined 72dp bubble docks to the nearest horizontal edge while retaining its
+vertical release position. Its 220dp menu expands into compact native Ask AI, Explain,
+Guide Me and Privacy cards. These 280dp-wide panels scroll internally above 300dp in
+height. They accept keyboard input and allow touches outside their bounds to pass through.
+The existing touch-through manual picker remains reachable under Guide Me.
+
+The accessibility service declares `canTakeScreenshot`. Screenly requests a screenshot
+only after Send, Explain, Refresh, or Check my screen. It first hides the panel and keyboard,
+then validates and immediately releases the in-memory hardware buffer. It never saves or
+uploads screen images. Service disconnect invalidates outstanding capture requests.
+Protected screens can refuse capture, and users may need to re-enable Screenly when the
+new accessibility capability is added.
+
+`AccessibleScreenAssistant` is an offline **accessibility-label fallback**. It does not
+interpret screenshot pixels and explicitly labels its answers accordingly. Its guidance
+state stores a goal, current step, most recent sanitized observation and verification
+phase. A changed screen is not automatically proof of completing a goal. Only a directly
+observed, requested switch-state transition can be marked completed. Chats and guidance
+remain in a bounded in-memory session until cleared or service teardown.
+The text-only LiteRT-LM prototype on `feat/local-ai` remains separate and is not a VLM.
 
 ## Actual data and revision contracts
 
