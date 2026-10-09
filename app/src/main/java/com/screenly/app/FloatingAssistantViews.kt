@@ -38,6 +38,7 @@ internal class AssistantPanelActions(
     val checkScreen: () -> Unit,
     val cancelGuide: () -> Unit,
     val clearHistory: () -> Unit,
+    val clearGuidance: () -> Unit,
     val clearScreenshots: () -> Unit,
     val openPermissions: () -> Unit,
     val manualPicker: () -> Unit
@@ -306,6 +307,8 @@ internal object FloatingAssistantViews {
             gap(context, 6))
         root.addView(actionText(context,
             R.string.assistant_clear_history, false, actions.clearHistory), gap(context, 4))
+        root.addView(actionText(context,
+            R.string.assistant_clear_guidance, false, actions.clearGuidance), gap(context, 4))
         root.addView(actionText(context,
             R.string.assistant_clear_screenshots, false, actions.clearScreenshots), gap(context, 4))
         root.addView(actionText(context,

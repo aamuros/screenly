@@ -36,6 +36,7 @@ internal class ScreenlyOverlay(
 ) {
     private val windowManager = service.getSystemService(WindowManager::class.java)
     private val state = ScreenObservationState()
+    private val session = ScreenlySessionStore(service)
     private var dockRight = true
     private var dockY: Int? = null
     private var snapAnimator: ValueAnimator? = null
@@ -263,7 +264,8 @@ internal class ScreenlyOverlay(
                     if (refreshObservation()) showPicker()
                     else Toast.makeText(service, R.string.screen_changed, Toast.LENGTH_SHORT).show()
                 },
-                onClosed = { featureController = null }
+                onClosed = { featureController = null },
+                session = session
             )
             featureController = controller
             controller.open(action)

@@ -27,11 +27,14 @@ internal class ScreenlyFeaturePanel(
     private val refreshObservation: () -> Boolean,
     private val currentObservation: () -> ScreenObservation?,
     private val manualPicker: () -> Unit,
-    private val onClosed: () -> Unit
+    private val onClosed: () -> Unit,
+    private val session: ScreenlySessionStore
 ) {
     private val handler = Handler(Looper.getMainLooper())
-    private val messages = mutableListOf<AssistantChatEntry>()
-    private var guidance: AccessibleScreenAssistant.Guidance? = null
+    private val messages get() = session.messages
+    private var guidance: AccessibleScreenAssistant.Guidance?
+        get() = session.guidance
+        set(value) { session.updateGuidance(value) }
     private var feature: AssistantAction? = null
     private var root: View? = null
     private var selectedItem: Int? = null
@@ -47,6 +50,9 @@ internal class ScreenlyFeaturePanel(
         feedback = ""
         if (action == AssistantAction.EXPLAIN) {
             if (!refreshObservation()) feedback = service.getString(R.string.assistant_screen_unavailable)
+        }
+        if (action == AssistantAction.GUIDE_ME && guidance == null) {
+            currentObservation()?.let(session::resumeFrom)
         }
         render(animate = true)
     }
@@ -67,8 +73,7 @@ internal class ScreenlyFeaturePanel(
             else view.animate().alpha(0f).scaleX(0.5f).scaleY(0.5f)
                 .setDuration(160L).withEndAction { detach(view) }.start()
         }
-        messages.clear()
-        guidance = null
+        // Closing only hides the panel. The session is owned by ScreenlyOverlay.
         if (restoreBubble) {
             bubble.animate().cancel()
             bubble.visibility = View.VISIBLE
@@ -107,7 +112,7 @@ internal class ScreenlyFeaturePanel(
                 submit = { prompt ->
                     if (!busy) when (action) {
                         AssistantAction.ASK_AI -> {
-                            messages += AssistantChatEntry(true, prompt)
+                            session.addMessage(AssistantChatEntry(true, prompt))
                             capture(action, prompt)
                         }
                         AssistantAction.GUIDE_ME -> {
@@ -140,8 +145,13 @@ internal class ScreenlyFeaturePanel(
                     render()
                 },
                 clearHistory = {
-                    messages.clear()
+                    session.clearChat()
                     feedback = service.getString(R.string.assistant_history_cleared)
+                    render()
+                },
+                clearGuidance = {
+                    session.clearGuidance()
+                    feedback = "Saved guidance and its progress were cleared."
                     render()
                 },
                 clearScreenshots = {
@@ -311,9 +321,9 @@ internal class ScreenlyFeaturePanel(
             when (action) {
                 AssistantAction.ASK_AI -> {
                     val question = prompt ?: messages.lastOrNull { it.fromUser }?.content
-                    if (!question.isNullOrBlank()) messages += AssistantChatEntry(
+                    if (!question.isNullOrBlank()) session.addMessage(AssistantChatEntry(
                         false, AccessibleScreenAssistant.ask(question, snapshot)
-                    )
+                    ))
                 }
                 AssistantAction.EXPLAIN -> selectedItem = null
                 AssistantAction.GUIDE_ME -> {

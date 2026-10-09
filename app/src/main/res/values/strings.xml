@@ -47,8 +47,9 @@
     <string name="assistant_privacy_data">Local data</string>
     <string name="assistant_privacy_permissions">Permissions</string>
     <string name="assistant_capture_on_demand">Captures happen only when requested. There is no continuous screen recording.</string>
-    <string name="assistant_data_notice">Screen images are released from memory after each request and are not saved or uploaded. Chat text is stored only in memory until cleared or the service stops.</string>
+    <string name="assistant_data_notice">Screen images are not saved or uploaded. Chat stays in memory; the active Guide Me goal and step number are saved privately on this device until cancelled, completed or cleared.</string>
     <string name="assistant_clear_history">Clear chat history</string>
+    <string name="assistant_clear_guidance">Clear saved Guide Me goal</string>
     <string name="assistant_clear_screenshots">Clear temporary screenshots</string>
     <string name="assistant_open_permissions">Open accessibility permissions</string>
     <string name="assistant_ai_runtime_status">Vision model not connected. Accessibility-based assistance works offline. The text-only model is on a separate development branch.</string>
