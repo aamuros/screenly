@@ -44,6 +44,7 @@ internal class ScreenlyOverlay(
     private var dockY: Int? = null
     private var snapAnimator: ValueAnimator? = null
     private var disposed = false
+    private var ownAppVisible = false
     private var bubble: View? = null
     private var picker: View? = null
     private var assistantMenu: View? = null
@@ -57,6 +58,13 @@ internal class ScreenlyOverlay(
     private var highlight: HighlightView? = null
     private var outsideDismissalDownTime: Long? = null
     private var bubbleClickClosesPicker = false
+
+    /** Hide the assistant over Screenly's own launcher, without clearing saved chat or guides. */
+    fun setOwnAppVisible(visible: Boolean) {
+        if (ownAppVisible == visible || disposed) return
+        ownAppVisible = visible
+        if (visible) clearObservation()
+    }
 
     fun updateObservation(next: ScreenObservation) {
         if (disposed) return
@@ -111,7 +119,7 @@ internal class ScreenlyOverlay(
 
 
     private fun showBubble() {
-        if (bubble != null) return
+        if (bubble != null || ownAppVisible || disposed || state.snapshot == null) return
         val size = dp(BUBBLE_SIZE_DP)
         val area = usableScreenBounds()
         if (area.width() <= 0 || area.height() <= 0) return
