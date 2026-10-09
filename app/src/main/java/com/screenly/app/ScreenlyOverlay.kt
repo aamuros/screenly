@@ -396,6 +396,7 @@ internal class ScreenlyOverlay(
         if (disposed) return
         clearHighlight()
         clearGuidancePanel()
+        var instructionTarget: AccessibleUiElement? = null
         val message = when (update.status) {
             GuidanceStatus.IDLE -> return
             GuidanceStatus.WAITING_FOR_SCREEN -> service.getString(R.string.guidance_waiting)
@@ -415,6 +416,7 @@ internal class ScreenlyOverlay(
                         snapshot.planningElements, snapshot.candidateIndices, verifiedRoutes(request.goal, snapshot)) != null
                 ) return
                 showHighlight(element)
+                instructionTarget = element
                 val label = snapshot.planningElements[index].text ?: snapshot.planningElements[index].contentDescription
                     ?: service.getString(R.string.unlabelled_element)
                 if (BuildConfig.DEBUG) Log.d("ScreenlyGuidance",
@@ -423,10 +425,10 @@ internal class ScreenlyOverlay(
                 service.getString(if (result.decision.failure != null) R.string.guidance_step_model_unavailable else R.string.guidance_step, label)
             }
         }
-        showGuidanceMessage(message)
+        showGuidanceMessage(message, instructionTarget)
     }
 
-    private fun showGuidanceMessage(message: String) {
+    private fun showGuidanceMessage(message: String, target: AccessibleUiElement? = null) {
         clearGuidancePanel()
         val area = usableScreenBounds()
         val view = TextView(service).apply {
@@ -441,6 +443,19 @@ internal class ScreenlyOverlay(
             x = area.left
             y = area.top
             flags = flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        }
+        if (target != null) view.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            if (disposed || guidancePanel !== view || view.height <= 0) return@addOnLayoutChangeListener
+            val targetBounds = Rect(target.left, target.top, target.right, target.bottom)
+            val topPlacement = Rect(area.left, area.top, area.left + params.width, area.top + view.height)
+            val nextY = if (Rect.intersects(topPlacement, targetBounds)) {
+                (area.bottom - view.height).coerceAtLeast(area.top)
+            } else area.top
+            if (params.y != nextY) {
+                params.y = nextY
+                try { windowManager.updateViewLayout(view, params) }
+                catch (_: IllegalArgumentException) { clearGuidancePanel() }
+            }
         }
         if (attach(view, params)) guidancePanel = view
     }

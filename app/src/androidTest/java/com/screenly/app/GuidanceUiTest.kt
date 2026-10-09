@@ -220,7 +220,17 @@ class GuidanceUiTest {
                 }
                 val matches = outlined(bounds.top) && outlined(bounds.bottom)
                 screenshot.recycle()
-                if (matches) return
+                if (matches) {
+                    instrumentation.runOnMainSync {
+                        WindowInspector.getGlobalWindowViews().filterIsInstance<TextView>().forEach { caption ->
+                            val origin = IntArray(2)
+                            caption.getLocationOnScreen(origin)
+                            val captionBounds = Rect(origin[0], origin[1], origin[0] + caption.width, origin[1] + caption.height)
+                            assertFalse("Instruction must not cover the highlighted control", Rect.intersects(captionBounds, bounds))
+                        }
+                    }
+                    return
+                }
             }
             SystemClock.sleep(200)
         } while (SystemClock.uptimeMillis() < deadline)

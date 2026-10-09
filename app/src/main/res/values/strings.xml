@@ -34,7 +34,7 @@
     <string name="guidance_planning">Checking this screen on your device…</string>
     <string name="guidance_uncertain">I couldn\'t identify the correct button on this screen. Try opening the relevant menu, then ask me again.</string>
     <string name="guidance_uncertain_model_unavailable">Local AI is unavailable, and I couldn\'t verify a next step. Open the relevant menu or use the manual picker.</string>
-    <string name="guidance_step">Tap the “%1$s” control or label. You perform the action; Screenly will check the next screen.</string>
-    <string name="guidance_step_model_unavailable">Tap the “%1$s” control or label. Local AI is unavailable; this is a verified step. You perform the action.</string>
+    <string name="guidance_step">Tap the “%1$s” control or label.</string>
+    <string name="guidance_step_model_unavailable">AI unavailable; verified step. Tap the “%1$s” control or label.</string>
     <string name="guidance_user_confirmed">You confirmed that your goal is complete.</string>
 </resources>
