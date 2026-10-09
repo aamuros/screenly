@@ -1,0 +1,181 @@
+{
+  "protocol": "per-candidate YES/NO",
+  "fixture_set": "16 frozen availability diagnostic screens",
+  "repetitions": 3,
+  "screen_decisions": 48,
+  "native_candidate_generations": 93,
+  "raw_canonical_action_correct": 12,
+  "raw_wrong_unique_selections": 9,
+  "raw_ambiguous_positive_sets": 24,
+  "raw_correct_all_no_abstentions": 9,
+  "validated_model_selected_correct": 3,
+  "validated_model_wrong_selected": 0,
+  "rule_fallback_selections": 15,
+  "combined_correct": 48,
+  "combined_wrong_selected": 0,
+  "combined_correct_abstentions": 30,
+  "runtime_failures": 0,
+  "model_outcomes": {
+    "REJECTED_TARGET": 33,
+    "ABSTAINED": 12,
+    "SELECTED": 3
+  },
+  "candidate_replies": {
+    "YES": 63,
+    "NO": 30
+  },
+  "screen_generation_ms": {
+    "median": 1856.5,
+    "min": 894,
+    "max": 4506
+  },
+  "initialize_ms": 2178,
+  "sampled_pss_kib_max": 1100885,
+  "note": "Synthetic fixtures, not unseen accuracy. Raw canonical correctness requires one correct YES or all NO; duplicate candidates may legitimately yield multiple positive relevance answers. Combined results include separately identified rule fallback.",
+  "per_fixture": [
+    {
+      "id": "display-font",
+      "expected_index": 1,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "RULE": 3
+      }
+    },
+    {
+      "id": "missing-font",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "ambiguous",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "wifi-unavailable",
+      "expected_index": null,
+      "raw_canonical_correct": 3,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "font-row-order",
+      "expected_index": 1,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "RULE": 3
+      }
+    },
+    {
+      "id": "font-moved-index",
+      "expected_index": 2,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "RULE": 3
+      }
+    },
+    {
+      "id": "missing-font-new-labels",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "duplicate-save",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "wifi-unavailable-bluetooth",
+      "expected_index": null,
+      "raw_canonical_correct": 3,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "brightness-present",
+      "expected_index": 1,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "RULE": 3
+      }
+    },
+    {
+      "id": "brightness-missing",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "brightness-duplicate",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "nfc-enable-off",
+      "expected_index": 0,
+      "raw_canonical_correct": 3,
+      "combined_correct": 3,
+      "sources": {
+        "MODEL": 3
+      }
+    },
+    {
+      "id": "nfc-enable-on",
+      "expected_index": null,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    },
+    {
+      "id": "nfc-disable-on",
+      "expected_index": 0,
+      "raw_canonical_correct": 0,
+      "combined_correct": 3,
+      "sources": {
+        "RULE": 3
+      }
+    },
+    {
+      "id": "nfc-disable-off",
+      "expected_index": null,
+      "raw_canonical_correct": 3,
+      "combined_correct": 3,
+      "sources": {
+        "NONE": 3
+      }
+    }
+  ]
+}

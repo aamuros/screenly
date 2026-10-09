@@ -1,0 +1,125 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.ai.LocalInferenceSmokeTest:
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: device=Google sdk_gphone64_x86_64; API 37; ABIs x86_64, arm64-v8a
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: runtime=LiteRT-LM 0.10.2; CPU; 4 threads; 1024 total tokens
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: model=/data/user/0/com.screenly.app/no_backup/models/gemma3-1b-it-int4.litertlm; 584417280 bytes; expected SHA-256 1325ae366d31950f137c9c357b9fa89448b176d76998180c08ceaca78bba98be
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: offline_required=true
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization_ms=14776
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: initialization=PASS (includes model integrity verification)
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1_ms=17790
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_1=There isn't one single Android setting that controls font size directly across all apps. However, there are several settings you can adjust within Android's system settings (and sometimes within app settings) that influence font size:
+
+**1. System-Wide Font Size:**
+
+*   **Settings > Display > Font Size:** This setting controls the overall font size across all apps. You can adjust it by setting a slider or by choosing from preset sizes like "Small", "Medium", "Large", "Extra Large", etc. This setting can be adjusted by each app individually.
+*   **Settings > Display > Font Size:** This setting can be adjusted by each app individually.
+*   **Settings > Accessibility > Display:** Some apps may offer font size controls here as well.
+
+**2. App-Specific Font Size:**
+
+*   **App Settings:** Many apps have their own dedicated font size settings within their settings menu or within their app's settings panel.
+*   **App-Specific Settings:** Some apps allow you customize font size by tapping an icon or selecting an option within their settings.
+*   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+
+**3. System-Wide Font Size Preferences:**
+
+*   **Settings > Display > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+*   **Settings > Accessibility > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+
+
+**Important Considerations:**
+
+*   **Font Size Limits:** Android typically limits font size by default. However, you can adjust this by setting font size limits within your system-wide settings.
+*   **App-Specific Settings:** If an app doesn't allow font size control directly, you can try adjusting font size by setting font size limits within each app's settings.
+*   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+
+
+**Where To Find This Information:**
+
+*   **Android System Settings:** This can be found by going into Settings > Display > Font Size
+*   **App-Specific Settings:** This can be found by going into Settings > App Settings
+*   **Google Assistant:** Some apps may provide font size controls through Google Assistant.
+*   **Android Help:** This can be found by searching "Android Font Size Settings" or "Font Size Control"
+*   **App-Specific Documentation:** Most apps have their own documentation explaining their font size settings.
+
+
+**Disclaimer:** This information may vary slightly depending on your Android version and device model.**
+
+Let me know if you'd like me provide more specific instructions or details about any particular app!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_1=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2_ms=18040
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: response_2=There isn't one single Android setting that controls font size directly across all apps. However, there are several settings you can adjust within Android's system settings (and sometimes within app settings) that influence font size:
+
+**1. System-Wide Font Size:**
+
+*   **Settings > Display > Font Size:** This setting controls the overall font size across all apps. You can adjust it by setting a slider or by choosing from preset sizes like "Small", "Medium", "Large", "Extra Large", etc. This setting can be adjusted by each app individually.
+*   **Settings > Display > Font Size:** This setting can be adjusted by each app individually.
+*   **Settings > Accessibility > Display:** Some apps may offer font size controls here as well.
+
+**2. App-Specific Font Size:**
+
+*   **App Settings:** Many apps have their own dedicated font size settings within their settings menu or within their app's settings panel.
+*   **App-Specific Settings:** Some apps allow you customize font size by tapping an icon or selecting an option within their settings.
+*   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+
+**3. System-Wide Font Size Preferences:**
+
+*   **Settings > Display > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+*   **Settings > Accessibility > Font Size:** This setting can be adjusted by each app individually. This can be useful if you want apps all have similar font sizes.
+
+
+**Important Considerations:**
+
+*   **Font Size Limits:** Android typically limits font size by default. However, you can adjust this by setting font size limits within your system-wide settings.
+*   **App-Specific Settings:** If an app doesn't allow font size control directly, you can try adjusting font size by setting font size limits within each app's settings.
+*   **Using a Custom Font:** Some apps allow you by selecting custom fonts within their settings. This can provide more control over font size but requires installing an app-specific font file.
+
+
+**Where To Find This Information:**
+
+*   **Android System Settings:** This can be found by going into Settings > Display > Font Size
+*   **App-Specific Settings:** This can be found by going into Settings > App Settings
+*   **Google Assistant:** Some apps may provide font size controls through Google Assistant.
+*   **Android Help:** This can be found by searching "Android Font Size Settings" or "Font Size Control"
+*   **App-Specific Documentation:** Most apps have their own documentation explaining their font size settings.
+
+
+**Disclaimer:** This information may vary slightly depending on your Android version and device model.**
+
+Let me know if you'd like me provide more specific instructions or details about any particular app!
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: generation_2=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: cleanup=PASS
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.ai.LocalInferenceSmokeTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=generateTextOnCpu
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 50.922
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,27 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.GuidanceUiTest:
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: guidance_ui=label=Display & touch; Android bounds=Rect(0, 1763 - 1080, 1955); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Display size & text; Android bounds=Rect(1, 1418 - 1081, 1610); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 34.792
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1

@@ -1,0 +1,9 @@
+10-09 19:29:21.222 10603 10603 D ScreenlyGuidance: next session=1 revision=14 index=49 source=MODEL outcome=SELECTED ms=4129
+10-09 19:29:43.225 10783 10783 D ScreenlyGuidance: next session=1 revision=8 index=22 source=RULE outcome=REJECTED_TARGET ms=9778
+10-09 19:29:51.700 10783 10783 D ScreenlyGuidance: next session=1 revision=13 index=15 source=MODEL outcome=SELECTED ms=5492
+10-09 19:36:52.619 11429 11429 D ScreenlyGuidance: next session=1 revision=7 index=22 source=RULE outcome=REJECTED_TARGET ms=12393
+10-09 19:37:01.382 11429 11429 D ScreenlyGuidance: next session=1 revision=11 index=15 source=MODEL outcome=SELECTED ms=5968
+10-09 19:37:22.168 11624 11624 D ScreenlyGuidance: next session=1 revision=7 index=58 source=MODEL outcome=SELECTED ms=7273
+10-09 19:37:31.503 11624 11624 D ScreenlyGuidance: next session=1 revision=12 index=39 source=RULE outcome=REJECTED_TARGET ms=6053
+10-09 19:37:52.902 11793 11793 D ScreenlyGuidance: next session=1 revision=8 index=58 source=RULE outcome=REJECTED_TARGET ms=8145
+10-09 19:38:02.077 11793 11793 D ScreenlyGuidance: next session=1 revision=13 index=49 source=MODEL outcome=SELECTED ms=6544

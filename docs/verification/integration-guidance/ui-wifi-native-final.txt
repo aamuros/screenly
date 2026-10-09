@@ -1,0 +1,29 @@
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=
+com.screenly.app.GuidanceUiTest:
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 1
+INSTRUMENTATION_STATUS: guidance_ui=label=Network & internet; Android bounds=Rect(0, 544 - 1080, 736); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=label=Internet; Android bounds=Rect(0, 210 - 1080, 402); matching outline observed; test performs next tap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: guidance_ui=Wi-Fi destination reached; service root unavailable; waiting message and no highlight verified
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: class=com.screenly.app.GuidanceUiTest
+INSTRUMENTATION_STATUS: current=1
+INSTRUMENTATION_STATUS: id=AndroidJUnitRunner
+INSTRUMENTATION_STATUS: numtests=1
+INSTRUMENTATION_STATUS: stream=.
+INSTRUMENTATION_STATUS: test=guidanceUsesRealBoundsAndContinuesAfterUserTap
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=
+
+Time: 34.153
+
+OK (1 test)
+
+
+INSTRUMENTATION_CODE: -1
