@@ -34,6 +34,11 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             when (intent?.action) {
                 Intent.ACTION_SCREEN_OFF -> clearObservation()
                 Intent.ACTION_SCREEN_ON, Intent.ACTION_USER_PRESENT -> scheduleObservation()
+                MainActivity.ACTION_APP_VISIBILITY -> {
+                    val visible = intent.getBooleanExtra(MainActivity.EXTRA_VISIBLE, false)
+                    overlay?.setOwnAppVisible(visible)
+                    if (!visible) scheduleObservation()
+                }
             }
         }
     }
@@ -42,6 +47,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
         super.onServiceConnected()
         overlay?.dispose()
         overlay = ScreenlyOverlay(this) { observeScreen() }
+        overlay?.setOwnAppVisible(MainActivity.isForeground)
         registerScreenReceiver()
         if (BuildConfig.DEBUG) {
             Log.i(TAG, "Service connected. Open Android Settings to inspect its interface.")
@@ -235,6 +241,7 @@ class ScreenlyAccessibilityService : AccessibilityService() {
             addAction(Intent.ACTION_SCREEN_OFF)
             addAction(Intent.ACTION_SCREEN_ON)
             addAction(Intent.ACTION_USER_PRESENT)
+            addAction(MainActivity.ACTION_APP_VISIBILITY)
         }
         if (Build.VERSION.SDK_INT >= 33) {
             registerReceiver(screenReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
